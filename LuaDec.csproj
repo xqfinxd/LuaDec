@@ -113,7 +113,7 @@
     <Compile Include="Decompile\Operation\TableSet.cs" />
     <Compile Include="Decompile\Operation\UpvalueSet.cs" />
     <Compile Include="Decompile\Output.cs" />
-    <Compile Include="Decompile\OutputProvider.cs" />
+    <Compile Include="Decompile\IOutputProvider.cs" />
     <Compile Include="Decompile\Registers.cs" />
     <Compile Include="Decompile\Statement\Assignment.cs" />
     <Compile Include="Decompile\Statement\Declare.cs" />
@@ -157,7 +157,6 @@
     <Compile Include="Parser\LUpvalueType.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Util\FileUtils.cs" />
     <Compile Include="Util\StringUtils.cs" />
     <Compile Include="Version.cs" />
   </ItemGroup>

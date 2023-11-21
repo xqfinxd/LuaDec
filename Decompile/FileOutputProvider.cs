@@ -2,7 +2,7 @@
 
 namespace LuaDec.Decompile
 {
-    public class FileOutputProvider : OutputProvider
+    public class FileOutputProvider : IOutputProvider
     {
 
         private readonly FileStream output;
@@ -14,17 +14,17 @@ namespace LuaDec.Decompile
             eol = System.Environment.NewLine;
         }
 
-        public void print(string s)
+        public void WriteString(string s)
         {
             for (int i = 0; i < s.Length; i++)
             {
                 int c = s[i];
                 if (c < 0 || c > 255) throw new System.InvalidOperationException();
-                print((byte)c);
+                WriteByte((byte)c);
             }
         }
 
-        public void print(byte b)
+        public void WriteByte(byte b)
         {
             try
             {
@@ -36,9 +36,9 @@ namespace LuaDec.Decompile
             }
         }
 
-        public void println()
+        public void WriteLine()
         {
-            print(eol);
+            WriteString(eol);
         }
 
     }

@@ -1,12 +1,11 @@
-﻿
-using LuaDec.Decompile;
+﻿using LuaDec.Decompile;
 using System.IO;
 
 namespace LuaDec
 {
     public class Configuration
     {
-        public enum Mode
+        public enum OpMode
         {
             Decompile,
             Disassemble,
@@ -20,44 +19,51 @@ namespace LuaDec
             Finder,
         }
 
-        public bool rawString;
-        public Mode mode;
-        public VariableMode variable;
-        public bool strictScope;
-        public string opmap;
-        public string output;
+        private OpMode mode;
+        private string opmap;
+        private string output;
+        private bool rawString;
+        private bool strictScope;
+        private VariableMode variable;
+
+        public OpMode Mode { get => mode; set => mode = value; }
+        public string Opmap { get => opmap; set => opmap = value; }
+        public string Output { get => output; set => output = value; }
+        public bool RawString { get => rawString; set => rawString = value; }
+        public bool StrictScope { get => strictScope; set => strictScope = value; }
+        public VariableMode Variable { get => variable; set => variable = value; }
 
         public Configuration()
         {
-            rawString = false;
-            mode = Mode.Decompile;
-            variable = VariableMode.Default;
-            strictScope = false;
-            opmap = null;
-            output = null;
+            RawString = false;
+            Mode = OpMode.Decompile;
+            Variable = VariableMode.Default;
+            StrictScope = false;
+            Opmap = null;
+            Output = null;
         }
 
         public Configuration(Configuration other)
         {
-            rawString = other.rawString;
-            mode = other.mode;
-            variable = other.variable;
-            strictScope = other.strictScope;
-            opmap = other.opmap;
-            output = other.output;
+            RawString = other.RawString;
+            Mode = other.Mode;
+            Variable = other.Variable;
+            StrictScope = other.StrictScope;
+            Opmap = other.Opmap;
+            Output = other.Output;
         }
 
         public Output getOutput()
         {
-            if (output != null)
+            if (Output != null)
             {
                 try
                 {
-                    return new Output(new FileOutputProvider(File.Open(output, FileMode.Open)));
+                    return new Output(new FileOutputProvider(File.Open(Output, FileMode.Open)));
                 }
                 catch (IOException e)
                 {
-                    Program.error(e.Message, false);
+                    Program.Error(e.Message, false);
                     return null;
                 }
             }

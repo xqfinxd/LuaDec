@@ -8,26 +8,26 @@ namespace LuaDec.Decompile
 {
     public class Output
     {
-        private class DefaultOutputProvide : OutputProvider
+        private class DefaultOutputProvide : IOutputProvider
         {
-            public void print(string s)
+            public void WriteString(string s)
             {
                 Console.Write(s);
             }
 
-            public void print(byte b)
+            public void WriteByte(byte b)
             {
                 Console.Write(b);
             }
 
-            public void println()
+            public void WriteLine()
             {
                 Console.WriteLine();
             }
         }
 
 
-        private OutputProvider output;
+        private IOutputProvider output;
         private int indentationLevel = 0;
         private int position = 0;
 
@@ -36,7 +36,7 @@ namespace LuaDec.Decompile
 
         }
 
-        public Output(OutputProvider output)
+        public Output(IOutputProvider output)
         {
             this.output = output;
         }
@@ -72,7 +72,7 @@ namespace LuaDec.Decompile
             {
                 for (int i = indentationLevel; i != 0; i--)
                 {
-                    output.print(" ");
+                    output.WriteString(" ");
                     position++;
                 }
             }
@@ -83,7 +83,7 @@ namespace LuaDec.Decompile
             start();
             for (int i = 0; i < s.Length; i++)
             {
-                output.print((byte)s[i]);
+                output.WriteByte((byte)s[i]);
             }
             position += s.Length;
         }
@@ -91,14 +91,14 @@ namespace LuaDec.Decompile
         public void print(byte b)
         {
             start();
-            output.print(b);
+            output.WriteByte(b);
             position += 1;
         }
 
         public void println()
         {
             start();
-            output.println();
+            output.WriteLine();
             position = 0;
         }
 

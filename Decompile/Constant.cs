@@ -91,7 +91,7 @@ namespace LuaDec.Decompile
             case Type.STRING:
                 int newlines = 0;
                 int unprintable = 0;
-                bool rawstring = d.getConfiguration().rawString;
+                bool rawstring = d.getConfiguration().RawString;
                 for (int i = 0; i < stringValue.Length; i++)
                 {
                     char c = stringValue[i];

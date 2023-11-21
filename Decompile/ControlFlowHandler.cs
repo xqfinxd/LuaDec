@@ -1665,7 +1665,7 @@ namespace LuaDec.Decompile
 
         private static void strictScopeCheck(State state)
         {
-            if (state.function.header.config.strictScope)
+            if (state.function.header.config.StrictScope)
             {
                 throw new ArgumentException("Violation of strict scope rule");
             }

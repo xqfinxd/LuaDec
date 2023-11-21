@@ -101,11 +101,11 @@ namespace LuaDec.Parser
             functionType = lheader.function;
             extractor = lheader.extractor;
 
-            if (config.opmap != null)
+            if (config.Opmap != null)
             {
                 try
                 {
-                    Tokenizer t = new Tokenizer(new StreamReader(File.Open(config.opmap, FileMode.Open)));
+                    Tokenizer t = new Tokenizer(new StreamReader(File.Open(config.Opmap, FileMode.Open)));
                     string tok;
                     Dictionary<int, Op> useropmap = new Dictionary<int, Op>();
                     while ((tok = t.next()) != null)
