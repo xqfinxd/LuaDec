@@ -34,7 +34,7 @@ namespace LuaDec.Decompile.Expression
 
         public override void print(Decompiler d, Output output)
         {
-            output.print(decl.name);
+            output.WriteString(decl.name);
         }
 
         public override bool isBrief()

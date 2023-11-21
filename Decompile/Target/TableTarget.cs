@@ -33,8 +33,8 @@ namespace LuaDec.Decompile.Target
         public override void printMethod(Decompiler d, Output output)
         {
             table.print(d, output);
-            output.print(":");
-            output.print(index.asName());
+            output.WriteString(":");
+            output.WriteString(index.asName());
         }
 
         public override bool isFunctionName()

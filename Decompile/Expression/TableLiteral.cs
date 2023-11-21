@@ -84,7 +84,7 @@ namespace LuaDec.Decompile.Expression
             listLength = 1;
             if (entries.Count == 0)
             {
-                output.print("{}");
+                output.WriteString("{}");
             }
             else
             {
@@ -101,25 +101,25 @@ namespace LuaDec.Decompile.Expression
                         }
                     }
                 }
-                output.print("{");
+                output.WriteString("{");
                 if (lineBreak)
                 {
-                    output.println();
-                    output.indent();
+                    output.WriteLine();
+                    output.Indent();
                 }
                 printEntry(d, 0, output);
                 if (!entries[0].value.isMultiple())
                 {
                     for (int index = 1; index < entries.Count; index++)
                     {
-                        output.print(",");
+                        output.WriteString(",");
                         if (lineBreak)
                         {
-                            output.println();
+                            output.WriteLine();
                         }
                         else
                         {
-                            output.print(" ");
+                            output.WriteString(" ");
                         }
                         printEntry(d, index, output);
                         if (entries[index].value.isMultiple())
@@ -130,10 +130,10 @@ namespace LuaDec.Decompile.Expression
                 }
                 if (lineBreak)
                 {
-                    output.println();
-                    output.dedent();
+                    output.WriteLine();
+                    output.Dedent();
                 }
-                output.print("}");
+                output.WriteString("}");
             }
         }
 
@@ -158,15 +158,15 @@ namespace LuaDec.Decompile.Expression
             }
             else if (entry.hash)
             {
-                output.print(key.asName());
-                output.print(" = ");
+                output.WriteString(key.asName());
+                output.WriteString(" = ");
                 value.print(d, output);
             }
             else
             {
-                output.print("[");
+                output.WriteString("[");
                 key.printBraced(d, output);
-                output.print("] = ");
+                output.WriteString("] = ");
                 value.print(d, output);
             }
         }

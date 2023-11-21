@@ -39,14 +39,14 @@ namespace LuaDec.Decompile
         {
             if (parent == null)
             {
-                output.println(".version\t" + function.header.version.Name);
-                output.println();
+                output.WriteLine(".version\t" + function.header.version.Name);
+                output.WriteLine();
 
                 foreach (Directive directive in function.header.headerType.get_directives())
                 {
                     directive.disassemble(output, function.header, function.header.lheader);
                 }
-                output.println();
+                output.WriteLine();
 
                 if (function.header.opmap != function.header.version.OpcodeMap)
                 {
@@ -56,10 +56,10 @@ namespace LuaDec.Decompile
                         Op op = opmap.get(opcode);
                         if (op != null)
                         {
-                            output.println(Directive.OP.Token + "\t" + opcode + "\t" + op.Name);
+                            output.WriteLine(Directive.OP.Token + "\t" + opcode + "\t" + op.Name);
                         }
                     }
-                    output.println();
+                    output.WriteLine();
                 }
             }
 
@@ -72,23 +72,23 @@ namespace LuaDec.Decompile
             {
                 fullname = parent + "/" + name;
             }
-            output.println(".function\t" + fullname);
-            output.println();
+            output.WriteLine(".function\t" + fullname);
+            output.WriteLine();
 
             foreach (Directive directive in function.header.functionType.get_directives())
             {
                 directive.disassemble(output, function.header, function);
             }
-            output.println();
+            output.WriteLine();
 
             if (function.locals.Length > 0)
             {
                 for (int local = 1; local <= function.locals.Length; local++)
                 {
                     LLocal l = function.locals[local - 1];
-                    output.println(".local\t" + l.name.ToPrintable() + "\t" + l.start + "\t" + l.end);
+                    output.WriteLine(".local\t" + l.name.ToPrintable() + "\t" + l.start + "\t" + l.end);
                 }
-                output.println();
+                output.WriteLine();
             }
 
             if (function.upvalues.Length > 0)
@@ -96,18 +96,18 @@ namespace LuaDec.Decompile
                 for (int upvalue = 1; upvalue <= function.upvalues.Length; upvalue++)
                 {
                     LUpvalue u = function.upvalues[upvalue - 1];
-                    output.println(".upvalue\t" + StringUtils.toPrintString(u.name) + "\t" + u.idx + "\t" + u.instack);
+                    output.WriteLine(".upvalue\t" + StringUtils.toPrintString(u.name) + "\t" + u.idx + "\t" + u.instack);
                 }
-                output.println();
+                output.WriteLine();
             }
 
             if (function.constants.Length > 0)
             {
                 for (int constant = 1; constant <= function.constants.Length; constant++)
                 {
-                    output.println(".constant\tk" + (constant - 1) + "\t" + function.constants[constant - 1].ToPrintable());
+                    output.WriteLine(".constant\tk" + (constant - 1) + "\t" + function.constants[constant - 1].ToPrintable());
                 }
-                output.println();
+                output.WriteLine();
             }
 
             bool[] label = new bool[function.code.Length];
@@ -130,16 +130,16 @@ namespace LuaDec.Decompile
             {
                 if (label[line - 1])
                 {
-                    output.println(".label\t" + "l" + line);
+                    output.WriteLine(".label\t" + "l" + line);
                 }
                 if (function.absLineInfo != null && abslineinfoindex < function.absLineInfo.Length && function.absLineInfo[abslineinfoindex].pc == line - 1)
                 {
                     LAbsLineInfo info = function.absLineInfo[abslineinfoindex++];
-                    output.println(".abslineinfo\t" + info.pc + "\t" + info.line);
+                    output.WriteLine(".abslineinfo\t" + info.pc + "\t" + info.line);
                 }
                 if (line <= function.lines.Length)
                 {
-                    output.print(".line\t" + function.lines[line - 1] + "\t");
+                    output.WriteString(".line\t" + function.lines[line - 1] + "\t");
                 }
                 Op op = code.GetOp(line);
                 string cpLabel = null;
@@ -153,11 +153,11 @@ namespace LuaDec.Decompile
                 }
                 if (op == null)
                 {
-                    output.println(Op.defaultTostring(code.codepoint(line), function.header.version, code.getExtractor()));
+                    output.WriteLine(Op.defaultTostring(code.codepoint(line), function.header.version, code.getExtractor()));
                 }
                 else
                 {
-                    output.println(op.codePointTostring(code.codepoint(line), code.getExtractor(), cpLabel));
+                    output.WriteLine(op.codePointTostring(code.codepoint(line), code.getExtractor(), cpLabel));
                 }
                 //output.println("\t" + code.opcode(line) + " " + code.A(line) + " " + code.B(line) + " " + code.C(line) + " " + code.Bx(line) + " " + code.sBx(line) + " " + code.codepoint(line));
             }
@@ -166,19 +166,19 @@ namespace LuaDec.Decompile
                 if (function.absLineInfo != null && abslineinfoindex < function.absLineInfo.Length && function.absLineInfo[abslineinfoindex].pc == line - 1)
                 {
                     LAbsLineInfo info = function.absLineInfo[abslineinfoindex++];
-                    output.println(".abslineinfo\t" + info.pc + "\t" + info.line);
+                    output.WriteLine(".abslineinfo\t" + info.pc + "\t" + info.line);
                 }
-                output.println(".line\t" + function.lines[line - 1]);
+                output.WriteLine(".line\t" + function.lines[line - 1]);
             }
             if (function.absLineInfo != null)
             {
                 while (abslineinfoindex < function.absLineInfo.Length)
                 {
                     LAbsLineInfo info = function.absLineInfo[abslineinfoindex++];
-                    output.println(".abslineinfo\t" + info.pc + "\t" + info.line);
+                    output.WriteLine(".abslineinfo\t" + info.pc + "\t" + info.line);
                 }
             }
-            output.println();
+            output.WriteLine();
 
             int subindex = 0;
             foreach (LFunction child in function.functions)

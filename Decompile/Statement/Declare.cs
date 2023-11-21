@@ -19,12 +19,12 @@ namespace LuaDec.Decompile.Statement
         }
         public override void print(Decompiler d, Output output)
         {
-            output.print("local ");
-            output.print(decls[0].name);
+            output.WriteString("local ");
+            output.WriteString(decls[0].name);
             for (int i = 1; i < decls.Count; i++)
             {
-                output.print(", ");
-                output.print(decls[i].name);
+                output.WriteString(", ");
+                output.WriteString(decls[i].name);
             }
         }
     }

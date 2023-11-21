@@ -57,31 +57,31 @@ namespace LuaDec.Decompile.Block
         {
             if (repeat)
             {
-                output.println("repeat");
+                output.WriteLine("repeat");
             }
             else
             {
-                output.print("while ");
+                output.WriteString("while ");
                 if (condition == null)
                 {
-                    output.print("true");
+                    output.WriteString("true");
                 }
                 else
                 {
                     condition.print(d, output);
                 }
-                output.println(" do");
+                output.WriteLine(" do");
             }
-            output.indent();
+            output.Indent();
             IStatement.printSequence(d, output, statements);
-            output.dedent();
+            output.Dedent();
             if (repeat)
             {
-                output.print("until false");
+                output.WriteString("until false");
             }
             else
             {
-                output.print("end");
+                output.WriteString("end");
             }
         }
 

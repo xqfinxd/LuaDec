@@ -139,7 +139,7 @@ namespace LuaDec
                     {
                         if (i + 1 < args.Length)
                         {
-                            config.Opmap = args[i + 1];
+                            config.OpMapFile = args[i + 1];
                             i++;
                         }
                         else
@@ -182,7 +182,7 @@ namespace LuaDec
                         }
                         Decompiler d = new Decompiler(lmain);
                         Decompiler.State result = d.decompile();
-                        d.print(result, config.getOutput());
+                        d.print(result, config.GetOutput());
                         break;
                     }
                     case Configuration.OpMode.Disassemble:
@@ -197,7 +197,7 @@ namespace LuaDec
                             Error(e.Message, false);
                         }
                         Disassembler d = new Disassembler(lmain);
-                        d.disassemble(config.getOutput());
+                        d.disassemble(config.GetOutput());
                         break;
                     }
                     case Configuration.OpMode.Assemble:

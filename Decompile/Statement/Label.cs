@@ -19,7 +19,7 @@ namespace LuaDec.Decompile.Statement
         }
         public override void print(Decompiler d, Output output)
         {
-            output.print("::" + name + "::");
+            output.WriteString("::" + name + "::");
         }
     }
 }

@@ -67,14 +67,14 @@ namespace LuaDec.Decompile.Expression
         public override void print(Decompiler outer, Output output)
         {
             Decompiler d = new Decompiler(function, outer.declList, upvalueLine);
-            output.print("function");
+            output.WriteString("function");
             printMain(output, d, true);
         }
 
         public override void printClosure(Decompiler outer, Output output, ITarget name)
         {
             Decompiler d = new Decompiler(function, outer.declList, upvalueLine);
-            output.print("function ");
+            output.WriteString("function ");
             if (function.numParams >= 1 && d.declList[0].name == "self" && name is TableTarget)
             {
                 name.printMethod(outer, output);
@@ -89,14 +89,14 @@ namespace LuaDec.Decompile.Expression
 
         private void printMain(Output output, Decompiler d, bool includeFirst)
         {
-            output.print("(");
+            output.WriteString("(");
             int start = includeFirst ? 0 : 1;
             if (function.numParams > start)
             {
                 new VariableTarget(d.declList[start]).print(d, output, false);
                 for (int i = start + 1; i < function.numParams; i++)
                 {
-                    output.print(", ");
+                    output.WriteString(", ");
                     new VariableTarget(d.declList[i]).print(d, output, false);
                 }
             }
@@ -104,20 +104,20 @@ namespace LuaDec.Decompile.Expression
             {
                 if (function.numParams > start)
                 {
-                    output.print(", ...");
+                    output.WriteString(", ...");
                 }
                 else
                 {
-                    output.print("...");
+                    output.WriteString("...");
                 }
             }
-            output.print(")");
-            output.println();
-            output.indent();
+            output.WriteString(")");
+            output.WriteLine();
+            output.Indent();
             Decompiler.State result = d.decompile();
             d.print(result, output);
-            output.dedent();
-            output.print("end");
+            output.Dedent();
+            output.WriteString("end");
             //output.println(); //This is an extra space for formatting
         }
 

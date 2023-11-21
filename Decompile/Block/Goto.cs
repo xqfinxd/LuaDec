@@ -57,7 +57,7 @@ namespace LuaDec.Decompile.Block
 
         public override void print(Decompiler d, Output output)
         {
-            output.print("goto lbl_" + target);
+            output.WriteString("goto lbl_" + target);
         }
 
     }

@@ -49,20 +49,20 @@ namespace LuaDec.Decompile.Block
         public override void print(Decompiler d, Output output)
         {
             if (statements.Count == 1 && statements[0] is IfThenEndBlock) {
-                output.print("else");
+                output.WriteString("else");
                 statements[0].print(d, output);
             } else if (statements.Count == 2 && statements[0] is IfThenElseBlock && statements[1] is ElseEndBlock) {
-                output.print("else");
+                output.WriteString("else");
                 statements[0].print(d, output);
                 statements[1].print(d, output);
             } else
             {
-                output.print("else");
-                output.println();
-                output.indent();
+                output.WriteString("else");
+                output.WriteLine();
+                output.Indent();
                 printSequence(d, output, statements);
-                output.dedent();
-                output.print("end");
+                output.Dedent();
+                output.WriteString("end");
             }
         }
 

@@ -14,7 +14,7 @@ namespace LuaDec.Decompile.Statement
                 IStatement stmt = stmts[i];
                 if (stmt.beginsWithParen() && (i > 0 || d.getVersion().allowPreceedingSemicolon.Value))
                 {
-                    output.print(";");
+                    output.WriteString(";");
                 }
                 if (last)
                 {
@@ -26,7 +26,7 @@ namespace LuaDec.Decompile.Statement
                 }
                 if (!stmt.suppressNewline())
                 {
-                    output.println();
+                    output.WriteLine();
                 }
             }
         }

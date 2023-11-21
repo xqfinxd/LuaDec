@@ -50,12 +50,12 @@ namespace LuaDec.Decompile.Expression
         {
             if (!multiple)
             {
-                output.print("(");
+                output.WriteString("(");
             }
             print(d, output);
             if (!multiple)
             {
-                output.print(")");
+                output.WriteString(")");
             }
         }
 
@@ -85,16 +85,16 @@ namespace LuaDec.Decompile.Expression
                 IExpression obj = function.getTable();
                 if (obj.isUngrouped())
                 {
-                    output.print("(");
+                    output.WriteString("(");
                     obj.print(d, output);
-                    output.print(")");
+                    output.WriteString(")");
                 }
                 else
                 {
                     obj.print(d, output);
                 }
-                output.print(":");
-                output.print(function.getField());
+                output.WriteString(":");
+                output.WriteString(function.getField());
                 for (int i = 1; i < arguments.Length; i++)
                 {
                     args.Add(arguments[i]);
@@ -104,9 +104,9 @@ namespace LuaDec.Decompile.Expression
             {
                 if (function.isUngrouped())
                 {
-                    output.print("(");
+                    output.WriteString("(");
                     function.print(d, output);
-                    output.print(")");
+                    output.WriteString(")");
                 }
                 else
                 {
@@ -117,9 +117,9 @@ namespace LuaDec.Decompile.Expression
                     args.Add(arguments[i]);
                 }
             }
-            output.print("(");
+            output.WriteString("(");
             IExpression.printSequence(d, output, args, false, true);
-            output.print(")");
+            output.WriteString(")");
         }
 
     }

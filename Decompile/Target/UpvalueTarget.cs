@@ -20,7 +20,7 @@ namespace LuaDec.Decompile.Target
 
         public override void print(Decompiler d, Output output, bool declare)
         {
-            output.print(name);
+            output.WriteString(name);
         }
 
         public override void printMethod(Decompiler d, Output output)

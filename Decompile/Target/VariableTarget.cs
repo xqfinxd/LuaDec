@@ -20,10 +20,10 @@ namespace LuaDec.Decompile.Target
 
         public override void print(Decompiler d, Output output, bool declare)
         {
-            output.print(decl.name);
+            output.WriteString(decl.name);
             if (declare && decl.tbc)
             {
-                output.print(" <close>");
+                output.WriteString(" <close>");
             }
         }
 

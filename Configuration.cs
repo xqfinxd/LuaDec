@@ -20,14 +20,14 @@ namespace LuaDec
         }
 
         private OpMode mode;
-        private string opmap;
+        private string opMapFile;
         private string output;
         private bool rawString;
         private bool strictScope;
         private VariableMode variable;
 
         public OpMode Mode { get => mode; set => mode = value; }
-        public string Opmap { get => opmap; set => opmap = value; }
+        public string OpMapFile { get => opMapFile; set => opMapFile = value; }
         public string Output { get => output; set => output = value; }
         public bool RawString { get => rawString; set => rawString = value; }
         public bool StrictScope { get => strictScope; set => strictScope = value; }
@@ -39,7 +39,7 @@ namespace LuaDec
             Mode = OpMode.Decompile;
             Variable = VariableMode.Default;
             StrictScope = false;
-            Opmap = null;
+            OpMapFile = null;
             Output = null;
         }
 
@@ -49,11 +49,11 @@ namespace LuaDec
             Mode = other.Mode;
             Variable = other.Variable;
             StrictScope = other.StrictScope;
-            Opmap = other.Opmap;
+            OpMapFile = other.OpMapFile;
             Output = other.Output;
         }
 
-        public Output getOutput()
+        public Output GetOutput()
         {
             if (Output != null)
             {

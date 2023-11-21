@@ -38,9 +38,9 @@ namespace LuaDec.Decompile.Expression
             {
                 if (table.isUngrouped())
                 {
-                    output.print("(");
+                    output.WriteString("(");
                     table.print(d, output);
-                    output.print(")");
+                    output.WriteString(")");
                 }
                 else
                 {
@@ -51,15 +51,15 @@ namespace LuaDec.Decompile.Expression
             {
                 if (!isGlobal)
                 {
-                    output.print(".");
+                    output.WriteString(".");
                 }
-                output.print(index.asName());
+                output.WriteString(index.asName());
             }
             else
             {
-                output.print("[");
+                output.WriteString("[");
                 index.printBraced(d, output);
-                output.print("]");
+                output.WriteString("]");
             }
         }
 

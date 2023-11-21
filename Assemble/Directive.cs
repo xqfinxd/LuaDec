@@ -95,36 +95,36 @@ namespace LuaDec.Assemble
 
         public void disassemble(Output output, BHeader chunk, LHeader header)
         {
-            output.print(Token + "\t");
+            output.WriteString(Token + "\t");
             switch (value)
             {
-                case DirectiveT.FORMAT: output.println(header.format.ToString()); break;
-                case DirectiveT.ENDIANNESS: output.println(header.endianness.ToString()); break;
-                case DirectiveT.INT_SIZE: output.println(header.intT.getSize().ToString()); break;
-                case DirectiveT.SIZE_T_SIZE: output.println(header.sizeT.getSize().ToString()); break;
-                case DirectiveT.INSTRUCTION_SIZE: output.println("4"); break;
-                case DirectiveT.SIZE_OP: output.println(header.extractor.op.size.ToString()); break;
-                case DirectiveT.SIZE_A: output.println(header.extractor.A.size.ToString()); break;
-                case DirectiveT.SIZE_B: output.println(header.extractor.B.size.ToString()); break;
-                case DirectiveT.SIZE_C: output.println(header.extractor.C.size.ToString()); break;
-                case DirectiveT.NUMBER_FORMAT: output.println((header.numberT.integral ? "int" : "float") + "\t" + header.numberT.size.ToString()); break;
-                case DirectiveT.INT_FORMAT: output.println(header.longT.size.ToString()); break;
-                case DirectiveT.FLOAT_FORMAT: output.println(header.doubleT.size.ToString()); break;
+                case DirectiveT.FORMAT: output.WriteLine(header.format.ToString()); break;
+                case DirectiveT.ENDIANNESS: output.WriteLine(header.endianness.ToString()); break;
+                case DirectiveT.INT_SIZE: output.WriteLine(header.intT.getSize().ToString()); break;
+                case DirectiveT.SIZE_T_SIZE: output.WriteLine(header.sizeT.getSize().ToString()); break;
+                case DirectiveT.INSTRUCTION_SIZE: output.WriteLine("4"); break;
+                case DirectiveT.SIZE_OP: output.WriteLine(header.extractor.op.size.ToString()); break;
+                case DirectiveT.SIZE_A: output.WriteLine(header.extractor.A.size.ToString()); break;
+                case DirectiveT.SIZE_B: output.WriteLine(header.extractor.B.size.ToString()); break;
+                case DirectiveT.SIZE_C: output.WriteLine(header.extractor.C.size.ToString()); break;
+                case DirectiveT.NUMBER_FORMAT: output.WriteLine((header.numberT.integral ? "int" : "float") + "\t" + header.numberT.size.ToString()); break;
+                case DirectiveT.INT_FORMAT: output.WriteLine(header.longT.size.ToString()); break;
+                case DirectiveT.FLOAT_FORMAT: output.WriteLine(header.doubleT.size.ToString()); break;
                 default: throw new System.InvalidOperationException();
             }
         }
 
         public void disassemble(Output output, BHeader chunk, LFunction function)
         {
-            output.print(this.Token + "\t");
+            output.WriteString(this.Token + "\t");
             switch (value)
             {
-                case DirectiveT.SOURCE: output.println(function.name.ToPrintable()); break;
-                case DirectiveT.LINEDEFINED: output.println(function.lineDefined.ToString()); break;
-                case DirectiveT.LASTLINEDEFINED: output.println(function.lastLineDefined.ToString()); break;
-                case DirectiveT.NUMPARAMS: output.println(function.numParams.ToString()); break;
-                case DirectiveT.IS_VARARG: output.println(function.varArg.ToString()); break;
-                case DirectiveT.MAXSTACKSIZE: output.println(function.maximumStackSize.ToString()); break;
+                case DirectiveT.SOURCE: output.WriteLine(function.name.ToPrintable()); break;
+                case DirectiveT.LINEDEFINED: output.WriteLine(function.lineDefined.ToString()); break;
+                case DirectiveT.LASTLINEDEFINED: output.WriteLine(function.lastLineDefined.ToString()); break;
+                case DirectiveT.NUMPARAMS: output.WriteLine(function.numParams.ToString()); break;
+                case DirectiveT.IS_VARARG: output.WriteLine(function.varArg.ToString()); break;
+                case DirectiveT.MAXSTACKSIZE: output.WriteLine(function.maximumStackSize.ToString()); break;
                 default: throw new System.InvalidOperationException();
             }
         }

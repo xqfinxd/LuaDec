@@ -31,12 +31,12 @@ namespace LuaDec.Decompile.Expression
         public override void print(Decompiler d, Output output)
         {
             //output.print("...");
-            output.print(multiple ? "..." : "(...)");
+            output.WriteString(multiple ? "..." : "(...)");
         }
 
         public override void printMultiple(Decompiler d, Output output)
         {
-            output.print(multiple ? "..." : "(...)");
+            output.WriteString(multiple ? "..." : "(...)");
         }
 
         public override bool isMultiple()

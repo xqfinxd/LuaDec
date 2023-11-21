@@ -19,7 +19,7 @@ namespace LuaDec.Assemble
             b = new StringBuilder();
         }
 
-        public String next()
+        public string next()
         {
             b.Length = 0;
 

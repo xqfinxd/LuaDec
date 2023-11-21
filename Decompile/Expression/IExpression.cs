@@ -130,14 +130,14 @@ namespace LuaDec.Decompile.Expression
                 else
                 {
                     expr.print(d, output);
-                    output.print(",");
+                    output.WriteString(",");
                     if (linebreak)
                     {
-                        output.println();
+                        output.WriteLine();
                     }
                     else
                     {
-                        output.print(" ");
+                        output.WriteString(" ");
                     }
                 }
                 i++;
@@ -153,16 +153,16 @@ namespace LuaDec.Decompile.Expression
 
         protected static void printUnary(Decompiler d, Output output, String op, IExpression expression)
         {
-            output.print(op);
+            output.WriteString(op);
             expression.print(d, output);
         }
 
         protected static void printBinary(Decompiler d, Output output, String op, IExpression left, IExpression right)
         {
             left.print(d, output);
-            output.print(" ");
-            output.print(op);
-            output.print(" ");
+            output.WriteString(" ");
+            output.WriteString(op);
+            output.WriteString(" ");
             right.print(d, output);
         }
 

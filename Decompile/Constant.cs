@@ -80,13 +80,13 @@ namespace LuaDec.Decompile
         switch (type)
         {
             case Type.NIL:
-                output.print("nil");
+                output.WriteString("nil");
                 break;
             case Type.BOOL:
-                output.print(boolValue ? "true" : "false");
+                output.WriteString(boolValue ? "true" : "false");
                 break;
             case Type.NUMBER:
-                output.print(numberValue.ToPrintable());
+                output.WriteString(numberValue.ToPrintable());
                 break;
             case Type.STRING:
                 int newlines = 0;
@@ -125,21 +125,21 @@ namespace LuaDec.Decompile
                         startPipestring = pipestring;
                         pipestring += "]";
                     }
-                    if (braced) output.print("(");
-                    output.print("[");
-                    while (pipe-- > 0) output.print("=");
-                    output.print("[");
-                    int indent = output.getIndentationLevel();
-                    output.setIndentationLevel(0);
-                    output.println();
-                    output.print(stringValue);
-                    output.print(pipestring);
-                    if (braced) output.print(")");
-                    output.setIndentationLevel(indent);
+                    if (braced) output.WriteString("(");
+                    output.WriteString("[");
+                    while (pipe-- > 0) output.WriteString("=");
+                    output.WriteString("[");
+                    int indent = output.IndentLevel;
+                    output.IndentLevel = 0;
+                    output.WriteLine();
+                    output.WriteString(stringValue);
+                    output.WriteString(pipestring);
+                    if (braced) output.WriteString(")");
+                    output.IndentLevel = indent;
                 }
                 else
                 {
-                    output.print("\"");
+                    output.WriteString("\"");
                     for (int i = 0; i < stringValue.Length; i++)
                     {
                         char c = stringValue[i];
@@ -147,62 +147,62 @@ namespace LuaDec.Decompile
                         {
                             if (c == 7)
                             {
-                                output.print("\\a");
+                                output.WriteString("\\a");
                             }
                             else if (c == 8)
                             {
-                                output.print("\\b");
+                                output.WriteString("\\b");
                             }
                             else if (c == 12)
                             {
-                                output.print("\\f");
+                                output.WriteString("\\f");
                             }
                             else if (c == 10)
                             {
-                                output.print("\\n");
+                                output.WriteString("\\n");
                             }
                             else if (c == 13)
                             {
-                                output.print("\\r");
+                                output.WriteString("\\r");
                             }
                             else if (c == 9)
                             {
-                                output.print("\\t");
+                                output.WriteString("\\t");
                             }
                             else if (c == 11)
                             {
-                                output.print("\\v");
+                                output.WriteString("\\v");
                             }
                             else if (!rawstring || c <= 127)
                             {
                                 string dec = c.ToString();
                                 int len = dec.Length;
-                                output.print("\\");
+                                output.WriteString("\\");
                                 while (len++ < 3)
                                 {
-                                    output.print("0");
+                                    output.WriteString("0");
                                 }
-                                output.print(dec);
+                                output.WriteString(dec);
                             }
                             else
                             {
-                                output.print((byte)c);
+                                output.WriteByte((byte)c);
                             }
                         }
                         else if (c == 34)
                         {
-                            output.print("\\\"");
+                            output.WriteString("\\\"");
                         }
                         else if (c == 92)
                         {
-                            output.print("\\\\");
+                            output.WriteString("\\\\");
                         }
                         else
                         {
-                            output.print(c.ToString());
+                            output.WriteString(c.ToString());
                         }
                     }
-                    output.print("\"");
+                    output.WriteString("\"");
                 }
                 break;
             default:

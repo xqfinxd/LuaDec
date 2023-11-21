@@ -148,14 +148,14 @@ namespace LuaDec.Decompile.Block
 
         public override void print(Decompiler d, Output output)
         {
-            output.print("if ");
+            output.WriteString("if ");
             condexpr.print(d, output);
-            output.print(" then");
-            output.println();
-            output.indent();
+            output.WriteString(" then");
+            output.WriteLine();
+            output.Indent();
             printSequence(d, output, statements);
-            output.dedent();
-            output.print("end");
+            output.Dedent();
+            output.WriteString("end");
         }
     }
 }

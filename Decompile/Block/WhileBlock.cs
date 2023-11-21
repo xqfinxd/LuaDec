@@ -45,14 +45,14 @@ namespace LuaDec.Decompile.Block
 
         public override void print(Decompiler d, Output output)
         {
-            output.print("while ");
+            output.WriteString("while ");
             condexpr.print(d, output);
-            output.print(" do");
-            output.println();
-            output.indent();
+            output.WriteString(" do");
+            output.WriteLine();
+            output.Indent();
             IStatement.printSequence(d, output, statements);
-            output.dedent();
-            output.print("end");
+            output.Dedent();
+            output.WriteString("end");
         }
 
     }

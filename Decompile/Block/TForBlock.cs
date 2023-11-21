@@ -176,26 +176,26 @@ namespace LuaDec.Decompile.Block
 
         public override void print(Decompiler d, Output output)
         {
-            output.print("for ");
+            output.WriteString("for ");
             targets[0].print(d, output, false);
             for (int i = 1; i < targets.Length; i++)
             {
-                output.print(", ");
+                output.WriteString(", ");
                 targets[i].print(d, output, false);
             }
-            output.print(" in ");
+            output.WriteString(" in ");
             values[0].print(d, output);
             for (int i = 1; i < values.Length; i++)
             {
-                output.print(", ");
+                output.WriteString(", ");
                 values[i].print(d, output);
             }
-            output.print(" do");
-            output.println();
-            output.indent();
+            output.WriteString(" do");
+            output.WriteLine();
+            output.Indent();
             IStatement.printSequence(d, output, statements);
-            output.dedent();
-            output.print("end");
+            output.Dedent();
+            output.WriteString("end");
         }
 
     }

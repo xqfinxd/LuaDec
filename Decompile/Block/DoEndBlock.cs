@@ -38,11 +38,11 @@ namespace LuaDec.Decompile.Block
 
         public override void print(Decompiler d, Output output)
         {
-            output.println("do");
-            output.indent();
+            output.WriteLine("do");
+            output.Indent();
             printSequence(d, output, statements);
-            output.dedent();
-            output.print("end");
+            output.Dedent();
+            output.WriteString("end");
         }
 
     }

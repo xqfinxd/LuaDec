@@ -85,21 +85,21 @@ namespace LuaDec.Decompile.Block
 
         public override void print(Decompiler d, Output output)
         {
-            output.print("if ");
+            output.WriteString("if ");
             condexpr.print(d, output);
-            output.print(" then");
-            output.println();
-            output.indent();
+            output.WriteString(" then");
+            output.WriteLine();
+            output.Indent();
 
             IStatement.printSequence(d, output, statements);
 
-            output.dedent();
+            output.Dedent();
 
             // Handle the "empty else" case
             if (end == elseTarget)
             {
-                output.println("else");
-                output.println("end");
+                output.WriteLine("else");
+                output.WriteLine("end");
             }
 
         }

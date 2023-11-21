@@ -54,15 +54,15 @@ namespace LuaDec.Decompile.Expression
         {
             bool leftGroup = LeftGroup();
             bool rightGroup = RightGroup();
-            if (leftGroup) output.print("(");
+            if (leftGroup) output.WriteString("(");
             left.print(d, output);
-            if (leftGroup) output.print(")");
-            output.print(" ");
-            output.print(op);
-            output.print(" ");
-            if (rightGroup) output.print("(");
+            if (leftGroup) output.WriteString(")");
+            output.WriteString(" ");
+            output.WriteString(op);
+            output.WriteString(" ");
+            if (rightGroup) output.WriteString("(");
             right.print(d, output);
-            if (rightGroup) output.print(")");
+            if (rightGroup) output.WriteString(")");
         }
 
         public string getOp()

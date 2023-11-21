@@ -33,11 +33,11 @@ namespace LuaDec.Decompile.Block
 
         public override void print(Decompiler d, Output output)
         {
-            output.println("repeat");
-            output.indent();
+            output.WriteLine("repeat");
+            output.Indent();
             printSequence(d, output, statements);
-            output.dedent();
-            output.print("until true");
+            output.Dedent();
+            output.WriteString("until true");
         }
 
     }

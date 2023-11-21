@@ -31,10 +31,10 @@
 
         public override void print(Decompiler d, Output output)
         {
-            output.print(op);
-            if (precedence > expression.precedence) output.print("(");
+            output.WriteString(op);
+            if (precedence > expression.precedence) output.WriteString("(");
             expression.print(d, output);
-            if (precedence > expression.precedence) output.print(")");
+            if (precedence > expression.precedence) output.WriteString(")");
         }
 
     }

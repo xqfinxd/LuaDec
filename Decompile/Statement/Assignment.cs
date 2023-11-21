@@ -209,7 +209,7 @@ namespace LuaDec.Decompile.Statement
             {
                 if (declare)
                 {
-                    output.print("local ");
+                    output.WriteString("local ");
                 }
 
                 bool functionSugar = false;
@@ -231,12 +231,12 @@ namespace LuaDec.Decompile.Statement
                     targets[0].print(d, output, declare);
                     for (int i = 1; i < targets.Count; i++)
                     {
-                        output.print(", ");
+                        output.WriteString(", ");
                         targets[i].print(d, output, declare);
                     }
                     if (!declare || !allnil)
                     {
-                        output.print(" = ");
+                        output.WriteString(" = ");
 
                         List<IExpression> expressions = new List<IExpression>();
 
@@ -283,8 +283,8 @@ namespace LuaDec.Decompile.Statement
                 }
                 if (comment != null)
                 {
-                    output.print(" -- ");
-                    output.print(comment);
+                    output.WriteString(" -- ");
+                    output.WriteString(comment);
                 }
             }
         }
