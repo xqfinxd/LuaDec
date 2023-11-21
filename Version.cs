@@ -116,7 +116,7 @@ namespace LuaDec
 
         private readonly string _name;
 
-        private readonly OpcodeMap _opcodeMap;
+        private readonly OpCodeMap _opcodeMap;
 
         private readonly HashSet<string> _reservedWords;
 
@@ -168,7 +168,7 @@ namespace LuaDec
 
         public string Name => _name;
 
-        public OpcodeMap OpcodeMap => _opcodeMap;
+        public OpCodeMap OpcodeMap => _opcodeMap;
 
         public int VersionMajor => _major;
 
@@ -365,7 +365,7 @@ namespace LuaDec
             _lconstantType = LConstantType.get(constantType);
             _lupvalueType = LUpvalueType.get(upvalueType);
             _lfunctionType = LFunctionType.get(functionType);
-            _opcodeMap = new OpcodeMap(opcodeMap);
+            _opcodeMap = new OpCodeMap(opcodeMap);
         }
         public static Version GetVersion(int major, int minor)
         {

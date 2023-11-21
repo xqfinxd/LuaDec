@@ -5,7 +5,6 @@ namespace LuaDec.Decompile.Statement
 {
     public class Return : IStatement
     {
-
         private IExpression[] values;
 
         public Return()
@@ -22,15 +21,6 @@ namespace LuaDec.Decompile.Statement
         public Return(IExpression[] values)
         {
             this.values = values;
-        }
-
-        public override void walk(Walker w)
-        {
-            w.visitStatement(this);
-            foreach (IExpression expression in values)
-            {
-                expression.walk(w);
-            }
         }
 
         public override void print(Decompiler d, Output output)
@@ -55,6 +45,13 @@ namespace LuaDec.Decompile.Statement
             }
         }
 
+        public override void walk(Walker w)
+        {
+            w.VisitStatement(this);
+            foreach (IExpression expression in values)
+            {
+                expression.walk(w);
+            }
+        }
     }
-
 }

@@ -22,7 +22,7 @@ namespace LuaDec.Decompile.Statement
 
         public override void walk(Walker w)
         {
-            w.visitStatement(this);
+            w.VisitStatement(this);
             foreach (ITarget target in targets)
             {
                 target.walk(w);

@@ -23,7 +23,7 @@ namespace LuaDec.Decompile.Expression
 
         public override void walk(Walker w)
         {
-            w.visitExpression(this);
+            w.VisitExpression(this);
         }
 
         public override int getConstantIndex()
@@ -66,16 +66,16 @@ namespace LuaDec.Decompile.Expression
 
         public override void print(Decompiler outer, Output output)
         {
-            Decompiler d = new Decompiler(function, outer.declList, upvalueLine);
+            Decompiler d = new Decompiler(function, outer.declarations, upvalueLine);
             output.WriteString("function");
             printMain(output, d, true);
         }
 
         public override void printClosure(Decompiler outer, Output output, ITarget name)
         {
-            Decompiler d = new Decompiler(function, outer.declList, upvalueLine);
+            Decompiler d = new Decompiler(function, outer.declarations, upvalueLine);
             output.WriteString("function ");
-            if (function.numParams >= 1 && d.declList[0].name == "self" && name is TableTarget)
+            if (function.numParams >= 1 && d.declarations[0].name == "self" && name is TableTarget)
             {
                 name.printMethod(outer, output);
                 printMain(output, d, false);
@@ -93,11 +93,11 @@ namespace LuaDec.Decompile.Expression
             int start = includeFirst ? 0 : 1;
             if (function.numParams > start)
             {
-                new VariableTarget(d.declList[start]).print(d, output, false);
+                new VariableTarget(d.declarations[start]).print(d, output, false);
                 for (int i = start + 1; i < function.numParams; i++)
                 {
                     output.WriteString(", ");
-                    new VariableTarget(d.declList[i]).print(d, output, false);
+                    new VariableTarget(d.declarations[i]).print(d, output, false);
                 }
             }
             if (function.varArg != 0)

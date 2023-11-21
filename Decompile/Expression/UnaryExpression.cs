@@ -15,7 +15,7 @@
 
         public override void walk(Walker w)
         {
-            w.visitExpression(this);
+            w.VisitExpression(this);
             expression.walk(w);
         }
 

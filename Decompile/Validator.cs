@@ -12,7 +12,7 @@ namespace LuaDec.Decompile
 		public static void process(Decompiler d)
 		{
 			Code code = d.code;
-			for (int line = 1; line <= code.length; line++)
+			for (int line = 1; line <= code.Length; line++)
 			{
 				switch (code.GetOp(line).Type)
 				{

@@ -613,7 +613,7 @@ namespace LuaDec.Assemble
                         }
                         int opcode = a.getInteger();
                         string name = a.getName();
-                        Op op = version.OpcodeMap.get(name);
+                        Op op = version.OpcodeMap.GetOpByName(name);
                         if (op == null)
                         {
                             throw new AssemblerException("Unknown op name \"" + name + "\"");
@@ -883,10 +883,10 @@ namespace LuaDec.Assemble
                             if (!opinit)
                             {
                                 opinit = true;
-                                OpcodeMap opmap;
+                                OpCodeMap opmap;
                                 if (chunk.useropmap != null)
                                 {
-                                    opmap = new OpcodeMap(chunk.useropmap);
+                                    opmap = new OpCodeMap(chunk.useropmap);
                                 }
                                 else
                                 {
@@ -894,9 +894,9 @@ namespace LuaDec.Assemble
                                 }
                                 oplookup = new Dictionary<string, Op>();
                                 opcodelookup = new Dictionary<Op, int>();
-                                for (int i = 0; i < opmap.size(); i++)
+                                for (int i = 0; i < opmap.Length; i++)
                                 {
-                                    Op op = opmap.get(i);
+                                    Op op = opmap.GetOp(i);
                                     if (op != null)
                                     {
                                         oplookup.Add(op.Name, op);

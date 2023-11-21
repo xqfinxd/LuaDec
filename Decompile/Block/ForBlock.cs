@@ -32,7 +32,7 @@ namespace LuaDec.Decompile.Block
 
         public override void walk(Walker w)
         {
-            w.visitStatement(this);
+            w.VisitStatement(this);
             start.walk(w);
             stop.walk(w);
             step.walk(w);

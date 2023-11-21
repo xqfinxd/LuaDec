@@ -30,7 +30,7 @@ namespace LuaDec.Decompile.Expression
 
         public override void walk(Walker w)
         {
-            w.visitExpression(this);
+            w.VisitExpression(this);
             left.walk(w);
             right.walk(w);
         }

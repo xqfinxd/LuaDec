@@ -21,7 +21,7 @@ namespace LuaDec.Decompile.Expression
 
         public override void walk(Walker w)
         {
-            w.visitExpression(this);
+            w.VisitExpression(this);
             table.walk(w);
             index.walk(w);
         }

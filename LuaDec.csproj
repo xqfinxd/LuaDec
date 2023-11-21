@@ -101,7 +101,7 @@
     <Compile Include="Decompile\FileOutputProvider.cs" />
     <Compile Include="Decompile\Function.cs" />
     <Compile Include="Decompile\Op.cs" />
-    <Compile Include="Decompile\OpcodeMap.cs" />
+    <Compile Include="Decompile\OpCodeMap.cs" />
     <Compile Include="Decompile\OperandFormat.cs" />
     <Compile Include="Decompile\Operation\CallOperation.cs" />
     <Compile Include="Decompile\Operation\GlobalSet.cs" />

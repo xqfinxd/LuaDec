@@ -52,7 +52,7 @@ namespace LuaDec.Decompile.Expression
         public override void walk(Walker w)
         {
             entries.Sort();
-            w.visitExpression(this);
+            w.VisitExpression(this);
             bool lastEntry = false;
             foreach (Entry entry in entries)
             {

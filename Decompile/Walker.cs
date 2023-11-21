@@ -5,12 +5,14 @@ namespace LuaDec.Decompile
 {
     public class Walker
     {
-        public virtual void visitExpression(IExpression expr)
+        public virtual void VisitExpression(IExpression expr)
         {
+            throw new System.NotImplementedException();
         }
 
-        public virtual void visitStatement(IStatement stmt)
+        public virtual void VisitStatement(IStatement stmt)
         {
+            throw new System.NotImplementedException();
         }
     }
 }

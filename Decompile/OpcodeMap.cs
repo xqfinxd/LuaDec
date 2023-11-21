@@ -3,13 +3,14 @@ using System.Collections.Generic;
 
 namespace LuaDec.Decompile
 {
-    public class OpcodeMap
+    public class OpCodeMap
     {
-
-        private Op[] map;
         private Dictionary<string, Op> lookup;
+        private Op[] map;
 
-        public OpcodeMap(Dictionary<int, Op> useropmap)
+        public int Length => map.Length;
+
+        public OpCodeMap(Dictionary<int, Op> useropmap)
         {
             int max = -1;
             foreach (int opcode in useropmap.Keys)
@@ -21,10 +22,10 @@ namespace LuaDec.Decompile
             {
                 map[entry.Key] = entry.Value;
             }
-            setup_lookup(false);
+            SetupLookup(false);
         }
 
-        public OpcodeMap(Version.OpcodeMapType type)
+        public OpCodeMap(Version.OpcodeMapType type)
         {
             switch (type)
             {
@@ -66,6 +67,7 @@ namespace LuaDec.Decompile
                     map[33] = Op.CLOSE;
                     map[34] = Op.CLOSURE;
                     break;
+
                 case Version.OpcodeMapType.Lua51:
                     map = new Op[38];
                     map[0] = Op.MOVE;
@@ -107,6 +109,7 @@ namespace LuaDec.Decompile
                     map[36] = Op.CLOSURE;
                     map[37] = Op.VARARG;
                     break;
+
                 case Version.OpcodeMapType.Lua52:
                     map = new Op[40];
                     map[0] = Op.MOVE;
@@ -150,6 +153,7 @@ namespace LuaDec.Decompile
                     map[38] = Op.VARARG;
                     map[39] = Op.EXTRAARG;
                     break;
+
                 case Version.OpcodeMapType.Lua53:
                     map = new Op[47];
                     map[0] = Op.MOVE;
@@ -200,6 +204,7 @@ namespace LuaDec.Decompile
                     map[45] = Op.VARARG;
                     map[46] = Op.EXTRAARG;
                     break;
+
                 case Version.OpcodeMapType.Lua54:
                     map = new Op[83];
                     map[0] = Op.MOVE;
@@ -286,35 +291,14 @@ namespace LuaDec.Decompile
                     map[81] = Op.VARARGPREP;
                     map[82] = Op.EXTRAARG;
                     break;
+
                 default:
                     throw new System.InvalidOperationException();
             }
-            setup_lookup(true);
+            SetupLookup(true);
         }
 
-        public Op get(int opNumber)
-        {
-            if (opNumber >= 0 && opNumber < map.Length)
-            {
-                return map[opNumber];
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        public Op get(string name)
-        {
-            return lookup[name];
-        }
-
-        public int size()
-        {
-            return map.Length;
-        }
-
-        private void setup_lookup(bool validate)
+        private void SetupLookup(bool validate)
         {
             lookup = new Dictionary<string, Op>();
             for (int i = 0; i < map.Length; i++)
@@ -338,7 +322,21 @@ namespace LuaDec.Decompile
             }
         }
 
+        public Op GetOp(int opNumber)
+        {
+            if (opNumber >= 0 && opNumber < map.Length)
+            {
+                return map[opNumber];
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public Op GetOpByName(string name)
+        {
+            return lookup[name];
+        }
     }
-
-
 }

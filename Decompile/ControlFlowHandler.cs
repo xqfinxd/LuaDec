@@ -94,7 +94,7 @@ namespace LuaDec.Decompile
             state.function = d.function;
             state.r = r;
             state.code = d.code;
-            state.labels = new bool[d.code.length + 1];
+            state.labels = new bool[d.code.Length + 1];
             find_reverse_targets(state);
             find_branches(state);
             combine_branches(state);
@@ -103,10 +103,10 @@ namespace LuaDec.Decompile
             find_fixed_blocks(state);
             find_while_loops(state);
             find_repeat_loops(state);
-            find_if_break(state, d.declList);
+            find_if_break(state, d.declarations);
             find_set_blocks(state);
-            find_pseudo_goto_statements(state, d.declList);
-            find_do_blocks(state, d.declList);
+            find_pseudo_goto_statements(state, d.declarations);
+            find_do_blocks(state, d.declarations);
             state.blocks.Sort();
             // DEBUG: print branches stuff
             /*
@@ -123,8 +123,8 @@ namespace LuaDec.Decompile
         private static void find_reverse_targets(State state)
         {
             Code code = state.code;
-            bool[] reverse_targets = state.reverse_targets = new bool[state.code.length + 1];
-            for (int line = 1; line <= code.length; line++)
+            bool[] reverse_targets = state.reverse_targets = new bool[state.code.Length + 1];
+            for (int line = 1; line <= code.Length; line++)
             {
                 if (is_jmp(state, line))
                 {
@@ -139,9 +139,9 @@ namespace LuaDec.Decompile
 
         private static void resolve_lines(State state)
         {
-            int[] resolved = new int[state.code.length + 1];
+            int[] resolved = new int[state.code.Length + 1];
             Array.ForEach(resolved, e => e = -1);
-            for (int line = 1; line <= state.code.length; line++)
+            for (int line = 1; line <= state.code.Length; line++)
             {
                 int r = line;
                 Branch b = state.branches[line];
@@ -372,12 +372,12 @@ namespace LuaDec.Decompile
         private static void find_branches(State state)
         {
             Code code = state.code;
-            state.branches = new Branch[state.code.length + 1];
-            state.setbranches = new Branch[state.code.length + 1];
-            state.finalsetbranches = new List<List<Branch>>(state.code.length + 1);
-            for (int i = 0; i <= state.code.length; i++) state.finalsetbranches.Add(null);
-            bool[] skip = new bool[code.length + 1];
-            for (int line = 1; line <= code.length; line++)
+            state.branches = new Branch[state.code.Length + 1];
+            state.setbranches = new Branch[state.code.Length + 1];
+            state.finalsetbranches = new List<List<Branch>>(state.code.Length + 1);
+            for (int i = 0; i <= state.code.Length; i++) state.finalsetbranches.Add(null);
+            bool[] skip = new bool[code.Length + 1];
+            for (int line = 1; line <= code.Length; line++)
             {
                 if (!skip[line])
                 {
@@ -545,9 +545,9 @@ namespace LuaDec.Decompile
             Code code = state.code;
             Op tforTarget = state.function.header.version.tforTarget.Value;
             Op forTarget = state.function.header.version.forTarget.Value;
-            blocks.Add(new OuterBlock(state.function, state.code.length));
+            blocks.Add(new OuterBlock(state.function, state.code.Length));
 
-            bool[] loop = new bool[state.code.length + 1];
+            bool[] loop = new bool[state.code.Length + 1];
 
             Branch b = state.begin_branch;
             while (b != null)
@@ -604,7 +604,7 @@ namespace LuaDec.Decompile
                 b = b.next;
             }
 
-            for (int line = 1; line <= code.length; line++)
+            for (int line = 1; line <= code.Length; line++)
             {
                 switch (code.GetOp(line).Type)
                 {
@@ -2138,7 +2138,7 @@ namespace LuaDec.Decompile
                 }
                 else
                 {
-                    if (line + 1 <= code.length && code.GetOp(line + 1) == Op.JMP52)
+                    if (line + 1 <= code.Length && code.GetOp(line + 1) == Op.JMP52)
                     {
                         return target == code.target(line + 1) && code.AField(line) != 0;
                     }
@@ -2366,7 +2366,7 @@ namespace LuaDec.Decompile
                     else
                     {
                         Op prev = line >= 2 ? code.GetOp(line - 1) : null;
-                        Op next = line + 1 <= code.length ? code.GetOp(line + 1) : null;
+                        Op next = line + 1 <= code.Length ? code.GetOp(line + 1) : null;
                         if (prev == Op.EQ) return false;
                         if (prev == Op.LT) return false;
                         if (prev == Op.LE) return false;

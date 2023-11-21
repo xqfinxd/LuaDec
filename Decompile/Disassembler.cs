@@ -50,10 +50,10 @@ namespace LuaDec.Decompile
 
                 if (function.header.opmap != function.header.version.OpcodeMap)
                 {
-                    OpcodeMap opmap = function.header.opmap;
-                    for (int opcode = 0; opcode < opmap.size(); opcode++)
+                    OpCodeMap opmap = function.header.opmap;
+                    for (int opcode = 0; opcode < opmap.Length; opcode++)
                     {
-                        Op op = opmap.get(opcode);
+                        Op op = opmap.GetOp(opcode);
                         if (op != null)
                         {
                             output.WriteLine(Directive.OP.Token + "\t" + opcode + "\t" + op.Name);
@@ -146,7 +146,7 @@ namespace LuaDec.Decompile
                 if (op != null && op.hasJump())
                 {
                     int target = code.target(line);
-                    if (target >= 1 && target <= code.length)
+                    if (target >= 1 && target <= code.Length)
                     {
                         cpLabel = "l" + target;
                     }

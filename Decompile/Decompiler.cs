@@ -11,17 +11,17 @@ namespace LuaDec.Decompile
 {
     public class Decompiler
     {
-        public class _OuterWalker1 : Walker
+        public class ConstantWalker : Walker
         {
             private int nextConstant = 0;
             private HashSet<int> unusedConstants;
 
-            public _OuterWalker1(HashSet<int> unusedConstants)
+            public ConstantWalker(HashSet<int> unusedConstants)
             {
                 this.unusedConstants = unusedConstants;
             }
 
-            public override void visitExpression(IExpression expression)
+            public override void VisitExpression(IExpression expression)
             {
                 if (expression.isConstant())
                 {
@@ -41,19 +41,19 @@ namespace LuaDec.Decompile
             }
         }
 
-        public class _OuterWalker2 : Walker
+        public class FunctionConstantWalker : Walker
         {
             private Function f;
             private int nextConstant = 0;
             private HashSet<int> unusedConstants;
 
-            public _OuterWalker2(HashSet<int> unusedConstants, Function f)
+            public FunctionConstantWalker(HashSet<int> unusedConstants, Function f)
             {
                 this.unusedConstants = unusedConstants;
                 this.f = f;
             }
 
-            public override void visitExpression(IExpression expression)
+            public override void VisitExpression(IExpression expression)
             {
                 if (expression.isConstant())
                 {
@@ -65,7 +65,7 @@ namespace LuaDec.Decompile
                 }
             }
 
-            public override void visitStatement(IStatement statement)
+            public override void VisitStatement(IStatement statement)
             {
                 if (unusedConstants.Contains(nextConstant))
                 {
@@ -91,9 +91,9 @@ namespace LuaDec.Decompile
         private readonly int paramNum;
         private readonly int registers;
         private readonly Upvalues upvalues;
-        private readonly int vararg;
+        private readonly int varArg;
         public readonly Code code;
-        public readonly Declaration[] declList;
+        public readonly Declaration[] declarations;
         public readonly LFunction function;
 
         public Decompiler(LFunction function) : this(function, null, -1)
@@ -111,47 +111,47 @@ namespace LuaDec.Decompile
             {
                 if (getConfiguration().Variable == Configuration.VariableMode.Finder)
                 {
-                    declList = VariableFinder.process(this, function.numParams, function.maximumStackSize);
+                    declarations = VariableFinder.Process(this, function.numParams, function.maximumStackSize);
                 }
                 else
                 {
-                    declList = new Declaration[function.maximumStackSize];
+                    declarations = new Declaration[function.maximumStackSize];
                     int scopeEnd = length + function.header.version.outerBlockScopeAdjustment.Value;
                     int i;
                     for (i = 0; i < Math.Min(function.numParams, function.maximumStackSize); i++)
                     {
-                        declList[i] = new Declaration("A" + i + "_" + function.level, 0, scopeEnd);
+                        declarations[i] = new Declaration("A" + i + "_" + function.level, 0, scopeEnd);
                     }
                     if (getVersion().varArgtTpe.Value != Version.VarArgType.Ellipsis && (function.varArg & 1) != 0 && i < function.maximumStackSize)
                     {
-                        declList[i++] = new Declaration("arg", 0, scopeEnd);
+                        declarations[i++] = new Declaration("arg", 0, scopeEnd);
                     }
                     for (; i < function.maximumStackSize; i++)
                     {
-                        declList[i] = new Declaration("L" + i + "_" + function.level, 0, scopeEnd);
+                        declarations[i] = new Declaration("L" + i + "_" + function.level, 0, scopeEnd);
                     }
                 }
             }
             else if (function.locals.Length >= function.numParams)
             {
-                declList = new Declaration[function.locals.Length];
-                for (int i = 0; i < declList.Length; i++)
+                declarations = new Declaration[function.locals.Length];
+                for (int i = 0; i < declarations.Length; i++)
                 {
-                    declList[i] = new Declaration(function.locals[i], code);
+                    declarations[i] = new Declaration(function.locals[i], code);
                 }
             }
             else
             {
-                declList = new Declaration[function.numParams];
-                for (int i = 0; i < declList.Length; i++)
+                declarations = new Declaration[function.numParams];
+                for (int i = 0; i < declarations.Length; i++)
                 {
-                    declList[i] = new Declaration("_ARG_" + i + "_", 0, length - 1);
+                    declarations[i] = new Declaration("_ARG_" + i + "_", 0, length - 1);
                 }
             }
             upvalues = new Upvalues(function, parentDecls, line);
             functions = function.functions;
             paramNum = function.numParams;
-            vararg = function.varArg;
+            varArg = function.varArg;
         }
 
         private IExpression.BinaryOperation decodeBinOp(int tm)
@@ -282,7 +282,7 @@ namespace LuaDec.Decompile
 
         private void handle54BinKOp(List<IOperation> operations, State state, int line, IExpression.BinaryOperation op)
         {
-            if (line + 1 > code.length || code.GetOp(line + 1) != Op.MMBINK) throw new System.InvalidOperationException();
+            if (line + 1 > code.Length || code.GetOp(line + 1) != Op.MMBINK) throw new System.InvalidOperationException();
             IExpression left = state.r.getExpression(code.BField(line), line);
             IExpression right = f.getConstantExpression(code.CField(line));
             if (code.kField(line + 1))
@@ -301,23 +301,23 @@ namespace LuaDec.Decompile
 
         private void handleInitialDeclares(Output output)
         {
-            List<Declaration> initdecls = new List<Declaration>(declList.Length);
+            List<Declaration> initdecls = new List<Declaration>(declarations.Length);
             int initdeclcount = paramNum;
             switch (getVersion().varArgtTpe.Value)
             {
                 case Version.VarArgType.Arg:
                 case Version.VarArgType.Hybrid:
-                    initdeclcount += vararg & 1;
+                    initdeclcount += varArg & 1;
                     break;
 
                 case Version.VarArgType.Ellipsis:
                     break;
             }
-            for (int i = initdeclcount; i < declList.Length; i++)
+            for (int i = initdeclcount; i < declarations.Length; i++)
             {
-                if (declList[i].begin == 0)
+                if (declarations[i].begin == 0)
                 {
-                    initdecls.Add(declList[i]);
+                    initdecls.Add(declarations[i]);
                 }
             }
             if (initdecls.Count > 0)
@@ -350,8 +350,8 @@ namespace LuaDec.Decompile
         private void handleUnusedConstants(IBlock outer)
         {
             HashSet<int> unusedConstants = new HashSet<int>();
-            outer.walk(new _OuterWalker1(unusedConstants));
-            outer.walk(new _OuterWalker2(unusedConstants, f));
+            outer.walk(new ConstantWalker(unusedConstants));
+            outer.walk(new FunctionConstantWalker(unusedConstants, f));
         }
 
         private IExpression initialExpression(State state, int register, int line)
@@ -439,7 +439,7 @@ namespace LuaDec.Decompile
                     break;
 
                 case Op.OpT.LOADKX:
-                    if (line + 1 > code.length || code.GetOp(line + 1) != Op.EXTRAARG) throw new System.InvalidOperationException();
+                    if (line + 1 > code.Length || code.GetOp(line + 1) != Op.EXTRAARG) throw new System.InvalidOperationException();
                     operations.Add(new RegisterSet(line, A, f.getConstantExpression(code.AxField(line + 1))));
                     break;
 
@@ -661,7 +661,7 @@ namespace LuaDec.Decompile
 
                 case Op.OpT.ADDI:
                 {
-                    if (line + 1 > code.length || code.GetOp(line + 1) != Op.MMBINI) throw new System.InvalidOperationException();
+                    if (line + 1 > code.Length || code.GetOp(line + 1) != Op.MMBINI) throw new System.InvalidOperationException();
                     IExpression.BinaryOperation op = decodeBinOp(code.CField(line + 1));
                     int immediate = code.sCField(line);
                     bool swap = false;
@@ -741,7 +741,7 @@ namespace LuaDec.Decompile
 
                 case Op.OpT.SHRI:
                 {
-                    if (line + 1 > code.length || code.GetOp(line + 1) != Op.MMBINI) throw new System.InvalidOperationException();
+                    if (line + 1 > code.Length || code.GetOp(line + 1) != Op.MMBINI) throw new System.InvalidOperationException();
                     int immediate = code.sCField(line);
                     IExpression.BinaryOperation op = decodeBinOp(code.CField(line + 1));
                     if (op == IExpression.BinaryOperation.SHR)
@@ -952,7 +952,7 @@ namespace LuaDec.Decompile
                 {
                     if (C == 0)
                     {
-                        if (line + 1 > code.length || code.GetOp(line + 1) != Op.EXTRAARG) throw new System.InvalidOperationException();
+                        if (line + 1 > code.Length || code.GetOp(line + 1) != Op.EXTRAARG) throw new System.InvalidOperationException();
                         C = code.AxField(line + 1);
                         skip[line + 1] = true;
                     }
@@ -967,7 +967,7 @@ namespace LuaDec.Decompile
                 {
                     if (code.kField(line))
                     {
-                        if (line + 1 > code.length || code.GetOp(line + 1) != Op.EXTRAARG) throw new System.InvalidOperationException();
+                        if (line + 1 > code.Length || code.GetOp(line + 1) != Op.EXTRAARG) throw new System.InvalidOperationException();
                         C += code.AxField(line + 1) * (code.getExtractor().C.max() + 1);
                         skip[line + 1] = true;
                     }
@@ -1126,9 +1126,9 @@ namespace LuaDec.Decompile
             Stack<IBlock> blockStack = new Stack<IBlock>();
             blockStack.Push(blockContainers[blockContainerIndex++]);
 
-            state.skip = new bool[code.length + 1];
+            state.skip = new bool[code.Length + 1];
             bool[] skip = state.skip;
-            bool[] labels_handled = new bool[code.length + 1];
+            bool[] labels_handled = new bool[code.Length + 1];
 
             int line = 1;
             while (true)
@@ -1268,12 +1268,12 @@ namespace LuaDec.Decompile
         public State decompile()
         {
             State state = new State();
-            state.r = new Registers(registers, length, declList, f, getNoDebug());
+            state.r = new Registers(registers, length, declarations, f, getNoDebug());
             ControlFlowHandler.Result result = ControlFlowHandler.process(this, state.r);
             List<IBlock> blocks = result.blocks;
             state.outer = blocks[0];
             state.labels = result.labels;
-            processSequence(state, blocks, 1, code.length);
+            processSequence(state, blocks, 1, code.Length);
             foreach (IBlock block in blocks)
             {
                 block.resolve(state.r);
@@ -1303,12 +1303,12 @@ namespace LuaDec.Decompile
             if (begin <= end)
             {
                 State state = new State();
-                state.r = new Registers(registers, length, declList, f, getNoDebug());
-                state.outer = new OuterBlock(function, code.length);
+                state.r = new Registers(registers, length, declarations, f, getNoDebug());
+                state.outer = new OuterBlock(function, code.Length);
                 IBlock scoped = new DoEndBlock(function, begin, end + 1);
-                state.labels = new bool[code.length + 1];
+                state.labels = new bool[code.Length + 1];
                 List<IBlock> blocks = new List<IBlock> { state.outer, scoped };
-                processSequence(state, blocks, 1, code.length);
+                processSequence(state, blocks, 1, code.Length);
                 return !scoped.isEmpty();
             }
             else

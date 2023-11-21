@@ -1,37 +1,39 @@
 ﻿using LuaDec.Parser;
-using System;
 using System.Collections.Generic;
 
 namespace LuaDec.Decompile
 {
     public class VariableFinder
     {
-
-        private class RegisterState
+        private struct RegisterState
         {
+            public bool hasRead;
+            public bool hasWritten;
+            public bool isLocal;
+            public bool isTemporary;
+            public int lastRead;
+            public int lastWritten;
+            public int readCount;
 
-            public RegisterState()
+            public void Init()
             {
-                last_written = 1;
-                last_read = -1;
-                read_count = 0;
-                temporary = false;
-                local = false;
-                read = false;
-                written = false;
+                lastWritten = 1;
+                lastRead = -1;
+                readCount = 0;
+                isTemporary = false;
+                isLocal = false;
+                hasRead = false;
+                hasWritten = false;
             }
-
-            public int last_written;
-            public int last_read;
-            public int read_count;
-            public bool temporary;
-            public bool local;
-            public bool read;
-            public bool written;
         }
 
         private class RegisterStates
         {
+            private int lines;
+
+            private int registers;
+
+            private RegisterState[,] states;
 
             public RegisterStates(int registers, int lines)
             {
@@ -42,159 +44,165 @@ namespace LuaDec.Decompile
                 {
                     for (int register = 0; register < registers; register++)
                     {
-                        states[line, register] = new RegisterState();
+                        states[line, register].Init();
                     }
                 }
             }
 
-            public RegisterState get(int register, int line)
+            public ref RegisterState GetState(int register, int line)
             {
-                return states[line - 1, register];
+                return ref states[line - 1, register];
             }
 
-            public void setWritten(int register, int line)
-            {
-                get(register, line).written = true;
-                get(register, line + 1).last_written = line;
-            }
-
-            public void setRead(int register, int line)
-            {
-                get(register, line).read = true;
-                get(register, get(register, line).last_written).read_count++;
-                get(register, get(register, line).last_written).last_read = line;
-            }
-
-            public void setLocalRead(int register, int line)
-            {
-                for (int r = 0; r <= register; r++)
-                {
-                    get(r, get(r, line).last_written).local = true;
-                }
-            }
-
-            public void setLocalWrite(int register_min, int register_max, int line)
-            {
-                for (int r = 0; r < register_min; r++)
-                {
-                    get(r, get(r, line).last_written).local = true;
-                }
-                for (int r = register_min; r <= register_max; r++)
-                {
-                    get(r, line).local = true;
-                }
-            }
-
-            public void setTemporaryRead(int register, int line)
-            {
-                for (int r = register; r < registers; r++)
-                {
-                    get(r, get(r, line).last_written).temporary = true;
-                }
-            }
-
-            public void setTemporaryWrite(int register_min, int register_max, int line)
-            {
-                for (int r = register_max + 1; r < registers; r++)
-                {
-                    get(r, get(r, line).last_written).temporary = true;
-                }
-                for (int r = register_min; r <= register_max; r++)
-                {
-                    get(r, line).temporary = true;
-                }
-            }
-
-            public void nextLine(int line)
+            public void NextLine(int line)
             {
                 if (line + 1 < lines)
                 {
                     for (int r = 0; r < registers; r++)
                     {
-                        if (get(r, line).last_written > get(r, line + 1).last_written)
+                        if (GetState(r, line).lastWritten > GetState(r, line + 1).lastWritten)
                         {
-                            get(r, line + 1).last_written = get(r, line).last_written;
+                            GetState(r, line + 1).lastWritten = GetState(r, line).lastWritten;
                         }
                     }
                 }
             }
 
-            private int registers;
-            private int lines;
-            private RegisterState[,] states;
+            public void SetLocalRead(int register, int line)
+            {
+                for (int r = 0; r <= register; r++)
+                {
+                    GetState(r, GetState(r, line).lastWritten).isLocal = true;
+                }
+            }
 
+            public void SetLocalWrite(int register_min, int register_max, int line)
+            {
+                for (int r = 0; r < register_min; r++)
+                {
+                    GetState(r, GetState(r, line).lastWritten).isLocal = true;
+                }
+                for (int r = register_min; r <= register_max; r++)
+                {
+                    GetState(r, line).isLocal = true;
+                }
+            }
+
+            public void SetRead(int register, int line)
+            {
+                GetState(register, line).hasRead = true;
+                GetState(register, GetState(register, line).lastWritten).readCount++;
+                GetState(register, GetState(register, line).lastWritten).lastRead = line;
+            }
+
+            public void SetTemporaryRead(int register, int line)
+            {
+                for (int r = register; r < registers; r++)
+                {
+                    GetState(r, GetState(r, line).lastWritten).isTemporary = true;
+                }
+            }
+
+            public void SetTemporaryWrite(int register_min, int register_max, int line)
+            {
+                for (int r = register_max + 1; r < registers; r++)
+                {
+                    GetState(r, GetState(r, line).lastWritten).isTemporary = true;
+                }
+                for (int r = register_min; r <= register_max; r++)
+                {
+                    GetState(r, line).isTemporary = true;
+                }
+            }
+
+            public void SetWritten(int register, int line)
+            {
+                GetState(register, line).hasWritten = true;
+                GetState(register, line + 1).lastWritten = line;
+            }
         }
 
-        private static bool isConstantReference(Decompiler d, int value)
+        private static int LocalCounter = 0;
+
+        private VariableFinder()
+        {
+        }
+
+        private static bool IsConstantReference(Decompiler d, int value)
         {
             return d.function.header.extractor.is_k(value);
         }
 
-        public static Declaration[] process(Decompiler d, int args, int registers)
+        public static Declaration[] Process(Decompiler d, int args, int registers)
         {
             Code code = d.code;
-            RegisterStates states = new RegisterStates(registers, code.Length());
-            bool[] skip = new bool[code.Length()];
-            for (int line = 1; line <= code.Length(); line++)
+            RegisterStates states = new RegisterStates(registers, code.Length);
+            bool[] skip = new bool[code.Length];
+            for (int line = 1; line <= code.Length; line++)
             {
-                states.nextLine(line);
+                states.NextLine(line);
                 if (skip[line - 1]) continue;
+
                 int A = code.AField(line);
                 int B = code.BField(line);
                 int C = code.CField(line);
                 switch (code.GetOp(line).Type)
                 {
                     case Op.OpT.MOVE:
-                        states.setWritten(A, line);
-                        states.setRead(B, line);
+                        states.SetWritten(A, line);
+                        states.SetRead(B, line);
                         if (A < B)
                         {
-                            states.setLocalWrite(A, A, line);
+                            states.SetLocalWrite(A, A, line);
                         }
                         else if (B < A)
                         {
-                            states.setLocalRead(B, line);
+                            states.SetLocalRead(B, line);
                         }
                         break;
+
                     case Op.OpT.LOADK:
                     case Op.OpT.LOADBOOL:
                     case Op.OpT.GETUPVAL:
                     case Op.OpT.GETGLOBAL:
                     case Op.OpT.NEWTABLE:
                     case Op.OpT.NEWTABLE50:
-                        states.setWritten(A, line);
+                        states.SetWritten(A, line);
                         break;
+
                     case Op.OpT.LOADNIL:
+                    {
+                        int maximum = B;
+                        int register = code.AField(line);
+                        while (register <= maximum)
                         {
-                            int maximum = B;
-                            int register = code.AField(line);
-                            while (register <= maximum)
-                            {
-                                states.setWritten(register, line);
-                                register++;
-                            }
-                            break;
+                            states.SetWritten(register, line);
+                            register++;
                         }
-                    case Op.OpT.LOADNIL52:
-                        {
-                            int maximum = A + B;
-                            int register = code.AField(line);
-                            while (register <= maximum)
-                            {
-                                states.setWritten(register, line);
-                                register++;
-                            }
-                            break;
-                        }
-                    case Op.OpT.GETTABLE:
-                        states.setWritten(A, line);
-                        if (!isConstantReference(d, code.BField(line))) states.setRead(B, line);
-                        if (!isConstantReference(d, code.CField(line))) states.setRead(C, line);
                         break;
+                    }
+                    case Op.OpT.LOADNIL52:
+                    {
+                        int maximum = A + B;
+                        int register = code.AField(line);
+                        while (register <= maximum)
+                        {
+                            states.SetWritten(register, line);
+                            register++;
+                        }
+                        break;
+                    }
+                    case Op.OpT.GETTABLE:
+                        states.SetWritten(A, line);
+                        if (!IsConstantReference(d, code.BField(line))) states.SetRead(B, line);
+                        if (!IsConstantReference(d, code.CField(line))) states.SetRead(C, line);
+                        break;
+
                     case Op.OpT.SETGLOBAL:
                     case Op.OpT.SETUPVAL:
-                        states.setRead(A, line);
+                        states.SetRead(A, line);
                         break;
+
                     case Op.OpT.SETTABLE:
                     case Op.OpT.ADD:
                     case Op.OpT.SUB:
@@ -202,143 +210,152 @@ namespace LuaDec.Decompile
                     case Op.OpT.DIV:
                     case Op.OpT.MOD:
                     case Op.OpT.POW:
-                        states.setWritten(A, line);
-                        if (!isConstantReference(d, code.BField(line))) states.setRead(B, line);
-                        if (!isConstantReference(d, code.CField(line))) states.setRead(C, line);
+                        states.SetWritten(A, line);
+                        if (!IsConstantReference(d, code.BField(line))) states.SetRead(B, line);
+                        if (!IsConstantReference(d, code.CField(line))) states.SetRead(C, line);
                         break;
+
                     case Op.OpT.SELF:
-                        states.setWritten(A, line);
-                        states.setWritten(A + 1, line);
-                        states.setRead(B, line);
-                        if (!isConstantReference(d, code.CField(line))) states.setRead(C, line);
+                        states.SetWritten(A, line);
+                        states.SetWritten(A + 1, line);
+                        states.SetRead(B, line);
+                        if (!IsConstantReference(d, code.CField(line))) states.SetRead(C, line);
                         break;
+
                     case Op.OpT.UNM:
                     case Op.OpT.NOT:
                     case Op.OpT.LEN:
-                        states.get(code.AField(line), line).written = true;
-                        states.get(code.BField(line), line).read = true;
+                        states.GetState(code.AField(line), line).hasWritten = true;
+                        states.GetState(code.BField(line), line).hasRead = true;
                         break;
+
                     case Op.OpT.CONCAT:
-                        states.setWritten(A, line);
+                        states.SetWritten(A, line);
                         for (int register = B; register <= C; register++)
                         {
-                            states.setRead(register, line);
-                            states.setTemporaryRead(register, line);
+                            states.SetRead(register, line);
+                            states.SetTemporaryRead(register, line);
                         }
                         break;
+
                     case Op.OpT.SETLIST:
-                        states.setTemporaryRead(A + 1, line);
+                        states.SetTemporaryRead(A + 1, line);
                         break;
+
                     case Op.OpT.JMP:
                     case Op.OpT.JMP52:
                         break;
+
                     case Op.OpT.EQ:
                     case Op.OpT.LT:
                     case Op.OpT.LE:
-                        if (!isConstantReference(d, code.BField(line))) states.setRead(B, line);
-                        if (!isConstantReference(d, code.CField(line))) states.setRead(C, line);
+                        if (!IsConstantReference(d, code.BField(line))) states.SetRead(B, line);
+                        if (!IsConstantReference(d, code.CField(line))) states.SetRead(C, line);
                         break;
+
                     case Op.OpT.TEST:
-                        states.setRead(A, line);
+                        states.SetRead(A, line);
                         break;
+
                     case Op.OpT.TESTSET:
-                        states.setWritten(A, line);
-                        states.setLocalWrite(A, A, line);
-                        states.setRead(B, line);
+                        states.SetWritten(A, line);
+                        states.SetLocalWrite(A, A, line);
+                        states.SetRead(B, line);
                         break;
+
                     case Op.OpT.CLOSURE:
+                    {
+                        LFunction f = d.function.functions[code.BxField(line)];
+                        foreach (LUpvalue upvalue in f.upvalues)
                         {
-                            LFunction f = d.function.functions[code.BxField(line)];
-                            foreach (LUpvalue upvalue in f.upvalues)
+                            if (upvalue.instack)
                             {
-                                if (upvalue.instack)
-                                {
-                                    states.setLocalRead(upvalue.idx, line);
-                                }
+                                states.SetLocalRead(upvalue.idx, line);
                             }
-                            states.get(code.AField(line), line).written = true;
-                            break;
                         }
+                        states.GetState(code.AField(line), line).hasWritten = true;
+                        break;
+                    }
                     case Op.OpT.CALL:
                     case Op.OpT.TAILCALL:
+                    {
+                        if (code.GetOp(line) != Op.TAILCALL)
                         {
-                            if (code.GetOp(line) != Op.TAILCALL)
-                            {
-                                if (C >= 2)
-                                {
-                                    for (int register = A; register <= A + C - 2; register++)
-                                    {
-                                        states.setWritten(register, line);
-                                    }
-                                }
-                            }
-                            for (int register = A; register <= A + B - 1; register++)
-                            {
-                                states.setRead(register, line);
-                                states.setTemporaryRead(register, line);
-                            }
                             if (C >= 2)
                             {
-                                int nline = line + 1;
-                                int register = A + C - 2;
-                                while (register >= A && nline <= code.Length())
+                                for (int register = A; register <= A + C - 2; register++)
                                 {
-                                    if (code.GetOp(nline) == Op.MOVE && code.BField(nline) == register)
-                                    {
-                                        states.setWritten(code.AField(nline), nline);
-                                        states.setRead(code.BField(nline), nline);
-                                        states.setLocalWrite(code.AField(nline), code.AField(nline), nline);
-                                        skip[nline - 1] = true;
-                                    }
-                                    register--;
-                                    nline++;
+                                    states.SetWritten(register, line);
                                 }
                             }
-                            break;
                         }
-                    case Op.OpT.RETURN:
+                        for (int register = A; register <= A + B - 1; register++)
                         {
-                            if (B == 0) B = registers - code.AField(line) + 1;
-                            for (int register = A; register <= A + B - 2; register++)
-                            {
-                                states.get(register, line).read = true;
-                            }
-                            break;
+                            states.SetRead(register, line);
+                            states.SetTemporaryRead(register, line);
                         }
+                        if (C >= 2)
+                        {
+                            int nline = line + 1;
+                            int register = A + C - 2;
+                            while (register >= A && nline <= code.Length)
+                            {
+                                if (code.GetOp(nline) == Op.MOVE && code.BField(nline) == register)
+                                {
+                                    states.SetWritten(code.AField(nline), nline);
+                                    states.SetRead(code.BField(nline), nline);
+                                    states.SetLocalWrite(code.AField(nline), code.AField(nline), nline);
+                                    skip[nline - 1] = true;
+                                }
+                                register--;
+                                nline++;
+                            }
+                        }
+                        break;
+                    }
+                    case Op.OpT.RETURN:
+                    {
+                        if (B == 0) B = registers - code.AField(line) + 1;
+                        for (int register = A; register <= A + B - 2; register++)
+                        {
+                            states.GetState(register, line).hasRead = true;
+                        }
+                        break;
+                    }
                     default:
                         break;
                 }
             }
             for (int register = 0; register < registers; register++)
             {
-                states.setWritten(register, 1);
+                states.SetWritten(register, 1);
             }
-            for (int line = 1; line <= code.Length(); line++)
+            for (int line = 1; line <= code.Length; line++)
             {
                 for (int register = 0; register < registers; register++)
                 {
-                    RegisterState s = states.get(register, line);
-                    if (s.written)
+                    RegisterState s = states.GetState(register, line);
+                    if (s.hasWritten)
                     {
-                        if (s.read_count >= 2 || (line >= 2 && s.read_count == 0))
+                        if (s.readCount >= 2 || (line >= 2 && s.readCount == 0))
                         {
-                            states.setLocalWrite(register, register, line);
+                            states.SetLocalWrite(register, register, line);
                         }
                     }
                 }
             }
-            for (int line = 1; line <= code.Length(); line++)
+            for (int line = 1; line <= code.Length; line++)
             {
                 for (int register = 0; register < registers; register++)
                 {
-                    RegisterState s = states.get(register, line);
-                    if (s.written && s.temporary)
+                    RegisterState s = states.GetState(register, line);
+                    if (s.hasWritten && s.isTemporary)
                     {
                         List<int> ancestors = new List<int>();
                         for (int read = 0; read < registers; read++)
                         {
-                            RegisterState r = states.get(read, line);
-                            if (r.read && !r.local)
+                            RegisterState r = states.GetState(read, line);
+                            if (r.hasRead && !r.isLocal)
                             {
                                 ancestors.Add(read);
                             }
@@ -349,7 +366,7 @@ namespace LuaDec.Decompile
                             bool any_written = false;
                             for (int pregister = 0; pregister < registers; pregister++)
                             {
-                                if (states.get(pregister, pline).written && ancestors.Contains(pregister))
+                                if (states.GetState(pregister, pline).hasWritten && ancestors.Contains(pregister))
                                 {
                                     any_written = true;
                                     ancestors.Remove(pregister);
@@ -361,8 +378,8 @@ namespace LuaDec.Decompile
                             }
                             for (int pregister = 0; pregister < registers; pregister++)
                             {
-                                RegisterState a = states.get(pregister, pline);
-                                if (a.read && !a.local)
+                                RegisterState a = states.GetState(pregister, pline);
+                                if (a.hasRead && !a.isLocal)
                                 {
                                     ancestors.Add(pregister);
                                 }
@@ -372,7 +389,7 @@ namespace LuaDec.Decompile
                         {
                             if (pline >= 1)
                             {
-                                states.setLocalRead(ancestor, pline);
+                                states.SetLocalRead(ancestor, pline);
                             }
                         }
                     }
@@ -418,30 +435,31 @@ namespace LuaDec.Decompile
                                 is_arg = true;
                             }
                             break;
+
                         case Version.VarArgType.Ellipsis:
                             break;
                     }
                 }
                 if (!local && !temporary)
                 {
-                    for (int line = 1; line <= code.Length(); line++)
+                    for (int line = 1; line <= code.Length; line++)
                     {
-                        RegisterState state = states.get(register, line);
-                        if (state.local)
+                        RegisterState state = states.GetState(register, line);
+                        if (state.isLocal)
                         {
                             temporary = false;
                             local = true;
                         }
-                        if (state.temporary)
+                        if (state.isTemporary)
                         {
                             start = line + 1;
                             temporary = true;
                         }
-                        if (state.read)
+                        if (state.hasRead)
                         {
                             written = 0; read++;
                         }
-                        if (state.written)
+                        if (state.hasWritten)
                         {
                             if (written > 0 && read == 0)
                             {
@@ -472,9 +490,9 @@ namespace LuaDec.Decompile
                     }
                     else
                     {
-                        name = id + register + "_" + lc++;
+                        name = id + register + "_" + LocalCounter++;
                     }
-                    Declaration decl = new Declaration(name, start, code.Length() + d.getVersion().outerBlockScopeAdjustment.Value);
+                    Declaration decl = new Declaration(name, start, code.Length + d.getVersion().outerBlockScopeAdjustment.Value);
                     decl.register = register;
                     declList.Add(decl);
                 }
@@ -486,11 +504,5 @@ namespace LuaDec.Decompile
             }*/
             return declList.ToArray();
         }
-
-        static int lc = 0;
-
-        private VariableFinder() { }
-
     }
-
 }

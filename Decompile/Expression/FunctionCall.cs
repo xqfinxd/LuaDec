@@ -23,7 +23,7 @@ namespace LuaDec.Decompile.Expression
 
         public override void walk(Walker w)
         {
-            w.visitExpression(this);
+            w.VisitExpression(this);
             function.walk(w);
             foreach (IExpression expression in arguments)
             {
