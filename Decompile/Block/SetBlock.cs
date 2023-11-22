@@ -137,7 +137,7 @@ namespace LuaDec.Decompile.Block
         }
         public override IOperation process(Decompiler d)
         {
-            if (ControlFlowHandler.verbose)
+            if (ControlFlowHandler.Verbose)
             {
                 Console.WriteLine("set expression: ");
                 cond.asExpression(r).print(d, new Output());

@@ -1269,7 +1269,7 @@ namespace LuaDec.Decompile
         {
             State state = new State();
             state.r = new Registers(registers, length, declarations, f, getNoDebug());
-            ControlFlowHandler.Result result = ControlFlowHandler.process(this, state.r);
+            ControlFlowHandler.Result result = ControlFlowHandler.Process(this, state.r);
             List<IBlock> blocks = result.blocks;
             state.outer = blocks[0];
             state.labels = result.labels;

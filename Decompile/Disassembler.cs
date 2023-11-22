@@ -1,26 +1,15 @@
 ﻿using LuaDec.Assemble;
 using LuaDec.Parser;
 using LuaDec.Util;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LuaDec.Decompile
 {
     public class Disassembler
     {
-
-        private readonly LFunction function;
         private readonly Code code;
+        private readonly LFunction function;
         private readonly string name;
         private readonly string parent;
-
-        public Disassembler(LFunction function) : this(function, "main", null)
-        {
-            
-        }
 
         private Disassembler(LFunction function, string name, string parent)
         {
@@ -30,9 +19,8 @@ namespace LuaDec.Decompile
             this.parent = parent;
         }
 
-        public void disassemble(Output output)
+        public Disassembler(LFunction function) : this(function, "main", null)
         {
-            disassemble(output, 0, 0);
         }
 
         private void disassemble(Output output, int level, int index)
@@ -188,6 +176,9 @@ namespace LuaDec.Decompile
             }
         }
 
+        public void disassemble(Output output)
+        {
+            disassemble(output, 0, 0);
+        }
     }
-
 }
