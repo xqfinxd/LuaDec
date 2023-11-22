@@ -26,16 +26,16 @@ namespace LuaDec.Decompile.Operation
         public override List<IStatement> process(Registers r, IBlock block)
         {
             //System.output.println("-- processing register set " + register + "@" + line);
-            r.setValue(register, line, value);
+            r.SetValue(register, line, value);
             /*
             if(value.isMultiple()) {
               System.output.println("-- process multiple @" + register);
             }
             */
-            if (r.isAssignable(register, line))
+            if (r.IsAssignable(register, line))
             {
                 //System.output.println("-- assignment!");
-                return new List<IStatement> { new Assignment(r.getTarget(register, line), value, line) };
+                return new List<IStatement> { new Assignment(r.GetTarget(register, line), value, line) };
             }
             else
             {

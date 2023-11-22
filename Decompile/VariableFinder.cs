@@ -163,7 +163,7 @@ namespace LuaDec.Decompile
 
                     case Op.OpT.LOADK:
                     case Op.OpT.LOADBOOL:
-                    case Op.OpT.GETUPVAL:
+                    case Op.OpT.GETUPVALUE:
                     case Op.OpT.GETGLOBAL:
                     case Op.OpT.NEWTABLE:
                     case Op.OpT.NEWTABLE50:
@@ -199,7 +199,7 @@ namespace LuaDec.Decompile
                         break;
 
                     case Op.OpT.SETGLOBAL:
-                    case Op.OpT.SETUPVAL:
+                    case Op.OpT.SETUPVALUE:
                         states.SetRead(A, line);
                         break;
 

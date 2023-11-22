@@ -17,20 +17,20 @@ namespace LuaDec.Decompile.Block
 
         public override void resolve(Registers r)
         {
-            target = r.getTarget(register + 3, begin - 1);
-            start = r.getValue(register, begin - 1);
-            stop = r.getValue(register + 1, begin - 1);
-            step = r.getValue(register + 2, begin - 1);
+            target = r.GetTarget(register + 3, begin - 1);
+            start = r.GetValue(register, begin - 1);
+            stop = r.GetValue(register + 1, begin - 1);
+            step = r.GetValue(register + 2, begin - 1);
         }
 
         public override void handleVariableDeclarations(Registers r)
         {
-            r.setInternalLoopVariable(register, begin - 2, end - 1);
-            r.setInternalLoopVariable(register + 1, begin - 2, end - 1);
-            r.setInternalLoopVariable(register + 2, begin - 2, end - 1);
+            r.SetInternalLoopVariable(register, begin - 2, end - 1);
+            r.SetInternalLoopVariable(register + 1, begin - 2, end - 1);
+            r.SetInternalLoopVariable(register + 2, begin - 2, end - 1);
             int explicitEnd = end - 2;
-            if (forvarClose && r.getVersion().closeSemantics.Value != Version.CloseSemantics.Lua54) explicitEnd--;
-            r.setExplicitLoopVariable(register + 3, begin - 1, explicitEnd);
+            if (forvarClose && r.GetVersion().closeSemantics.Value != Version.CloseSemantics.Lua54) explicitEnd--;
+            r.SetExplicitLoopVariable(register + 3, begin - 1, explicitEnd);
         }
 
     }

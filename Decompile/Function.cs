@@ -5,10 +5,9 @@ namespace LuaDec.Decompile
 {
     public class Function
     {
-
-        private Version version;
-        private Constant[] constants;
         private readonly CodeExtract extract;
+        private Constant[] constants;
+        private Version version;
 
         public Function(LFunction function)
         {
@@ -21,39 +20,37 @@ namespace LuaDec.Decompile
             extract = function.header.extractor;
         }
 
-        public bool isConstant(int register)
-        {
-            return extract.is_k(register);
-        }
-
-        public int constantIndex(int register)
+        public int ConstantIndex(int register)
         {
             return extract.get_k(register);
         }
 
-        public ConstantExpression getGlobalName(int constantIndex)
+        public ConstantExpression GetConstantExpression(int constantIndex)
+        {
+            Constant constant = constants[constantIndex];
+            return new ConstantExpression(constant, constant.isIdentifier(version), constantIndex);
+        }
+
+        public GlobalExpression GetGlobalExpression(int constantIndex)
+        {
+            return new GlobalExpression(GetGlobalName(constantIndex), constantIndex);
+        }
+
+        public ConstantExpression GetGlobalName(int constantIndex)
         {
             Constant constant = constants[constantIndex];
             if (!constant.isIdentifierPermissive(version)) throw new System.InvalidOperationException();
             return new ConstantExpression(constant, true, constantIndex);
         }
 
-        public ConstantExpression getConstantExpression(int constantIndex)
-        {
-            Constant constant = constants[constantIndex];
-            return new ConstantExpression(constant, constant.isIdentifier(version), constantIndex);
-        }
-
-        public GlobalExpression getGlobalExpression(int constantIndex)
-        {
-            return new GlobalExpression(getGlobalName(constantIndex), constantIndex);
-        }
-
-        public Version getVersion()
+        public Version GetVersion()
         {
             return version;
         }
 
+        public bool IsConstant(int register)
+        {
+            return extract.is_k(register);
+        }
     }
-
 }

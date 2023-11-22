@@ -28,7 +28,7 @@ namespace LuaDec.Decompile.Operation
         public override List<IStatement> process(Registers r, IBlock block)
         {
             // .isTableLiteral() is sufficient when there is debugging info
-            if (!r.isNoDebug && table.isTableLiteral() && (value.isMultiple() || table.isNewEntryAllowed()))
+            if (!r.IsNoDebug && table.isTableLiteral() && (value.isMultiple() || table.isNewEntryAllowed()))
             {
                 table.addEntry(new TableLiteral.Entry(index, value, !isTable, timestamp));
                 return new List<IStatement>();

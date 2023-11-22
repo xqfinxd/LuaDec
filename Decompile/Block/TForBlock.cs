@@ -109,7 +109,7 @@ namespace LuaDec.Decompile.Block
             List<ITarget> targets = new List<ITarget>(explicitRegisterLast - explicitRegisterFirst + 1);
             for (int register = explicitRegisterFirst; register <= explicitRegisterLast; register++)
             {
-                targets.Add(r.getTarget(register, begin - 1));
+                targets.Add(r.GetTarget(register, begin - 1));
             }
             return targets;
         }
@@ -118,11 +118,11 @@ namespace LuaDec.Decompile.Block
         {
             for (int register = internalRegisterFirst; register <= internalRegisterLast; register++)
             {
-                r.setInternalLoopVariable(register, internalScopeBegin, internalScopeEnd);
+                r.SetInternalLoopVariable(register, internalScopeBegin, internalScopeEnd);
             }
             for (int register = explicitRegisterFirst; register <= explicitRegisterLast; register++)
             {
-                r.setExplicitLoopVariable(register, explicitScopeBegin, explicitScopeEnd);
+                r.SetExplicitLoopVariable(register, explicitScopeBegin, explicitScopeEnd);
             }
         }
 
@@ -132,7 +132,7 @@ namespace LuaDec.Decompile.Block
             List<IExpression> values = new List<IExpression>(3);
             for (int register = internalRegisterFirst; register <= internalRegisterLast; register++)
             {
-                IExpression value = r.getValue(register, begin - 1);
+                IExpression value = r.GetValue(register, begin - 1);
                 values.Add(value);
                 if (value.isMultiple()) break;
             }

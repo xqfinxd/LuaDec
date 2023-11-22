@@ -1,30 +1,16 @@
 ﻿using LuaDec.Parser;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LuaDec.Decompile
 {
     public class Declaration
     {
-
-        public readonly string name;
         public readonly int begin;
         public readonly int end;
+        public readonly string name;
+        public bool forLoop = false;
+        public bool forLoopExplicit = false;
         public int register;
         public bool tbc;
-
-        /**
-         * Whether this is an invisible for-loop book-keeping variable.
-         */
-        public bool forLoop = false;
-
-        /**
-         * Whether this is an explicit for-loop declared variable.
-         */
-        public bool forLoopExplicit = false;
 
         public Declaration(LLocal local, Code code)
         {
@@ -58,7 +44,5 @@ namespace LuaDec.Decompile
               || this.begin < begin && this.end >= begin && this.end < scopeEnd
               || this.begin >= begin && this.begin <= scopeEnd && this.end > scopeEnd;
         }
-
     }
-
 }

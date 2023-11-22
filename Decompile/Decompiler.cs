@@ -197,37 +197,37 @@ namespace LuaDec.Decompile
             switch (code.GetOp(line).Type)
             {
                 case Op.OpT.MOVE:
-                    return r.getTarget(code.AField(line), line);
+                    return r.GetTarget(code.AField(line), line);
 
-                case Op.OpT.SETUPVAL:
+                case Op.OpT.SETUPVALUE:
                     return new UpvalueTarget(upvalues.getName(code.BField(line)));
 
                 case Op.OpT.SETGLOBAL:
-                    return new GlobalTarget(f.getGlobalName(code.BxField(line)));
+                    return new GlobalTarget(f.GetGlobalName(code.BxField(line)));
 
                 case Op.OpT.SETTABLE:
-                    return new TableTarget(r.getExpression(code.AField(line), previous), r.getKExpression(code.BField(line), previous));
+                    return new TableTarget(r.GetExpression(code.AField(line), previous), r.GetKExpression(code.BField(line), previous));
 
                 case Op.OpT.SETTABLE54:
-                    return new TableTarget(r.getExpression(code.AField(line), previous), r.getExpression(code.BField(line), previous));
+                    return new TableTarget(r.GetExpression(code.AField(line), previous), r.GetExpression(code.BField(line), previous));
 
                 case Op.OpT.SETI:
-                    return new TableTarget(r.getExpression(code.AField(line), previous), ConstantExpression.createint(code.BField(line)));
+                    return new TableTarget(r.GetExpression(code.AField(line), previous), ConstantExpression.createint(code.BField(line)));
 
                 case Op.OpT.SETFIELD:
-                    return new TableTarget(r.getExpression(code.AField(line), previous), f.getConstantExpression(code.BField(line)));
+                    return new TableTarget(r.GetExpression(code.AField(line), previous), f.GetConstantExpression(code.BField(line)));
 
                 case Op.OpT.SETTABUP:
                 {
                     int A = code.AField(line);
                     int B = code.BField(line);
-                    return new TableTarget(upvalues.getExpression(A), r.getKExpression(B, previous));
+                    return new TableTarget(upvalues.getExpression(A), r.GetKExpression(B, previous));
                 }
                 case Op.OpT.SETTABUP54:
                 {
                     int A = code.AField(line);
                     int B = code.BField(line);
-                    return new TableTarget(upvalues.getExpression(A), f.getConstantExpression(B));
+                    return new TableTarget(upvalues.getExpression(A), f.GetConstantExpression(B));
                 }
                 default:
                     throw new System.InvalidOperationException();
@@ -242,21 +242,21 @@ namespace LuaDec.Decompile
             switch (code.GetOp(line).Type)
             {
                 case Op.OpT.MOVE:
-                    return r.getValue(B, previous);
+                    return r.GetValue(B, previous);
 
-                case Op.OpT.SETUPVAL:
+                case Op.OpT.SETUPVALUE:
                 case Op.OpT.SETGLOBAL:
-                    return r.getExpression(A, previous);
+                    return r.GetExpression(A, previous);
 
                 case Op.OpT.SETTABLE:
                 case Op.OpT.SETTABUP:
-                    if (f.isConstant(C))
+                    if (f.IsConstant(C))
                     {
                         throw new System.InvalidOperationException();
                     }
                     else
                     {
-                        return r.getExpression(C, previous);
+                        return r.GetExpression(C, previous);
                     }
                 case Op.OpT.SETTABLE54:
                 case Op.OpT.SETI:
@@ -268,7 +268,7 @@ namespace LuaDec.Decompile
                     }
                     else
                     {
-                        return r.getExpression(C, previous);
+                        return r.GetExpression(C, previous);
                     }
                 default:
                     throw new System.InvalidOperationException();
@@ -277,14 +277,14 @@ namespace LuaDec.Decompile
 
         private void handle50BinOp(List<IOperation> operations, State state, int line, IExpression.BinaryOperation op)
         {
-            operations.Add(new RegisterSet(line, code.AField(line), IExpression.make(op, state.r.getKExpression(code.BField(line), line), state.r.getKExpression(code.CField(line), line))));
+            operations.Add(new RegisterSet(line, code.AField(line), IExpression.make(op, state.r.GetKExpression(code.BField(line), line), state.r.GetKExpression(code.CField(line), line))));
         }
 
         private void handle54BinKOp(List<IOperation> operations, State state, int line, IExpression.BinaryOperation op)
         {
             if (line + 1 > code.Length || code.GetOp(line + 1) != Op.MMBINK) throw new System.InvalidOperationException();
-            IExpression left = state.r.getExpression(code.BField(line), line);
-            IExpression right = f.getConstantExpression(code.CField(line));
+            IExpression left = state.r.GetExpression(code.BField(line), line);
+            IExpression right = f.GetConstantExpression(code.CField(line));
             if (code.kField(line + 1))
             {
                 IExpression temp = left;
@@ -296,7 +296,7 @@ namespace LuaDec.Decompile
 
         private void handle54BinOp(List<IOperation> operations, State state, int line, IExpression.BinaryOperation op)
         {
-            operations.Add(new RegisterSet(line, code.AField(line), IExpression.make(op, state.r.getExpression(code.BField(line), line), state.r.getExpression(code.CField(line), line))));
+            operations.Add(new RegisterSet(line, code.AField(line), IExpression.make(op, state.r.GetExpression(code.BField(line), line), state.r.GetExpression(code.CField(line), line))));
         }
 
         private void handleInitialDeclares(Output output)
@@ -335,16 +335,16 @@ namespace LuaDec.Decompile
 
         private void handleSetList(List<IOperation> operations, State state, int line, int stack, int count, int offset)
         {
-            IExpression table = state.r.getValue(stack, line);
+            IExpression table = state.r.GetValue(stack, line);
             for (int i = 1; i <= count; i++)
             {
-                operations.Add(new TableSet(line, table, ConstantExpression.createint(offset + i), state.r.getExpression(stack + i, line), false, state.r.getUpdated(stack + i, line)));
+                operations.Add(new TableSet(line, table, ConstantExpression.createint(offset + i), state.r.GetExpression(stack + i, line), false, state.r.GetUpdated(stack + i, line)));
             }
         }
 
         private void handleUnaryOp(List<IOperation> operations, State state, int line, IExpression.UnaryOperation op)
         {
-            operations.Add(new RegisterSet(line, code.AField(line), IExpression.make(op, state.r.getExpression(code.BField(line), line))));
+            operations.Add(new RegisterSet(line, code.AField(line), IExpression.make(op, state.r.GetExpression(code.BField(line), line))));
         }
 
         private void handleUnusedConstants(IBlock outer)
@@ -363,7 +363,7 @@ namespace LuaDec.Decompile
             }
             else
             {
-                return state.r.getExpression(register, line - 1);
+                return state.r.GetExpression(register, line - 1);
             }
         }
 
@@ -373,23 +373,23 @@ namespace LuaDec.Decompile
             switch (code.GetOp(line).Type)
             {
                 case Op.OpT.MOVE:
-                    return r.isAssignable(code.AField(line), line) && !r.isLocal(code.BField(line), line);
+                    return r.IsAssignable(code.AField(line), line) && !r.IsLocal(code.BField(line), line);
 
-                case Op.OpT.SETUPVAL:
+                case Op.OpT.SETUPVALUE:
                 case Op.OpT.SETGLOBAL:
-                    return !r.isLocal(code.AField(line), line);
+                    return !r.IsLocal(code.AField(line), line);
 
                 case Op.OpT.SETTABLE:
                 case Op.OpT.SETTABUP:
                 {
                     int C = code.CField(line);
-                    if (f.isConstant(C))
+                    if (f.IsConstant(C))
                     {
                         return false;
                     }
                     else
                     {
-                        return !r.isLocal(C, line);
+                        return !r.IsLocal(C, line);
                     }
                 }
                 case Op.OpT.SETTABLE54:
@@ -403,7 +403,7 @@ namespace LuaDec.Decompile
                     }
                     else
                     {
-                        return !r.isLocal(code.CField(line), line);
+                        return !r.IsLocal(code.CField(line), line);
                     }
                 }
                 default:
@@ -423,7 +423,7 @@ namespace LuaDec.Decompile
             switch (code.GetOp(line).Type)
             {
                 case Op.OpT.MOVE:
-                    operations.Add(new RegisterSet(line, A, r.getExpression(B, line)));
+                    operations.Add(new RegisterSet(line, A, r.GetExpression(B, line)));
                     break;
 
                 case Op.OpT.LOADI:
@@ -435,12 +435,12 @@ namespace LuaDec.Decompile
                     break;
 
                 case Op.OpT.LOADK:
-                    operations.Add(new RegisterSet(line, A, f.getConstantExpression(Bx)));
+                    operations.Add(new RegisterSet(line, A, f.GetConstantExpression(Bx)));
                     break;
 
                 case Op.OpT.LOADKX:
                     if (line + 1 > code.Length || code.GetOp(line + 1) != Op.EXTRAARG) throw new System.InvalidOperationException();
-                    operations.Add(new RegisterSet(line, A, f.getConstantExpression(code.AxField(line + 1))));
+                    operations.Add(new RegisterSet(line, A, f.GetConstantExpression(code.AxField(line + 1))));
                     break;
 
                 case Op.OpT.LOADBOOL:
@@ -465,67 +465,67 @@ namespace LuaDec.Decompile
                     break;
 
                 case Op.OpT.GETGLOBAL:
-                    operations.Add(new RegisterSet(line, A, f.getGlobalExpression(Bx)));
+                    operations.Add(new RegisterSet(line, A, f.GetGlobalExpression(Bx)));
                     break;
 
                 case Op.OpT.SETGLOBAL:
-                    operations.Add(new GlobalSet(line, f.getGlobalName(Bx), r.getExpression(A, line)));
+                    operations.Add(new GlobalSet(line, f.GetGlobalName(Bx), r.GetExpression(A, line)));
                     break;
 
-                case Op.OpT.GETUPVAL:
+                case Op.OpT.GETUPVALUE:
                     operations.Add(new RegisterSet(line, A, upvalues.getExpression(B)));
                     break;
 
-                case Op.OpT.SETUPVAL:
-                    operations.Add(new UpvalueSet(line, upvalues.getName(B), r.getExpression(A, line)));
+                case Op.OpT.SETUPVALUE:
+                    operations.Add(new UpvalueSet(line, upvalues.getName(B), r.GetExpression(A, line)));
                     break;
 
                 case Op.OpT.GETTABUP:
-                    operations.Add(new RegisterSet(line, A, new TableReference(upvalues.getExpression(B), r.getKExpression(C, line))));
+                    operations.Add(new RegisterSet(line, A, new TableReference(upvalues.getExpression(B), r.GetKExpression(C, line))));
                     break;
 
                 case Op.OpT.GETTABUP54:
-                    operations.Add(new RegisterSet(line, A, new TableReference(upvalues.getExpression(B), f.getConstantExpression(C))));
+                    operations.Add(new RegisterSet(line, A, new TableReference(upvalues.getExpression(B), f.GetConstantExpression(C))));
                     break;
 
                 case Op.OpT.GETTABLE:
-                    operations.Add(new RegisterSet(line, A, new TableReference(r.getExpression(B, line), r.getKExpression(C, line))));
+                    operations.Add(new RegisterSet(line, A, new TableReference(r.GetExpression(B, line), r.GetKExpression(C, line))));
                     break;
 
                 case Op.OpT.GETTABLE54:
-                    operations.Add(new RegisterSet(line, A, new TableReference(r.getExpression(B, line), r.getExpression(C, line))));
+                    operations.Add(new RegisterSet(line, A, new TableReference(r.GetExpression(B, line), r.GetExpression(C, line))));
                     break;
 
                 case Op.OpT.GETI:
-                    operations.Add(new RegisterSet(line, A, new TableReference(r.getExpression(B, line), ConstantExpression.createint(C))));
+                    operations.Add(new RegisterSet(line, A, new TableReference(r.GetExpression(B, line), ConstantExpression.createint(C))));
                     break;
 
                 case Op.OpT.GETFIELD:
-                    operations.Add(new RegisterSet(line, A, new TableReference(r.getExpression(B, line), f.getConstantExpression(C))));
+                    operations.Add(new RegisterSet(line, A, new TableReference(r.GetExpression(B, line), f.GetConstantExpression(C))));
                     break;
 
                 case Op.OpT.SETTABLE:
-                    operations.Add(new TableSet(line, r.getExpression(A, line), r.getKExpression(B, line), r.getKExpression(C, line), true, line));
+                    operations.Add(new TableSet(line, r.GetExpression(A, line), r.GetKExpression(B, line), r.GetKExpression(C, line), true, line));
                     break;
 
                 case Op.OpT.SETTABLE54:
-                    operations.Add(new TableSet(line, r.getExpression(A, line), r.getExpression(B, line), r.getKExpression54(C, code.kField(line), line), true, line));
+                    operations.Add(new TableSet(line, r.GetExpression(A, line), r.GetExpression(B, line), r.GetKExpression54(C, code.kField(line), line), true, line));
                     break;
 
                 case Op.OpT.SETI:
-                    operations.Add(new TableSet(line, r.getExpression(A, line), ConstantExpression.createint(B), r.getKExpression54(C, code.kField(line), line), true, line));
+                    operations.Add(new TableSet(line, r.GetExpression(A, line), ConstantExpression.createint(B), r.GetKExpression54(C, code.kField(line), line), true, line));
                     break;
 
                 case Op.OpT.SETFIELD:
-                    operations.Add(new TableSet(line, r.getExpression(A, line), f.getConstantExpression(B), r.getKExpression54(C, code.kField(line), line), true, line));
+                    operations.Add(new TableSet(line, r.GetExpression(A, line), f.GetConstantExpression(B), r.GetKExpression54(C, code.kField(line), line), true, line));
                     break;
 
                 case Op.OpT.SETTABUP:
-                    operations.Add(new TableSet(line, upvalues.getExpression(A), r.getKExpression(B, line), r.getKExpression(C, line), true, line));
+                    operations.Add(new TableSet(line, upvalues.getExpression(A), r.GetKExpression(B, line), r.GetKExpression(C, line), true, line));
                     break;
 
                 case Op.OpT.SETTABUP54:
-                    operations.Add(new TableSet(line, upvalues.getExpression(A), f.getConstantExpression(B), r.getKExpression54(C, code.kField(line), line), true, line));
+                    operations.Add(new TableSet(line, upvalues.getExpression(A), f.GetConstantExpression(B), r.GetKExpression54(C, code.kField(line), line), true, line));
                     break;
 
                 case Op.OpT.NEWTABLE50:
@@ -550,17 +550,17 @@ namespace LuaDec.Decompile
                 case Op.OpT.SELF:
                 {
                     // We can later determine if : syntax was used by comparing subexpressions with ==
-                    IExpression common = r.getExpression(B, line);
+                    IExpression common = r.GetExpression(B, line);
                     operations.Add(new RegisterSet(line, A + 1, common));
-                    operations.Add(new RegisterSet(line, A, new TableReference(common, r.getKExpression(C, line))));
+                    operations.Add(new RegisterSet(line, A, new TableReference(common, r.GetKExpression(C, line))));
                     break;
                 }
                 case Op.OpT.SELF54:
                 {
                     // We can later determine if : syntax was used by comparing subexpressions with ==
-                    IExpression common = r.getExpression(B, line);
+                    IExpression common = r.GetExpression(B, line);
                     operations.Add(new RegisterSet(line, A + 1, common));
-                    operations.Add(new RegisterSet(line, A, new TableReference(common, r.getKExpression54(C, code.kField(line), line))));
+                    operations.Add(new RegisterSet(line, A, new TableReference(common, r.GetKExpression54(C, code.kField(line), line))));
                     break;
                 }
                 case Op.OpT.ADD:
@@ -688,7 +688,7 @@ namespace LuaDec.Decompile
                             throw new System.InvalidOperationException();
                         }
                     }
-                    IExpression left = r.getExpression(B, line);
+                    IExpression left = r.GetExpression(B, line);
                     IExpression right = ConstantExpression.createint(immediate);
                     if (swap)
                     {
@@ -756,12 +756,12 @@ namespace LuaDec.Decompile
                     {
                         throw new System.InvalidOperationException();
                     }
-                    operations.Add(new RegisterSet(line, A, IExpression.make(op, r.getExpression(B, line), ConstantExpression.createint(immediate))));
+                    operations.Add(new RegisterSet(line, A, IExpression.make(op, r.GetExpression(B, line), ConstantExpression.createint(immediate))));
                     break;
                 }
                 case Op.OpT.SHLI:
                 {
-                    operations.Add(new RegisterSet(line, A, IExpression.make(IExpression.BinaryOperation.SHL, ConstantExpression.createint(code.sCField(line)), r.getExpression(B, line))));
+                    operations.Add(new RegisterSet(line, A, IExpression.make(IExpression.BinaryOperation.SHL, ConstantExpression.createint(code.sCField(line)), r.GetExpression(B, line))));
                     break;
                 }
                 case Op.OpT.MMBIN:
@@ -788,11 +788,11 @@ namespace LuaDec.Decompile
 
                 case Op.OpT.CONCAT:
                 {
-                    IExpression value = r.getExpression(C, line);
+                    IExpression value = r.GetExpression(C, line);
                     //Remember that CONCAT is right associative.
                     while (C-- > B)
                     {
-                        value = IExpression.make(IExpression.BinaryOperation.CONCAT, r.getExpression(C, line), value);
+                        value = IExpression.make(IExpression.BinaryOperation.CONCAT, r.GetExpression(C, line), value);
                     }
                     operations.Add(new RegisterSet(line, A, value));
                     break;
@@ -801,10 +801,10 @@ namespace LuaDec.Decompile
                 {
                     if (B < 2) throw new System.InvalidOperationException();
                     B--;
-                    IExpression value = r.getExpression(A + B, line);
+                    IExpression value = r.GetExpression(A + B, line);
                     while (B-- > 0)
                     {
-                        value = IExpression.make(IExpression.BinaryOperation.CONCAT, r.getExpression(A + B, line), value);
+                        value = IExpression.make(IExpression.BinaryOperation.CONCAT, r.GetExpression(A + B, line), value);
                     }
                     operations.Add(new RegisterSet(line, A, value));
                     break;
@@ -833,7 +833,7 @@ namespace LuaDec.Decompile
                 {
                     if (getNoDebug() && A != B)
                     {
-                        operations.Add(new RegisterSet(line, A, IExpression.make(IExpression.BinaryOperation.OR, r.getExpression(B, line), initialExpression(state, A, line))));
+                        operations.Add(new RegisterSet(line, A, IExpression.make(IExpression.BinaryOperation.OR, r.GetExpression(B, line), initialExpression(state, A, line))));
                     }
                     break;
                 }
@@ -842,7 +842,7 @@ namespace LuaDec.Decompile
                 {
                     if (getNoDebug())
                     {
-                        operations.Add(new RegisterSet(line, A, IExpression.make(IExpression.BinaryOperation.OR, r.getExpression(B, line), initialExpression(state, A, line))));
+                        operations.Add(new RegisterSet(line, A, IExpression.make(IExpression.BinaryOperation.OR, r.GetExpression(B, line), initialExpression(state, A, line))));
                     }
                     break;
                 }
@@ -851,11 +851,11 @@ namespace LuaDec.Decompile
                     bool multiple = (C >= 3 || C == 0);
                     if (B == 0) B = registers - A;
                     if (C == 0) C = registers - A + 1;
-                    IExpression function = r.getExpression(A, line);
+                    IExpression function = r.GetExpression(A, line);
                     IExpression[] arguments = new IExpression[B - 1];
                     for (int register = A + 1; register <= A + B - 1; register++)
                     {
-                        arguments[register - A - 1] = r.getExpression(register, line);
+                        arguments[register - A - 1] = r.GetExpression(register, line);
                     }
                     FunctionCall value = new FunctionCall(function, arguments, multiple);
                     if (C == 1)
@@ -879,11 +879,11 @@ namespace LuaDec.Decompile
                 case Op.OpT.TAILCALL54:
                 {
                     if (B == 0) B = registers - A;
-                    IExpression function = r.getExpression(A, line);
+                    IExpression function = r.GetExpression(A, line);
                     IExpression[] arguments = new IExpression[B - 1];
                     for (int register = A + 1; register <= A + B - 1; register++)
                     {
-                        arguments[register - A - 1] = r.getExpression(register, line);
+                        arguments[register - A - 1] = r.GetExpression(register, line);
                     }
                     FunctionCall value = new FunctionCall(function, arguments, true);
                     operations.Add(new ReturnOperation(line, value));
@@ -897,7 +897,7 @@ namespace LuaDec.Decompile
                     IExpression[] values = new IExpression[B - 1];
                     for (int register = A; register <= A + B - 2; register++)
                     {
-                        values[register - A] = r.getExpression(register, line);
+                        values[register - A] = r.GetExpression(register, line);
                     }
                     operations.Add(new ReturnOperation(line, values));
                     break;
@@ -907,7 +907,7 @@ namespace LuaDec.Decompile
                     break;
 
                 case Op.OpT.RETURN1:
-                    operations.Add(new ReturnOperation(line, new IExpression[] { r.getExpression(A, line) }));
+                    operations.Add(new ReturnOperation(line, new IExpression[] { r.GetExpression(A, line) }));
                     break;
 
                 case Op.OpT.FORLOOP:
@@ -979,7 +979,7 @@ namespace LuaDec.Decompile
                     break;
                 }
                 case Op.OpT.TBC:
-                    r.getDeclaration(A, line).tbc = true;
+                    r.GetDeclaration(A, line).tbc = true;
                     break;
 
                 case Op.OpT.CLOSE:
@@ -1001,7 +1001,7 @@ namespace LuaDec.Decompile
                                     upvalue.instack = true;
                                     break;
 
-                                case Op.OpT.GETUPVAL:
+                                case Op.OpT.GETUPVALUE:
                                     upvalue.instack = false;
                                     break;
 
@@ -1065,7 +1065,7 @@ namespace LuaDec.Decompile
                 if (assign != null)
                 {
                     bool declare = false;
-                    foreach (Declaration newLocal in r.getNewLocals(line, block.closeRegister))
+                    foreach (Declaration newLocal in r.GetNewLocals(line, block.closeRegister))
                     {
                         if (assign.getFirstTarget().isDeclaration(newLocal))
                         {
@@ -1146,7 +1146,7 @@ namespace LuaDec.Decompile
                     if (blockStack.Count == 0) return;
                     if (operation == null) throw new System.InvalidOperationException();
                     operations = new List<IOperation> { operation };
-                    prevLocals = r.getNewLocals(line - 1);
+                    prevLocals = r.GetNewLocals(line - 1);
                 }
                 else
                 {
@@ -1156,7 +1156,7 @@ namespace LuaDec.Decompile
                         labels_handled[line] = true;
                     }
 
-                    List<Declaration> rLocals = r.getNewLocals(line, blockStack.Peek().closeRegister);
+                    List<Declaration> rLocals = r.GetNewLocals(line, blockStack.Peek().closeRegister);
                     while (blockContainerIndex < blockContainers.Count && blockContainers[blockContainerIndex].begin <= line)
                     {
                         IBlock next = blockContainers[blockContainerIndex++];
@@ -1181,7 +1181,7 @@ namespace LuaDec.Decompile
 
                 IBlock block = blockStack.Peek();
 
-                r.startLine(line);
+                r.StartLine(line);
 
                 // Handle other sources of operations (after pushing any new container block)
                 if (operations == null)
@@ -1206,7 +1206,7 @@ namespace LuaDec.Decompile
                         }
                         if (line >= begin && line <= end)
                         {
-                            newLocals = r.getNewLocals(line, block.closeRegister);
+                            newLocals = r.GetNewLocals(line, block.closeRegister);
                         }
                     }
                 }
@@ -1256,7 +1256,7 @@ namespace LuaDec.Decompile
                     {
                         if ((scopeEnd == -1 || decl.end == scopeEnd) && decl.register >= block.closeRegister)
                         {
-                            assignment.addLast(new VariableTarget(decl), r.getValue(decl.register, line + 1), r.getUpdated(decl.register, line - 1));
+                            assignment.addLast(new VariableTarget(decl), r.GetValue(decl.register, line + 1), r.GetUpdated(decl.register, line - 1));
                         }
                     }
                 }

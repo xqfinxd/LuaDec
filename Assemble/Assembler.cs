@@ -343,22 +343,22 @@ namespace LuaDec.Assemble
                 int x;
                 switch (operand.format)
                 {
-                    case OperandFormat.Format.RAW:
-                    case OperandFormat.Format.IMMEDIATE_int:
-                    case OperandFormat.Format.IMMEDIATE_FLOAT:
+                    case OperandFormat.Format.Raw:
+                    case OperandFormat.Format.ImmediateUInt:
+                    case OperandFormat.Format.ImmediateFloat:
                         x = a.getInteger();
                         break;
-                    case OperandFormat.Format.IMMEDIATE_SIGNED_int:
+                    case OperandFormat.Format.ImmediateSInt:
                         x = a.getInteger();
                         x += field.max() / 2;
                         break;
-                    case OperandFormat.Format.REGISTER:
+                    case OperandFormat.Format.Register:
                         {
                             x = a.getRegister();
                             //TODO: stack warning
                             break;
                         }
-                    case OperandFormat.Format.REGISTER_K:
+                    case OperandFormat.Format.RegisterK:
                         {
                             Assembler.RKInfo rk = a.getRegisterK54();
                             x = rk.x;
@@ -369,26 +369,26 @@ namespace LuaDec.Assemble
                             //TODO: stack warning
                             break;
                         }
-                    case OperandFormat.Format.REGISTER_K54:
+                    case OperandFormat.Format.RegisterK54:
                         {
                             Assembler.RKInfo rk = a.getRegisterK54();
                             codepoint |= extract.k.encode(rk.constant ? 1 : 0);
                             x = rk.x;
                             break;
                         }
-                    case OperandFormat.Format.CONSTANT:
-                    case OperandFormat.Format.CONSTANT_int:
-                    case OperandFormat.Format.CONSTANT_STRING:
+                    case OperandFormat.Format.Constant:
+                    case OperandFormat.Format.ConstantNumber:
+                    case OperandFormat.Format.ConstantString:
                         {
                             x = a.getConstant();
                             break;
                         }
-                    case OperandFormat.Format.UPVALUE:
+                    case OperandFormat.Format.Upvalue:
                         {
                             x = a.getUpvalue();
                             break;
                         }
-                    case OperandFormat.Format.FUNCTION:
+                    case OperandFormat.Format.Function:
                         {
                             FunctionFixup fix = new FunctionFixup();
                             fix.code_index = code.Count;
@@ -398,7 +398,7 @@ namespace LuaDec.Assemble
                             x = 0;
                             break;
                         }
-                    case OperandFormat.Format.JUMP:
+                    case OperandFormat.Format.Jump:
                         {
                             JumpFixup fix = new JumpFixup();
                             fix.code_index = code.Count;
@@ -409,7 +409,7 @@ namespace LuaDec.Assemble
                             x = 0;
                             break;
                         }
-                    case OperandFormat.Format.JUMP_NEGATIVE:
+                    case OperandFormat.Format.JumpNegative:
                         {
                             JumpFixup fix = new JumpFixup();
                             fix.code_index = code.Count;

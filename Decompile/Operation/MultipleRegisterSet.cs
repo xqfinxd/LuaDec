@@ -30,10 +30,10 @@ namespace LuaDec.Decompile.Operation
             Assignment assignment = new Assignment();
             for (int register = registerFirst; register <= registerLast; register++)
             {
-                r.setValue(register, line, value);
-                if (r.isAssignable(register, line))
+                r.SetValue(register, line, value);
+                if (r.IsAssignable(register, line))
                 {
-                    assignment.addLast(r.getTarget(register, line), value, line);
+                    assignment.addLast(r.GetTarget(register, line), value, line);
                     count++;
                 }
             }

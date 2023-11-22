@@ -124,14 +124,14 @@ namespace LuaDec.Decompile.Block
             }
             public override List<IStatement> process(Registers r, IBlock block)
             {
-                if (r.isLocal(target, line))
+                if (r.IsLocal(target, line))
                 {
                     return new List<IStatement>{
-                        new Assignment(r.getTarget(target, line), cond
+                        new Assignment(r.GetTarget(target, line), cond
                         .asExpression(r), line)
                     };
                 }
-                r.setValue(target, line, cond.asExpression(r));
+                r.SetValue(target, line, cond.asExpression(r));
                 return new List<IStatement>();
             }
         }

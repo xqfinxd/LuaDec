@@ -82,7 +82,7 @@ namespace LuaDec.Decompile.Block
             {
                 if (fassign == null)
                 {
-                    r.setValue(test, line, fcombined.asExpression(r));
+                    r.SetValue(test, line, fcombined.asExpression(r));
                     return new List<IStatement>();
                 }
                 else
@@ -95,7 +95,7 @@ namespace LuaDec.Decompile.Block
         {
             int test = cond.register();
             //System.err.println(cond);
-            if (!scopeUsed && !redirected && test >= 0 && r.getUpdated(test, end - 1) >= begin && !d.getNoDebug())
+            if (!scopeUsed && !redirected && test >= 0 && r.GetUpdated(test, end - 1) >= begin && !d.getNoDebug())
             {
                 // Check for a single assignment
                 Assignment assign = null;

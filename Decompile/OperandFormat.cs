@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LuaDec.Decompile
+﻿namespace LuaDec.Decompile
 {
     public class OperandFormat
     {
@@ -23,55 +17,55 @@ namespace LuaDec.Decompile
 
         public enum Format
         {
-            RAW,
-            REGISTER,
-            UPVALUE,
-            REGISTER_K,
-            REGISTER_K54,
-            CONSTANT,
-            CONSTANT_int,
-            CONSTANT_STRING,
-            FUNCTION,
-            IMMEDIATE_int,
-            IMMEDIATE_SIGNED_int,
-            IMMEDIATE_FLOAT,
-            JUMP,
-            JUMP_NEGATIVE,
+            Raw,
+            Register,
+            Upvalue,
+            RegisterK,
+            RegisterK54,
+            Constant,
+            ConstantNumber,
+            ConstantString,
+            Function,
+            ImmediateUInt,
+            ImmediateSInt,
+            ImmediateFloat,
+            Jump,
+            JumpNegative,
         }
 
-        static readonly public OperandFormat A = new OperandFormat(Field.A, Format.RAW);
-        static readonly public OperandFormat AR = new OperandFormat(Field.A, Format.REGISTER);
-        static readonly public OperandFormat AU = new OperandFormat(Field.A, Format.UPVALUE);
-        static readonly public OperandFormat B = new OperandFormat(Field.B, Format.RAW);
-        static readonly public OperandFormat BR = new OperandFormat(Field.B, Format.REGISTER);
-        static readonly public OperandFormat BRK = new OperandFormat(Field.B, Format.REGISTER_K);
-        static readonly public OperandFormat BK = new OperandFormat(Field.B, Format.CONSTANT);
-        static readonly public OperandFormat BKS = new OperandFormat(Field.B, Format.CONSTANT_STRING);
-        static readonly public OperandFormat BI = new OperandFormat(Field.B, Format.IMMEDIATE_int);
-        static readonly public OperandFormat BsI = new OperandFormat(Field.B, Format.IMMEDIATE_SIGNED_int);
-        static readonly public OperandFormat BU = new OperandFormat(Field.B, Format.UPVALUE);
-        static readonly public OperandFormat C = new OperandFormat(Field.C, Format.RAW);
-        static readonly public OperandFormat CR = new OperandFormat(Field.C, Format.REGISTER);
-        static readonly public OperandFormat CRK = new OperandFormat(Field.C, Format.REGISTER_K);
-        static readonly public OperandFormat CRK54 = new OperandFormat(Field.C, Format.REGISTER_K54);
-        static readonly public OperandFormat CK = new OperandFormat(Field.C, Format.CONSTANT);
-        static readonly public OperandFormat CKI = new OperandFormat(Field.C, Format.CONSTANT_int);
-        static readonly public OperandFormat CKS = new OperandFormat(Field.C, Format.CONSTANT_STRING);
-        static readonly public OperandFormat CI = new OperandFormat(Field.C, Format.IMMEDIATE_int);
-        static readonly public OperandFormat CsI = new OperandFormat(Field.C, Format.IMMEDIATE_SIGNED_int);
-        static readonly public OperandFormat k = new OperandFormat(Field.k, Format.RAW);
-        static readonly public OperandFormat Ax = new OperandFormat(Field.Ax, Format.RAW);
-        static readonly public OperandFormat sJ = new OperandFormat(Field.sJ, Format.JUMP);
-        static readonly public OperandFormat Bx = new OperandFormat(Field.Bx, Format.RAW);
-        static readonly public OperandFormat BxK = new OperandFormat(Field.Bx, Format.CONSTANT);
-        static readonly public OperandFormat BxJ = new OperandFormat(Field.Bx, Format.JUMP);
-        static readonly public OperandFormat BxJ1 = new OperandFormat(Field.Bx, Format.JUMP, 1);
-        static readonly public OperandFormat BxJn = new OperandFormat(Field.Bx, Format.JUMP_NEGATIVE);
-        static readonly public OperandFormat BxF = new OperandFormat(Field.Bx, Format.FUNCTION);
-        static readonly public OperandFormat sBxJ = new OperandFormat(Field.sBx, Format.JUMP);
-        static readonly public OperandFormat sBxI = new OperandFormat(Field.sBx, Format.IMMEDIATE_int);
-        static readonly public OperandFormat sBxF = new OperandFormat(Field.sBx, Format.IMMEDIATE_FLOAT);
-        static readonly public OperandFormat x = new OperandFormat(Field.x, Format.RAW);
+        public static readonly OperandFormat A = new OperandFormat(Field.A, Format.Raw);
+        public static readonly OperandFormat AR = new OperandFormat(Field.A, Format.Register);
+        public static readonly OperandFormat AU = new OperandFormat(Field.A, Format.Upvalue);
+        public static readonly OperandFormat Ax = new OperandFormat(Field.Ax, Format.Raw);
+        public static readonly OperandFormat B = new OperandFormat(Field.B, Format.Raw);
+        public static readonly OperandFormat BI = new OperandFormat(Field.B, Format.ImmediateUInt);
+        public static readonly OperandFormat BK = new OperandFormat(Field.B, Format.Constant);
+        public static readonly OperandFormat BKS = new OperandFormat(Field.B, Format.ConstantString);
+        public static readonly OperandFormat BR = new OperandFormat(Field.B, Format.Register);
+        public static readonly OperandFormat BRK = new OperandFormat(Field.B, Format.RegisterK);
+        public static readonly OperandFormat BsI = new OperandFormat(Field.B, Format.ImmediateSInt);
+        public static readonly OperandFormat BU = new OperandFormat(Field.B, Format.Upvalue);
+        public static readonly OperandFormat Bx = new OperandFormat(Field.Bx, Format.Raw);
+        public static readonly OperandFormat BxF = new OperandFormat(Field.Bx, Format.Function);
+        public static readonly OperandFormat BxJ = new OperandFormat(Field.Bx, Format.Jump);
+        public static readonly OperandFormat BxJ1 = new OperandFormat(Field.Bx, Format.Jump, 1);
+        public static readonly OperandFormat BxJn = new OperandFormat(Field.Bx, Format.JumpNegative);
+        public static readonly OperandFormat BxK = new OperandFormat(Field.Bx, Format.Constant);
+        public static readonly OperandFormat C = new OperandFormat(Field.C, Format.Raw);
+        public static readonly OperandFormat CI = new OperandFormat(Field.C, Format.ImmediateUInt);
+        public static readonly OperandFormat CK = new OperandFormat(Field.C, Format.Constant);
+        public static readonly OperandFormat CKI = new OperandFormat(Field.C, Format.ConstantNumber);
+        public static readonly OperandFormat CKS = new OperandFormat(Field.C, Format.ConstantString);
+        public static readonly OperandFormat CR = new OperandFormat(Field.C, Format.Register);
+        public static readonly OperandFormat CRK = new OperandFormat(Field.C, Format.RegisterK);
+        public static readonly OperandFormat CRK54 = new OperandFormat(Field.C, Format.RegisterK54);
+        public static readonly OperandFormat CsI = new OperandFormat(Field.C, Format.ImmediateSInt);
+        public static readonly OperandFormat k = new OperandFormat(Field.k, Format.Raw);
+        public static readonly OperandFormat sBxF = new OperandFormat(Field.sBx, Format.ImmediateFloat);
+        public static readonly OperandFormat sBxI = new OperandFormat(Field.sBx, Format.ImmediateUInt);
+        public static readonly OperandFormat sBxJ = new OperandFormat(Field.sBx, Format.Jump);
+        public static readonly OperandFormat sJ = new OperandFormat(Field.sJ, Format.Jump);
+        public static readonly OperandFormat x = new OperandFormat(Field.x, Format.Raw);
 
         public readonly Field field;
         public readonly Format format;
@@ -80,7 +74,6 @@ namespace LuaDec.Decompile
         private OperandFormat(Field field, Format format)
             : this(field, format, 0)
         {
-
         }
 
         private OperandFormat(Field field, Format format, int offset)

@@ -305,7 +305,7 @@ namespace LuaDec.Decompile
 
         private static void handle_testset(State state, bool[] skip, int line, ICondition c, int target, int register, bool invert)
         {
-            if (state.r.isNoDebug && find_loadboolblock(state, target) == -1)
+            if (state.r.IsNoDebug && find_loadboolblock(state, target) == -1)
             {
                 if (invert) c = c.inverse();
                 Branch nb = new Branch(line, line, Branch.Type.test, c, line + 2, target, null);
@@ -1288,7 +1288,7 @@ namespace LuaDec.Decompile
                         handled = true; // TODO:
                     }
 
-                    if (!handled && (state.function.header.version.useGoto.Value || state.r.isNoDebug))
+                    if (!handled && (state.function.header.version.useGoto.Value || state.r.IsNoDebug))
                     {
                         Goto block = new Goto(state.function, b.line, b.targetFirst);
                         if (hanging.Count != 0 && hanging.Peek().targetSecond == b.targetFirst && enclosing_block(state, hanging.Peek().line) == enclosing)
@@ -1314,7 +1314,7 @@ namespace LuaDec.Decompile
                 IBlock breakable = enclosing_breakable_block(state, top.line);
                 if (breakable != null && breakable.end == top.targetSecond)
                 {
-                    if (state.function.header.version.useIfBreakRewrite.Value || state.r.isNoDebug)
+                    if (state.function.header.version.useIfBreakRewrite.Value || state.r.IsNoDebug)
                     {
                         IBlock block = new IfThenEndBlock(state.function, state.r, top.cond.inverse(), top.targetFirst - 1, top.targetFirst - 1);
                         block.addStatement(new Break(state.function, top.targetFirst - 1, top.targetSecond));
@@ -1325,9 +1325,9 @@ namespace LuaDec.Decompile
                         throw new System.InvalidOperationException();
                     }
                 }
-                else if (state.function.header.version.useGoto.Value || state.r.isNoDebug)
+                else if (state.function.header.version.useGoto.Value || state.r.IsNoDebug)
                 {
-                    if (state.function.header.version.useIfBreakRewrite.Value || state.r.isNoDebug)
+                    if (state.function.header.version.useIfBreakRewrite.Value || state.r.IsNoDebug)
                     {
                         IBlock block = new IfThenEndBlock(state.function, state.r, top.cond.inverse(), top.targetFirst - 1, top.targetFirst - 1);
                         block.addStatement(new Goto(state.function, top.targetFirst - 1, top.targetSecond));
@@ -2208,7 +2208,7 @@ namespace LuaDec.Decompile
         {
             if (state.reverse_targets[line]) return true;
             Registers r = state.r;
-            if (r.getNewLocals(line).Count != 0) return true;
+            if (r.GetNewLocals(line).Count != 0) return true;
             Code code = state.code;
             if (code.isUpvalueDeclaration(line)) return false;
             switch (code.GetOp(line).Type)
@@ -2223,7 +2223,7 @@ namespace LuaDec.Decompile
                 case Op.OpT.LOADTRUE:
                 case Op.OpT.LFALSESKIP:
                 case Op.OpT.GETGLOBAL:
-                case Op.OpT.GETUPVAL:
+                case Op.OpT.GETUPVALUE:
                 case Op.OpT.GETTABUP:
                 case Op.OpT.GETTABUP54:
                 case Op.OpT.GETTABLE:
@@ -2254,7 +2254,7 @@ namespace LuaDec.Decompile
                 case Op.OpT.CLOSURE:
                 case Op.OpT.TESTSET:
                 case Op.OpT.TESTSET54:
-                    return r.isLocal(code.AField(line), line);
+                    return r.IsLocal(code.AField(line), line);
                 case Op.OpT.ADD54:
                 case Op.OpT.SUB54:
                 case Op.OpT.MUL54:
@@ -2285,11 +2285,11 @@ namespace LuaDec.Decompile
                 case Op.OpT.MMBINI:
                 case Op.OpT.MMBINK:
                     if (line <= 1) throw new System.InvalidOperationException();
-                    return r.isLocal(code.AField(line - 1), line - 1);
+                    return r.IsLocal(code.AField(line - 1), line - 1);
                 case Op.OpT.LOADNIL:
                     for (int register = code.AField(line); register <= code.BField(line); register++)
                     {
-                        if (r.isLocal(register, line))
+                        if (r.IsLocal(register, line))
                         {
                             return true;
                         }
@@ -2298,14 +2298,14 @@ namespace LuaDec.Decompile
                 case Op.OpT.LOADNIL52:
                     for (int register = code.AField(line); register <= code.AField(line) + code.BField(line); register++)
                     {
-                        if (r.isLocal(register, line))
+                        if (r.IsLocal(register, line))
                         {
                             return true;
                         }
                     }
                     return false;
                 case Op.OpT.SETGLOBAL:
-                case Op.OpT.SETUPVAL:
+                case Op.OpT.SETUPVALUE:
                 case Op.OpT.SETTABUP:
                 case Op.OpT.SETTABUP54:
                 case Op.OpT.TAILCALL:
@@ -2329,10 +2329,10 @@ namespace LuaDec.Decompile
                 case Op.OpT.TBC: // TODO: ?
                     return true;
                 case Op.OpT.TEST50:
-                    return code.AField(line) != code.BField(line) && r.isLocal(code.AField(line), line);
+                    return code.AField(line) != code.BField(line) && r.IsLocal(code.AField(line), line);
                 case Op.OpT.SELF:
                 case Op.OpT.SELF54:
-                    return r.isLocal(code.AField(line), line) || r.isLocal(code.AField(line) + 1, line);
+                    return r.IsLocal(code.AField(line), line) || r.IsLocal(code.AField(line) + 1, line);
                 case Op.OpT.EQ:
                 case Op.OpT.LT:
                 case Op.OpT.LE:
@@ -2396,10 +2396,10 @@ namespace LuaDec.Decompile
                         {
                             return true;
                         }
-                        if (c == 0) c = r.registers - a + 1;
+                        if (c == 0) c = r.Value - a + 1;
                         for (int register = a; register < a + c - 1; register++)
                         {
-                            if (r.isLocal(register, line))
+                            if (r.IsLocal(register, line))
                             {
                                 return true;
                             }
@@ -2410,10 +2410,10 @@ namespace LuaDec.Decompile
                     {
                         int a = code.AField(line);
                         int b = code.BField(line);
-                        if (b == 0) b = r.registers - a + 1;
+                        if (b == 0) b = r.Value - a + 1;
                         for (int register = a; register < a + b - 1; register++)
                         {
-                            if (r.isLocal(register, line))
+                            if (r.IsLocal(register, line))
                             {
                                 return true;
                             }
@@ -2424,10 +2424,10 @@ namespace LuaDec.Decompile
                     {
                         int a = code.AField(line);
                         int c = code.CField(line);
-                        if (c == 0) c = r.registers - a + 1;
+                        if (c == 0) c = r.Value - a + 1;
                         for (int register = a; register < a + c - 1; register++)
                         {
-                            if (r.isLocal(register, line))
+                            if (r.IsLocal(register, line))
                             {
                                 return true;
                             }

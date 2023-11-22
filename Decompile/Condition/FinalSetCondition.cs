@@ -73,10 +73,10 @@ namespace LuaDec.Decompile.Condition
             switch (type)
             {
                 case Type.REGISTER:
-                    expr = r.getExpression(register(), line + 1);
+                    expr = r.GetExpression(register(), line + 1);
                     break;
                 case Type.VALUE:
-                    expr = r.getValue(register(), line + 1);
+                    expr = r.GetValue(register(), line + 1);
                     break;
                 case Type.NONE:
                 default:

@@ -89,7 +89,7 @@ namespace LuaDec.Decompile.Block
         {
             if (!repeat && condition == null)
             {
-                condition = f.getConstantExpression(index);
+                condition = f.GetConstantExpression(index);
                 return true;
             }
             else

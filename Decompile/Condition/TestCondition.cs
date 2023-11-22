@@ -56,7 +56,7 @@ namespace LuaDec.Decompile.Condition
 
         public override IExpression asExpression(Registers r)
         {
-            return r.getExpression(register(), line);
+            return r.GetExpression(register(), line);
         }
 
         public override string ToString()

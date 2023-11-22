@@ -30,28 +30,28 @@ namespace LuaDec.Decompile.Operation
             int scopeEnd = -1;
             for (int register = registerFirst; register <= registerLast; register++)
             {
-                if (r.isAssignable(register, line))
+                if (r.IsAssignable(register, line))
                 {
-                    scopeEnd = r.getDeclaration(register, line).end;
+                    scopeEnd = r.GetDeclaration(register, line).end;
                 }
             }
             for (int register = registerFirst; register <= registerLast; register++)
             {
-                r.setValue(register, line, nil);
-                if (r.isAssignable(register, line) && r.getDeclaration(register, line).end == scopeEnd && register >= block.closeRegister)
+                r.SetValue(register, line, nil);
+                if (r.IsAssignable(register, line) && r.GetDeclaration(register, line).end == scopeEnd && register >= block.closeRegister)
                 {
-                    if ((r.getDeclaration(register, line).begin == line))
+                    if ((r.GetDeclaration(register, line).begin == line))
                     {
                         if (declare == null)
                         {
                             declare = new Assignment();
                             assignments.Add(declare);
                         }
-                        declare.addLast(r.getTarget(register, line), nil, line);
+                        declare.addLast(r.GetTarget(register, line), nil, line);
                     }
                     else
                     {
-                        assignments.Add(new Assignment(r.getTarget(register, line), nil, line));
+                        assignments.Add(new Assignment(r.GetTarget(register, line), nil, line));
                     }
                 }
             }

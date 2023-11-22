@@ -5,7 +5,6 @@ namespace LuaDec.Decompile
 {
     public class Upvalues
     {
-
         private readonly LUpvalue[] upvalues;
 
         public Upvalues(LFunction func, Declaration[] parentDecls, int line)
@@ -41,6 +40,11 @@ namespace LuaDec.Decompile
             }
         }
 
+        public UpvalueExpression getExpression(int index)
+        {
+            return new UpvalueExpression(getName(index));
+        }
+
         public string getName(int index)
         {
             if (index < upvalues.Length && upvalues[index].name != null && upvalues[index].name.Length != 0)
@@ -53,12 +57,5 @@ namespace LuaDec.Decompile
                 return "_UPVALUE" + index + "_";
             }
         }
-
-        public UpvalueExpression getExpression(int index)
-        {
-            return new UpvalueExpression(getName(index));
-        }
-
     }
-
 }

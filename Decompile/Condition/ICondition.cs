@@ -32,9 +32,9 @@ namespace LuaDec.Decompile.Condition
             {
                 switch (type)
                 {
-                    case OperandType.R: return r.getExpression(value, line);
-                    case OperandType.RK: return r.getKExpression(value, line);
-                    case OperandType.K: return r.getFunction().getConstantExpression(value);
+                    case OperandType.R: return r.GetExpression(value, line);
+                    case OperandType.RK: return r.GetKExpression(value, line);
+                    case OperandType.K: return r.GetFunction().GetConstantExpression(value);
                     case OperandType.I: return ConstantExpression.createint(value);
                     case OperandType.F: return ConstantExpression.createDouble(value);
                     default: throw new System.InvalidOperationException();
@@ -46,7 +46,7 @@ namespace LuaDec.Decompile.Condition
                 switch (type)
                 {
                     case OperandType.R: return true;
-                    case OperandType.RK: return !r.isKConstant(value);
+                    case OperandType.RK: return !r.IsKConstant(value);
                     case OperandType.K: return false;
                     case OperandType.I: return false;
                     case OperandType.F: return false;
@@ -58,10 +58,10 @@ namespace LuaDec.Decompile.Condition
             {
                 switch (type)
                 {
-                    case OperandType.R: return r.getUpdated(value, line);
+                    case OperandType.R: return r.GetUpdated(value, line);
                     case OperandType.RK:
-                        if (r.isKConstant(value)) throw new System.InvalidOperationException();
-                        return r.getUpdated(value, line);
+                        if (r.IsKConstant(value)) throw new System.InvalidOperationException();
+                        return r.GetUpdated(value, line);
                     default: throw new System.InvalidOperationException();
                 }
             }
