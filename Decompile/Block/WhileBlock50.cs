@@ -21,7 +21,7 @@ namespace LuaDec.Decompile.Block
 
         public override int scopeEnd()
         {
-            return usingClose && closeType != CloseType.NONE ? closeLine - 1 : enterTarget - 1;
+            return usingClose && closeType != CloseType.None ? closeLine - 1 : enterTarget - 1;
         }
 
         public override bool isUnprotected()

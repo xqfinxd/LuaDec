@@ -293,10 +293,10 @@ namespace LuaDec.Parser
 
         protected void write_extractor(BinaryWriter output, BHeader header, LHeader o)
         {
-            output.Write((byte)o.extractor.op.size);
-            output.Write((byte)o.extractor.A.size);
-            output.Write((byte)o.extractor.B.size);
-            output.Write((byte)o.extractor.C.size);
+            output.Write((byte)o.extractor.op.Size);
+            output.Write((byte)o.extractor.A.Size);
+            output.Write((byte)o.extractor.B.Size);
+            output.Write((byte)o.extractor.C.Size);
         }
 
         protected void parse_tail(BinaryReader buffer, BHeader header, LHeaderParseState s)

@@ -141,11 +141,11 @@ namespace LuaDec.Decompile
                 }
                 if (op == null)
                 {
-                    output.WriteLine(Op.defaultTostring(code.codepoint(line), function.header.version, code.getExtractor()));
+                    output.WriteLine(Op.defaultTostring(code.CodePoint(line), function.header.version, code.GetExtractor()));
                 }
                 else
                 {
-                    output.WriteLine(op.codePointTostring(code.codepoint(line), code.getExtractor(), cpLabel));
+                    output.WriteLine(op.codePointTostring(code.CodePoint(line), code.GetExtractor(), cpLabel));
                 }
                 //output.println("\t" + code.opcode(line) + " " + code.A(line) + " " + code.B(line) + " " + code.C(line) + " " + code.Bx(line) + " " + code.sBx(line) + " " + code.codepoint(line));
             }

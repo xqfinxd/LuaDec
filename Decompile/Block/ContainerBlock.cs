@@ -49,12 +49,12 @@ namespace LuaDec.Decompile.Block
 
         public override bool hasCloseLine()
         {
-            return closeType != CloseType.NONE;
+            return closeType != CloseType.None;
         }
 
         public override int getCloseLine()
         {
-            if (closeType == CloseType.NONE)
+            if (closeType == CloseType.None)
             {
                 throw new System.InvalidOperationException();
             }

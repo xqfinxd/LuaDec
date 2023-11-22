@@ -12,7 +12,7 @@ namespace LuaDec.Decompile.Block
     {
 
         public OuterBlock(LFunction function, int length)
-            : base(function, 0, length + 1, CloseType.NONE, -1, -2)
+            : base(function, 0, length + 1, CloseType.None, -1, -2)
         {
         }
 

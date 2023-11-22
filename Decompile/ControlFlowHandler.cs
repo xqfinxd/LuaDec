@@ -1167,8 +1167,8 @@ namespace LuaDec.Decompile
                         }
                         if (containsBreak)
                         {
-                            state.blocks.Add(new IfThenElseBlock(state.function, FixedCondition.TRUE, begin, b.line + 1, end, CloseType.NONE, -1));
-                            state.blocks.Add(new ElseEndBlock(state.function, b.line + 1, end, CloseType.NONE, -1));
+                            state.blocks.Add(new IfThenElseBlock(state.function, FixedCondition.TRUE, begin, b.line + 1, end, CloseType.None, -1));
+                            state.blocks.Add(new ElseEndBlock(state.function, b.line + 1, end, CloseType.None, -1));
                             RemoveBranch(state, b);
                         }
                         else
@@ -1259,7 +1259,7 @@ namespace LuaDec.Decompile
                             {
                                 block = new RepeatBlock(
                                   state.function, b.condition, b.targetSecond, b.targetFirst,
-                                  CloseType.NONE, -1,
+                                  CloseType.None, -1,
                                   false, -1
                                 );
                             }
@@ -1309,7 +1309,7 @@ namespace LuaDec.Decompile
                                 b.targetFirst = c.line;
                             }
                         }
-                        while (state.code.isUpvalueDeclaration(c.line))
+                        while (state.code.IsUpvalueDeclaration(c.line))
                         {
                             c.line--;
                             if (b.targetFirst == c.line + 1)
@@ -1415,7 +1415,7 @@ namespace LuaDec.Decompile
                             // TODO: make this work better with new close system
                             loop = new RepeatBlock(
                               state.function, b.condition, j.targetFirst, j.line + 1,
-                              CloseType.NONE, -1,
+                              CloseType.None, -1,
                               true, scopeEnd
                             );
                             RemoveBranch(state, b);
@@ -1452,18 +1452,18 @@ namespace LuaDec.Decompile
         {
             if (line < 1 || !IsClose(state, line))
             {
-                return CloseType.NONE;
+                return CloseType.None;
             }
             else
             {
                 Op op = state.code.GetOp(line);
                 if (op == Op.CLOSE)
                 {
-                    return state.function.header.version.closeSemantics.Value == Version.CloseSemantics.Lua54 ? CloseType.CLOSE54 : CloseType.CLOSE;
+                    return state.function.header.version.closeSemantics.Value == Version.CloseSemantics.Lua54 ? CloseType.Close54 : CloseType.Close;
                 }
                 else
                 {
-                    return CloseType.JMP;
+                    return CloseType.Jmp;
                 }
             }
         }
@@ -1764,7 +1764,7 @@ namespace LuaDec.Decompile
             Registers r = state.r;
             if (r.GetNewLocals(line).Count != 0) return true;
             Code code = state.code;
-            if (code.isUpvalueDeclaration(line)) return false;
+            if (code.IsUpvalueDeclaration(line)) return false;
             switch (code.GetOp(line).Type)
             {
                 case Op.OpT.MOVE:

@@ -2,9 +2,9 @@
 {
     public enum CloseType
     {
-        NONE,
-        CLOSE,
-        CLOSE54,
-        JMP,
+        None,
+        Close,
+        Close54,
+        Jmp,
     }
 }

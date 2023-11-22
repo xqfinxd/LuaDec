@@ -16,7 +16,7 @@ namespace LuaDec.Decompile.Block
 
         public override int scopeEnd()
         {
-            return usingClose && closeType == CloseType.CLOSE ? end - 3 : end - 2;
+            return usingClose && closeType == CloseType.Close ? end - 3 : end - 2;
         }
 
         public override bool isUnprotected()
@@ -45,7 +45,7 @@ namespace LuaDec.Decompile.Block
             cond = conds[0];
             return new IBlock[] {
               new IfThenElseBlock(function, conds[1], begin, line + 1, end - 1, closeType, line - 1),
-              new ElseEndBlock(function, line + 1, end - 1, CloseType.NONE, -1),
+              new ElseEndBlock(function, line + 1, end - 1, CloseType.None, -1),
             };
         }
 

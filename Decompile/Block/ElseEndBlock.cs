@@ -33,7 +33,7 @@ namespace LuaDec.Decompile.Block
 
         public override int scopeEnd()
         {
-            return usingClose && closeType == CloseType.CLOSE ? closeLine - 1 : base.scopeEnd();
+            return usingClose && closeType == CloseType.Close ? closeLine - 1 : base.scopeEnd();
         }
 
         public override bool isUnprotected()

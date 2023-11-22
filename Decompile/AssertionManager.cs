@@ -1,33 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LuaDec.Decompile
+﻿namespace LuaDec.Decompile
 {
-	public class AssertionManager
-	{
-		public static bool assertCritical(bool condition, string message)
-		{
-			if (condition)
-			{
-				// okay
-			}
-			else
-			{
-				critical(message);
-			}
-			return condition;
-		}
+    public class AssertionManager
+    {
+        private AssertionManager()
+        { }
 
-		public static void critical(string message)
-		{
-			throw new System.InvalidOperationException(message);
-		}
+        public static bool AssertCritical(bool condition, string message)
+        {
+            if (condition)
+            {
+            }
+            else
+            {
+                Critical(message);
+            }
+            return condition;
+        }
 
-		//static only
-		private AssertionManager() { }
-
-	}
+        public static void Critical(string message)
+        {
+            throw new System.InvalidOperationException(message);
+        }
+    }
 }

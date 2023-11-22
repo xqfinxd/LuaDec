@@ -22,13 +22,13 @@ namespace LuaDec.Decompile
 
         public int ConstantIndex(int register)
         {
-            return extract.get_k(register);
+            return extract.GetK(register);
         }
 
         public ConstantExpression GetConstantExpression(int constantIndex)
         {
             Constant constant = constants[constantIndex];
-            return new ConstantExpression(constant, constant.isIdentifier(version), constantIndex);
+            return new ConstantExpression(constant, constant.IsIdentifier(version), constantIndex);
         }
 
         public GlobalExpression GetGlobalExpression(int constantIndex)
@@ -39,7 +39,7 @@ namespace LuaDec.Decompile
         public ConstantExpression GetGlobalName(int constantIndex)
         {
             Constant constant = constants[constantIndex];
-            if (!constant.isIdentifierPermissive(version)) throw new System.InvalidOperationException();
+            if (!constant.IsIdentifierPermissive(version)) throw new System.InvalidOperationException();
             return new ConstantExpression(constant, true, constantIndex);
         }
 
@@ -50,7 +50,7 @@ namespace LuaDec.Decompile
 
         public bool IsConstant(int register)
         {
-            return extract.is_k(register);
+            return extract.IsK(register);
         }
     }
 }

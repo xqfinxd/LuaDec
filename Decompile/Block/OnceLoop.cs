@@ -7,7 +7,7 @@ namespace LuaDec.Decompile.Block
     {
 
         public OnceLoop(LFunction function, int begin, int end)
-             : base(function, begin, end, CloseType.NONE, -1, 0)
+             : base(function, begin, end, CloseType.None, -1, 0)
         {
         }
 

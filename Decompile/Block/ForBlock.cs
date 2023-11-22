@@ -46,7 +46,7 @@ namespace LuaDec.Decompile.Block
         {
             int scopeEnd = end - 2;
             if (forvarClose) scopeEnd--;
-            if (usingClose && (closeType == CloseType.CLOSE || closeType == CloseType.JMP)) scopeEnd--;
+            if (usingClose && (closeType == CloseType.Close || closeType == CloseType.Jmp)) scopeEnd--;
             return scopeEnd;
         }
 

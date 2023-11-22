@@ -103,10 +103,10 @@ namespace LuaDec.Assemble
                 case DirectiveT.INT_SIZE: output.WriteLine(header.intT.getSize().ToString()); break;
                 case DirectiveT.SIZE_T_SIZE: output.WriteLine(header.sizeT.getSize().ToString()); break;
                 case DirectiveT.INSTRUCTION_SIZE: output.WriteLine("4"); break;
-                case DirectiveT.SIZE_OP: output.WriteLine(header.extractor.op.size.ToString()); break;
-                case DirectiveT.SIZE_A: output.WriteLine(header.extractor.A.size.ToString()); break;
-                case DirectiveT.SIZE_B: output.WriteLine(header.extractor.B.size.ToString()); break;
-                case DirectiveT.SIZE_C: output.WriteLine(header.extractor.C.size.ToString()); break;
+                case DirectiveT.SIZE_OP: output.WriteLine(header.extractor.op.Size.ToString()); break;
+                case DirectiveT.SIZE_A: output.WriteLine(header.extractor.A.Size.ToString()); break;
+                case DirectiveT.SIZE_B: output.WriteLine(header.extractor.B.Size.ToString()); break;
+                case DirectiveT.SIZE_C: output.WriteLine(header.extractor.C.Size.ToString()); break;
                 case DirectiveT.NUMBER_FORMAT: output.WriteLine((header.numberT.integral ? "int" : "float") + "\t" + header.numberT.size.ToString()); break;
                 case DirectiveT.INT_FORMAT: output.WriteLine(header.longT.size.ToString()); break;
                 case DirectiveT.FLOAT_FORMAT: output.WriteLine(header.doubleT.size.ToString()); break;

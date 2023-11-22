@@ -369,7 +369,7 @@ namespace LuaDec.Decompile
 
         private bool isMoveIntoTarget(Registers r, int line)
         {
-            if (code.isUpvalueDeclaration(line)) return false;
+            if (code.IsUpvalueDeclaration(line)) return false;
             switch (code.GetOp(line).Type)
             {
                 case Op.OpT.MOVE:
@@ -542,7 +542,7 @@ namespace LuaDec.Decompile
                     int arraySize = C;
                     if (code.kField(line))
                     {
-                        arraySize += code.AxField(line + 1) * (code.getExtractor().C.max() + 1);
+                        arraySize += code.AxField(line + 1) * (code.GetExtractor().C.Max() + 1);
                     }
                     operations.Add(new RegisterSet(line, A, new TableLiteral(arraySize, B == 0 ? 0 : (1 << (B - 1)))));
                     break;
@@ -938,7 +938,7 @@ namespace LuaDec.Decompile
                 {
                     if (C == 0)
                     {
-                        C = code.codepoint(line + 1);
+                        C = code.CodePoint(line + 1);
                         skip[line + 1] = true;
                     }
                     if (B == 0)
@@ -968,7 +968,7 @@ namespace LuaDec.Decompile
                     if (code.kField(line))
                     {
                         if (line + 1 > code.Length || code.GetOp(line + 1) != Op.EXTRAARG) throw new System.InvalidOperationException();
-                        C += code.AxField(line + 1) * (code.getExtractor().C.max() + 1);
+                        C += code.AxField(line + 1) * (code.GetExtractor().C.Max() + 1);
                         skip[line + 1] = true;
                     }
                     if (B == 0)
@@ -1086,7 +1086,7 @@ namespace LuaDec.Decompile
                             skip[nextLine] = true;
                             nextLine++;
                         }
-                        else if (op == Op.MMBIN || op == Op.MMBINI || op == Op.MMBINK || code.isUpvalueDeclaration(nextLine))
+                        else if (op == Op.MMBIN || op == Op.MMBINI || op == Op.MMBINK || code.IsUpvalueDeclaration(nextLine))
                         {
                             // skip
                             nextLine++;

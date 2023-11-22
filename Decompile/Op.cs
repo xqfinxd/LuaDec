@@ -435,19 +435,19 @@ namespace LuaDec.Decompile
                     case OperandFormat.Field.x: field = ex.x; break;
                     default: throw new System.InvalidOperationException();
                 }
-                int x = field.extract(codepoint);
+                int x = field.Extract(codepoint);
                 switch (operands[i].format)
                 {
                     case OperandFormat.Format.ImmediateUInt:
                     case OperandFormat.Format.ImmediateFloat:
                     case OperandFormat.Format.Raw: parameters[i] = fixedOperand(x); break;
-                    case OperandFormat.Format.ImmediateSInt: parameters[i] = fixedOperand(x - field.max() / 2); break;
+                    case OperandFormat.Format.ImmediateSInt: parameters[i] = fixedOperand(x - field.Max() / 2); break;
                     case OperandFormat.Format.Register: parameters[i] = registerOperand(x); break;
                     case OperandFormat.Format.Upvalue: parameters[i] = upvalueOperand(x); break;
                     case OperandFormat.Format.RegisterK:
-                        if (ex.is_k(x))
+                        if (ex.IsK(x))
                         {
-                            parameters[i] = constantOperand(ex.get_k(x));
+                            parameters[i] = constantOperand(ex.GetK(x));
                         }
                         else
                         {
@@ -456,7 +456,7 @@ namespace LuaDec.Decompile
                         break;
 
                     case OperandFormat.Format.RegisterK54:
-                        if (ex.k.extract(codepoint) != 0)
+                        if (ex.k.Extract(codepoint) != 0)
                         {
                             parameters[i] = constantOperand(x);
                         }
@@ -515,7 +515,7 @@ namespace LuaDec.Decompile
 
         public static string defaultTostring(int codepoint, Version version, CodeExtract ex)
         {
-            return tostringHelper(String.Format("op{0:D2}", ex.op.extract(codepoint)), version.DefaultOp.operands, codepoint, ex, null);
+            return tostringHelper(String.Format("op{0:D2}", ex.op.Extract(codepoint)), version.DefaultOp.operands, codepoint, ex, null);
         }
 
         public string codePointTostring(int codepoint, CodeExtract ex, string label)
@@ -527,7 +527,7 @@ namespace LuaDec.Decompile
         {
             if (Type == OpT.SETLIST)
             {
-                return ex.C.extract(codepoint) == 0;
+                return ex.C.Extract(codepoint) == 0;
             }
             else
             {
@@ -554,11 +554,11 @@ namespace LuaDec.Decompile
             {
                 case OpT.FORPREP54:
                 case OpT.TFORPREP54:
-                    return ex.Bx.extract(codepoint);
+                    return ex.Bx.Extract(codepoint);
 
                 case OpT.FORLOOP54:
                 case OpT.TFORLOOP54:
-                    return -ex.Bx.extract(codepoint);
+                    return -ex.Bx.Extract(codepoint);
 
                 case OpT.JMP:
                 case OpT.FORLOOP:
@@ -566,10 +566,10 @@ namespace LuaDec.Decompile
                 case OpT.JMP52:
                 case OpT.TFORLOOP52:
                 case OpT.TFORPREP:
-                    return ex.sBx.extract(codepoint);
+                    return ex.sBx.Extract(codepoint);
 
                 case OpT.JMP54:
-                    return ex.sJ.extract(codepoint);
+                    return ex.sJ.Extract(codepoint);
 
                 default:
                     throw new System.InvalidOperationException();
@@ -652,25 +652,25 @@ namespace LuaDec.Decompile
                 case OpT.TEST50:
                 case OpT.TESTSET:
                 case OpT.TESTSET54:
-                    return ex.A.extract(codepoint);
+                    return ex.A.Extract(codepoint);
 
                 case OpT.MMBIN:
                 case OpT.MMBINI:
                 case OpT.MMBINK:
                     return -1; // depends on previous instruction
                 case OpT.LOADNIL:
-                    if (ex.A.extract(codepoint) == ex.B.extract(codepoint))
+                    if (ex.A.Extract(codepoint) == ex.B.Extract(codepoint))
                     {
-                        return ex.A.extract(codepoint);
+                        return ex.A.Extract(codepoint);
                     }
                     else
                     {
                         return -1;
                     }
                 case OpT.LOADNIL52:
-                    if (ex.B.extract(codepoint) == 0)
+                    if (ex.B.Extract(codepoint) == 0)
                     {
-                        return ex.A.extract(codepoint);
+                        return ex.A.Extract(codepoint);
                     }
                     else
                     {
@@ -733,8 +733,8 @@ namespace LuaDec.Decompile
 
                 case OpT.CALL:
                 {
-                    int a = ex.A.extract(codepoint);
-                    int c = ex.C.extract(codepoint);
+                    int a = ex.A.Extract(codepoint);
+                    int c = ex.C.Extract(codepoint);
                     if (c == 2)
                     {
                         return a;
@@ -746,8 +746,8 @@ namespace LuaDec.Decompile
                 }
                 case OpT.VARARG:
                 {
-                    int a = ex.A.extract(codepoint);
-                    int b = ex.B.extract(codepoint);
+                    int a = ex.A.Extract(codepoint);
+                    int b = ex.B.Extract(codepoint);
                     if (b == 2)
                     {
                         return a;
@@ -759,8 +759,8 @@ namespace LuaDec.Decompile
                 }
                 case OpT.VARARG54:
                 {
-                    int a = ex.A.extract(codepoint);
-                    int c = ex.C.extract(codepoint);
+                    int a = ex.A.Extract(codepoint);
+                    int c = ex.C.Extract(codepoint);
                     if (c == 2)
                     {
                         return a;

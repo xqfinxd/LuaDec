@@ -12,7 +12,7 @@ namespace LuaDec.Decompile.Block
     {
 
         public DoEndBlock(LFunction function, int begin, int end)
-             : base(function, begin, end, CloseType.NONE, -1, 1)
+             : base(function, begin, end, CloseType.None, -1, 1)
         {
         }
 

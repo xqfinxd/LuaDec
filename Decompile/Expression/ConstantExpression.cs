@@ -37,7 +37,7 @@ namespace LuaDec.Decompile.Expression
 
         private static int getPrecedence(Constant constant)
         {
-            if (constant.isNumber() && constant.isNegative())
+            if (constant.IsNumber() && constant.IsNegative())
             {
                 return PRECEDENCE_UNARY;
             }
@@ -78,12 +78,12 @@ namespace LuaDec.Decompile.Expression
 
         public override void print(Decompiler d, Output output)
         {
-            constant.print(d, output, false);
+            constant.Print(d, output, false);
         }
 
         public override void printBraced(Decompiler d, Output output)
         {
-            constant.print(d, output, true);
+            constant.Print(d, output, true);
         }
 
         public override bool isConstant()
@@ -98,27 +98,27 @@ namespace LuaDec.Decompile.Expression
 
         public override bool isNil()
         {
-            return constant.isNil();
+            return constant.IsNil();
         }
 
         public override bool isbool()
         {
-            return constant.isbool();
+            return constant.IsBool();
         }
 
         public override bool isInteger()
         {
-            return constant.isint();
+            return constant.IsInt();
         }
 
         public override int asInteger()
         {
-            return constant.asint();
+            return constant.AsInt();
         }
 
         public override bool isString()
         {
-            return constant.isstring();
+            return constant.IsString();
         }
 
         public override bool isIdentifier()
@@ -128,12 +128,12 @@ namespace LuaDec.Decompile.Expression
 
         public override string asName()
         {
-            return constant.asName();
+            return constant.AsName();
         }
 
         public override bool isBrief()
         {
-            return !constant.isstring() || constant.asName().Length <= 10;
+            return !constant.IsString() || constant.AsName().Length <= 10;
         }
 
     }

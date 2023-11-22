@@ -22,7 +22,7 @@ namespace LuaDec.Decompile
             {
                 int line = i + 1;
                 Op op = GetOp(line);
-                extraByte[i] = op != null && op.hasExtraByte(codepoint(line), extractor);
+                extraByte[i] = op != null && op.hasExtraByte(CodePoint(line), extractor);
             }
             upvalue = new bool[Length];
             if (function.header.version.upvalueDeclarationType.Value == Version.UpvalueDeclarationType.Inline)
@@ -51,139 +51,91 @@ namespace LuaDec.Decompile
 
         public int AField(int line)
         {
-            return extractor.A.extract(code[line - 1]);
+            return extractor.A.Extract(code[line - 1]);
         }
 
         public int AxField(int line)
         {
-            return extractor.Ax.extract(code[line - 1]);
+            return extractor.Ax.Extract(code[line - 1]);
         }
 
         public int BField(int line)
         {
-            return extractor.B.extract(code[line - 1]);
+            return extractor.B.Extract(code[line - 1]);
         }
 
         public int BxField(int line)
         {
-            return extractor.Bx.extract(code[line - 1]);
+            return extractor.Bx.Extract(code[line - 1]);
         }
 
         public int CField(int line)
         {
-            return extractor.C.extract(code[line - 1]);
+            return extractor.C.Extract(code[line - 1]);
         }
 
-        public int codepoint(int line)
+        public int CodePoint(int line)
         {
             return code[line - 1];
         }
 
-        public CodeExtract getExtractor()
+        public CodeExtract GetExtractor()
         {
             return extractor;
         }
 
-        //public bool reentered = false;
-
-        /**
-         * Returns the operation indicated by the instruction at the given line.
-         */
-
         public Op GetOp(int line)
         {
-            /*if(!reentered) {
-              reentered = true;
-              System.output.println("line " + line + ": " + tostring(line));
-              reentered = false;
-            }*/
             if (line >= 2 && extraByte[line - 2])
             {
                 return Op.EXTRABYTE;
             }
             else
             {
-                return map.GetOp(opcode(line));
+                return map.GetOp(OpCode(line));
             }
         }
 
-        public bool isUpvalueDeclaration(int line)
+        public bool IsUpvalueDeclaration(int line)
         {
             return upvalue[line - 1];
         }
 
         public bool kField(int line)
         {
-            return extractor.k.extract(code[line - 1]) != 0;
+            return extractor.k.Extract(code[line - 1]) != 0;
         }
 
-        public int opcode(int line)
+        public int OpCode(int line)
         {
-            return extractor.op.extract(code[line - 1]);
+            return extractor.op.Extract(code[line - 1]);
         }
-
-        /**
-         * Returns the A field of the instruction at the given line.
-         */
-        /**
-         * Returns the C field of the instruction at the given line.
-         */
-        /**
-         * Returns the sC (signed C) field of the instruction at the given line.
-         */
 
         public int sBField(int line)
         {
             int B = BField(line);
-            return B - extractor.B.max() / 2;
+            return B - extractor.B.Max() / 2;
         }
 
         public int sBxField(int line)
         {
-            return extractor.sBx.extract(code[line - 1]);
+            return extractor.sBx.Extract(code[line - 1]);
         }
 
         public int sCField(int line)
         {
             int C = CField(line);
-            return C - extractor.C.max() / 2;
+            return C - extractor.C.Max() / 2;
         }
-
-        /**
-         * Returns the k field of the instruction at the given line (1 is true, 0 is false).
-         */
-        /**
-         * Returns the B field of the instruction at the given line.
-         */
-        /**
-         * Returns the sB (signed B) field of the instruction at the given line.
-         */
-        /**
-         * Returns the Ax field (A extended) of the instruction at the given line.
-         */
-        /**
-         * Returns the Bx field (B extended) of the instruction at the given line.
-         */
-        /**
-         * Returns the sBx field (signed B extended) of the instruction at the given line.
-         */
-        /**
-         * Returns the absolute target address of a jump instruction and the given line.
-         * This field will be chosen automatically based on the opcode.
-         */
 
         public int target(int line)
         {
-            return line + 1 + GetOp(line).jumpField(codepoint(line), extractor);
+            return line + 1 + GetOp(line).jumpField(CodePoint(line), extractor);
         }
-
-        /**
-         * Returns the full instruction codepoint at the given line.
-         */
 
         public string ToString(int line)
         {
-            return GetOp(line).codePointTostring(codepoint(line), extractor, null);
+            return GetOp(line).codePointTostring(CodePoint(line), extractor, null);
         }
     }
 }

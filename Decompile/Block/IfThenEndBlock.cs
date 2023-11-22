@@ -25,14 +25,14 @@ namespace LuaDec.Decompile.Block
         }
 
         public IfThenEndBlock(LFunction function, Registers r, ICondition cond, int begin, int end)
-            : this(function, r, cond, begin, end, CloseType.NONE, -1, false)
+            : this(function, r, cond, begin, end, CloseType.None, -1, false)
         {
 
         }
 
         public override int scopeEnd()
         {
-            return usingClose && closeType == CloseType.CLOSE ? closeLine - 1 : base.scopeEnd();
+            return usingClose && closeType == CloseType.Close ? closeLine - 1 : base.scopeEnd();
         }
 
         public override void resolve(Registers r)

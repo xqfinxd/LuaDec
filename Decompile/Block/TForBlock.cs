@@ -91,7 +91,7 @@ namespace LuaDec.Decompile.Block
           int explicitScopeBegin, int explicitScopeEnd,
           int innerScopeEnd
         )
-            : base(function, begin, end, CloseType.NONE, -1, -1)
+            : base(function, begin, end, CloseType.None, -1, -1)
         {
             this.internalRegisterFirst = internalRegisterFirst;
             this.internalRegisterLast = internalRegisterLast;

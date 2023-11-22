@@ -41,11 +41,11 @@ namespace LuaDec.Decompile.Block
         {
             if (extendedRepeatScope)
             {
-                return usingClose && closeType != CloseType.NONE ? closeLine - 1 : repeatScopeEnd;
+                return usingClose && closeType != CloseType.None ? closeLine - 1 : repeatScopeEnd;
             }
             else
             {
-                return usingClose && closeType != CloseType.NONE ? closeLine : base.scopeEnd();
+                return usingClose && closeType != CloseType.None ? closeLine : base.scopeEnd();
             }
         }
 

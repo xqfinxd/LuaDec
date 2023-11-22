@@ -322,8 +322,8 @@ namespace LuaDec.Assemble
         public void processOp(Assembler a, CodeExtract extract, Op op, int opcode)
         {
             if (!hasMaxStackSize) throw new AssemblerException("Expected .maxstacksize before code");
-            if (opcode >= 0 && !extract.op.check(opcode)) throw new System.InvalidOperationException("Invalid opcode: " + opcode);
-            int codepoint = opcode >= 0 ? extract.op.encode(opcode) : 0;
+            if (opcode >= 0 && !extract.op.Check(opcode)) throw new System.InvalidOperationException("Invalid opcode: " + opcode);
+            int codepoint = opcode >= 0 ? extract.op.Encode(opcode) : 0;
             foreach (OperandFormat operand in op.Operands)
             {
                 CodeExtract.Field field;
@@ -350,7 +350,7 @@ namespace LuaDec.Assemble
                         break;
                     case OperandFormat.Format.ImmediateSInt:
                         x = a.getInteger();
-                        x += field.max() / 2;
+                        x += field.Max() / 2;
                         break;
                     case OperandFormat.Format.Register:
                         {
@@ -372,7 +372,7 @@ namespace LuaDec.Assemble
                     case OperandFormat.Format.RegisterK54:
                         {
                             Assembler.RKInfo rk = a.getRegisterK54();
-                            codepoint |= extract.k.encode(rk.constant ? 1 : 0);
+                            codepoint |= extract.k.Encode(rk.constant ? 1 : 0);
                             x = rk.x;
                             break;
                         }
@@ -423,11 +423,11 @@ namespace LuaDec.Assemble
                     default:
                         throw new System.InvalidOperationException("Unhandled operand foreach mat in " + operand.format);
                 }
-                if (!field.check(x))
+                if (!field.Check(x))
                 {
                     throw new AssemblerException("Operand " + operand.field + " output of range");
                 }
-                codepoint |= field.encode(x);
+                codepoint |= field.Encode(x);
             }
             code.Add(codepoint);
         }
@@ -451,8 +451,8 @@ namespace LuaDec.Assemble
                 {
                     throw new AssemblerException("Unknown function: " + fix.function);
                 }
-                codepoint = fix.field.clear(codepoint);
-                codepoint |= fix.field.encode(x);
+                codepoint = fix.field.Clear(codepoint);
+                codepoint |= fix.field.Encode(x);
                 code[fix.code_index] = codepoint;
             }
 
@@ -475,8 +475,8 @@ namespace LuaDec.Assemble
                 {
                     throw new AssemblerException("Unknown label: " + fix.label);
                 }
-                codepoint = fix.field.clear(codepoint);
-                codepoint |= fix.field.encode(x);
+                codepoint = fix.field.Clear(codepoint);
+                codepoint |= fix.field.Encode(x);
                 code[fix.code_index] = codepoint;
             }
 

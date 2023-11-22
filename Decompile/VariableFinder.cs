@@ -130,7 +130,7 @@ namespace LuaDec.Decompile
 
         private static bool IsConstantReference(Decompiler d, int value)
         {
-            return d.function.header.extractor.is_k(value);
+            return d.function.header.extractor.IsK(value);
         }
 
         public static Declaration[] Process(Decompiler d, int args, int registers)
