@@ -31,11 +31,11 @@ namespace LuaDec.Decompile.Block
             return begin;
         }
 
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
             output.WriteLine("repeat");
             output.Indent();
-            printSequence(d, output, statements);
+            WriteSequence(d, output, statements);
             output.Dedent();
             output.WriteString("until true");
         }

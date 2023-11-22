@@ -40,13 +40,13 @@ namespace LuaDec.Decompile.Block
             condexpr = cond.asExpression(r);
         }
 
-        public override void walk(Walker w)
+        public override void Walk(Walker w)
         {
             w.VisitStatement(this);
             condexpr.walk(w);
             foreach (IStatement statement in statements)
             {
-                statement.walk(w);
+                statement.Walk(w);
             }
         }
 
@@ -115,7 +115,7 @@ namespace LuaDec.Decompile.Block
                         }
                     }
                 }
-                if (assign != null && (cond.isRegisterTest() || cond.isOrCondition() || assign.GetDeclaration()) && assign.getLastTarget().isLocal() && assign.getLastTarget().getIndex() == test || statements.Count == 0)
+                if (assign != null && (cond.isRegisterTest() || cond.isOrCondition() || assign.GetDeclaration()) && assign.getLastTarget().IsLocal() && assign.getLastTarget().GetIndex() == test || statements.Count == 0)
                 {
                     FinalSetCondition readonlyset = new FinalSetCondition(end - 1, test);
                     readonlyset.type = FinalSetCondition.Type.VALUE;
@@ -146,14 +146,14 @@ namespace LuaDec.Decompile.Block
             return base.process(d);
         }
 
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
             output.WriteString("if ");
             condexpr.print(d, output);
             output.WriteString(" then");
             output.WriteLine();
             output.Indent();
-            printSequence(d, output, statements);
+            WriteSequence(d, output, statements);
             output.Dedent();
             output.WriteString("end");
         }

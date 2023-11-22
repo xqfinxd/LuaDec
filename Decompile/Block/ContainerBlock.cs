@@ -23,12 +23,12 @@ namespace LuaDec.Decompile.Block
             statements = new List<IStatement>(Math.Max(4, end - begin + 1));
         }
 
-        public override void walk(Walker w)
+        public override void Walk(Walker w)
         {
             w.VisitStatement(this);
             foreach (IStatement statement in statements)
             {
-                statement.walk(w);
+                statement.Walk(w);
             }
         }
 

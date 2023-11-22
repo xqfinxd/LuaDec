@@ -36,7 +36,7 @@ namespace LuaDec.Decompile
                 }
                 output.WriteLine();
 
-                if (function.header.opmap != function.header.version.OpcodeMap)
+                if (function.header.opmap != function.header.version.LOpCodeMap)
                 {
                     OpCodeMap opmap = function.header.opmap;
                     for (int opcode = 0; opcode < opmap.Length; opcode++)

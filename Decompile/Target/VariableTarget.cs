@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LuaDec.Decompile.Target
+﻿namespace LuaDec.Decompile.Target
 {
     public class VariableTarget : ITarget
     {
-
         public readonly Declaration decl;
 
         public VariableTarget(Declaration decl)
@@ -16,38 +9,7 @@ namespace LuaDec.Decompile.Target
             this.decl = decl;
         }
 
-        public override void walk(Walker w) { }
-
-        public override void print(Decompiler d, Output output, bool declare)
-        {
-            output.WriteString(decl.name);
-            if (declare && decl.tbc)
-            {
-                output.WriteString(" <close>");
-            }
-        }
-
-        public override void printMethod(Decompiler d, Output output)
-        {
-            throw new System.InvalidOperationException();
-        }
-
-        public override bool isDeclaration(Declaration decl)
-        {
-            return this.decl == decl;
-        }
-
-        public override bool isLocal()
-        {
-            return true;
-        }
-
-        public override int getIndex()
-        {
-            return decl.register;
-        }
-
-        public bool equals(Object obj)
+        public override bool Equals(object obj)
         {
             if (obj is VariableTarget)
             {
@@ -60,6 +22,41 @@ namespace LuaDec.Decompile.Target
             }
         }
 
-    }
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
 
+        public override int GetIndex()
+        {
+            return decl.register;
+        }
+
+        public override bool IsDeclaration(Declaration decl)
+        {
+            return this.decl == decl;
+        }
+
+        public override bool IsLocal()
+        {
+            return true;
+        }
+
+        public override void Walk(Walker w)
+        { }
+
+        public override void Write(Decompiler d, Output output, bool declare)
+        {
+            output.WriteString(decl.name);
+            if (declare && decl.tbc)
+            {
+                output.WriteString(" <close>");
+            }
+        }
+
+        public override void WriteMethod(Decompiler d, Output output)
+        {
+            throw new System.InvalidOperationException();
+        }
+    }
 }

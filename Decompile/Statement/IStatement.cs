@@ -4,57 +4,63 @@ namespace LuaDec.Decompile.Statement
 {
     public abstract class IStatement
     {
-        public string comment;
-        public static void printSequence(Decompiler d, Output output, List<IStatement> stmts)
+        private string comment;
+
+        public string Comment { get => comment; set => comment = value; }
+
+        public static void WriteSequence(Decompiler d, Output output, List<IStatement> stmts)
         {
             int n = stmts.Count;
             for (int i = 0; i < n; i++)
             {
                 bool last = (i + 1 == n);
                 IStatement stmt = stmts[i];
-                if (stmt.beginsWithParen() && (i > 0 || d.getVersion().allowPreceedingSemicolon.Value))
+                if (stmt.BeginsWithParen() && (i > 0 || d.getVersion().allowPreceedingSemicolon.Value))
                 {
                     output.WriteString(";");
                 }
                 if (last)
                 {
-                    stmt.printTail(d, output);
+                    stmt.WriteTail(d, output);
                 }
                 else
                 {
-                    stmt.print(d, output);
+                    stmt.Write(d, output);
                 }
-                if (!stmt.suppressNewline())
+                if (!stmt.SuppressNewline())
                 {
                     output.WriteLine();
                 }
             }
         }
 
-        abstract public void print(Decompiler d, Output output);
-        public abstract void walk(Walker w);
-        public virtual void printTail(Decompiler d, Output output)
-        {
-            print(d, output);
-        }
-
-        public virtual void addComment(string comment)
+        public virtual void AddComment(string comment)
         {
             this.comment = comment;
         }
-        public virtual bool beginsWithParen()
-        {
-            return false;
-        }
-        public virtual bool suppressNewline()
-        {
-            return false;
-        }
-        public virtual bool useConstant(Function f, int index)
+
+        public virtual bool BeginsWithParen()
         {
             return false;
         }
 
+        public abstract void Write(Decompiler d, Output output);
+
+        public virtual void WriteTail(Decompiler d, Output output)
+        {
+            Write(d, output);
+        }
+
+        public virtual bool SuppressNewline()
+        {
+            return false;
+        }
+
+        public virtual bool UseConstant(Function f, int index)
+        {
+            return false;
+        }
+
+        public abstract void Walk(Walker w);
     }
-
 }

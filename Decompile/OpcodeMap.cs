@@ -25,11 +25,11 @@ namespace LuaDec.Decompile
             SetupLookup(false);
         }
 
-        public OpCodeMap(Version.OpcodeMapType type)
+        public OpCodeMap(Version.OpCodeMapType type)
         {
             switch (type)
             {
-                case Version.OpcodeMapType.Lua50:
+                case Version.OpCodeMapType.Lua50:
                     map = new Op[35];
                     map[0] = Op.MOVE;
                     map[1] = Op.LOADK;
@@ -68,7 +68,7 @@ namespace LuaDec.Decompile
                     map[34] = Op.CLOSURE;
                     break;
 
-                case Version.OpcodeMapType.Lua51:
+                case Version.OpCodeMapType.Lua51:
                     map = new Op[38];
                     map[0] = Op.MOVE;
                     map[1] = Op.LOADK;
@@ -110,7 +110,7 @@ namespace LuaDec.Decompile
                     map[37] = Op.VARARG;
                     break;
 
-                case Version.OpcodeMapType.Lua52:
+                case Version.OpCodeMapType.Lua52:
                     map = new Op[40];
                     map[0] = Op.MOVE;
                     map[1] = Op.LOADK;
@@ -154,7 +154,7 @@ namespace LuaDec.Decompile
                     map[39] = Op.EXTRAARG;
                     break;
 
-                case Version.OpcodeMapType.Lua53:
+                case Version.OpCodeMapType.Lua53:
                     map = new Op[47];
                     map[0] = Op.MOVE;
                     map[1] = Op.LOADK;
@@ -205,7 +205,7 @@ namespace LuaDec.Decompile
                     map[46] = Op.EXTRAARG;
                     break;
 
-                case Version.OpcodeMapType.Lua54:
+                case Version.OpCodeMapType.Lua54:
                     map = new Op[83];
                     map[0] = Op.MOVE;
                     map[1] = Op.LOADI;

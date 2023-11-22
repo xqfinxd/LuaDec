@@ -30,7 +30,7 @@ namespace LuaDec.Decompile.Block
 
         abstract public void handleVariableDeclarations(Registers r);
 
-        public override void walk(Walker w)
+        public override void Walk(Walker w)
         {
             w.VisitStatement(this);
             start.walk(w);
@@ -38,7 +38,7 @@ namespace LuaDec.Decompile.Block
             step.walk(w);
             foreach (IStatement statement in statements)
             {
-                statement.walk(w);
+                statement.Walk(w);
             }
         }
 
@@ -65,10 +65,10 @@ namespace LuaDec.Decompile.Block
             throw new System.InvalidOperationException();
         }
 
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
             output.WriteString("for ");
-            target.print(d, output, false);
+            target.Write(d, output, false);
             output.WriteString(" = ");
             start.print(d, output);
             output.WriteString(", ");
@@ -81,7 +81,7 @@ namespace LuaDec.Decompile.Block
             output.WriteString(" do");
             output.WriteLine();
             output.Indent();
-            printSequence(d, output, statements);
+            WriteSequence(d, output, statements);
             output.Dedent();
             output.WriteString("end");
         }

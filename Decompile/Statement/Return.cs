@@ -23,14 +23,14 @@ namespace LuaDec.Decompile.Statement
             this.values = values;
         }
 
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
             output.WriteString("do ");
-            printTail(d, output);
+            WriteTail(d, output);
             output.WriteString(" end");
         }
 
-        public override void printTail(Decompiler d, Output output)
+        public override void WriteTail(Decompiler d, Output output)
         {
             output.WriteString("return");
             if (values.Length > 0)
@@ -45,7 +45,7 @@ namespace LuaDec.Decompile.Statement
             }
         }
 
-        public override void walk(Walker w)
+        public override void Walk(Walker w)
         {
             w.VisitStatement(this);
             foreach (IExpression expression in values)

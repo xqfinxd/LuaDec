@@ -53,7 +53,7 @@ namespace LuaDec.Decompile.Block
             return begin;
         }
 
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
             if (repeat)
             {
@@ -73,7 +73,7 @@ namespace LuaDec.Decompile.Block
                 output.WriteLine(" do");
             }
             output.Indent();
-            IStatement.printSequence(d, output, statements);
+            IStatement.WriteSequence(d, output, statements);
             output.Dedent();
             if (repeat)
             {
@@ -85,7 +85,7 @@ namespace LuaDec.Decompile.Block
             }
         }
 
-        public override bool useConstant(Function f, int index)
+        public override bool UseConstant(Function f, int index)
         {
             if (!repeat && condition == null)
             {

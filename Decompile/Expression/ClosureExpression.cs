@@ -77,12 +77,12 @@ namespace LuaDec.Decompile.Expression
             output.WriteString("function ");
             if (function.numParams >= 1 && d.declarations[0].name == "self" && name is TableTarget)
             {
-                name.printMethod(outer, output);
+                name.WriteMethod(outer, output);
                 printMain(output, d, false);
             }
             else
             {
-                name.print(outer, output, false);
+                name.Write(outer, output, false);
                 printMain(output, d, true);
             }
         }
@@ -93,11 +93,11 @@ namespace LuaDec.Decompile.Expression
             int start = includeFirst ? 0 : 1;
             if (function.numParams > start)
             {
-                new VariableTarget(d.declarations[start]).print(d, output, false);
+                new VariableTarget(d.declarations[start]).Write(d, output, false);
                 for (int i = start + 1; i < function.numParams; i++)
                 {
                     output.WriteString(", ");
-                    new VariableTarget(d.declarations[i]).print(d, output, false);
+                    new VariableTarget(d.declarations[i]).Write(d, output, false);
                 }
             }
             if (function.varArg != 0)

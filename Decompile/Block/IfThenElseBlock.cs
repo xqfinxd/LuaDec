@@ -26,17 +26,17 @@ namespace LuaDec.Decompile.Block
             condexpr = cond.asExpression(r);
         }
 
-        public override void walk(Walker w)
+        public override void Walk(Walker w)
         {
             w.VisitStatement(this);
             condexpr.walk(w);
             foreach (IStatement statement in statements)
             {
-                statement.walk(w);
+                statement.Walk(w);
             }
         }
 
-        public override bool suppressNewline()
+        public override bool SuppressNewline()
         {
             return true;
         }
@@ -83,7 +83,7 @@ namespace LuaDec.Decompile.Block
             throw new System.InvalidOperationException();
         }
 
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
             output.WriteString("if ");
             condexpr.print(d, output);
@@ -91,7 +91,7 @@ namespace LuaDec.Decompile.Block
             output.WriteLine();
             output.Indent();
 
-            IStatement.printSequence(d, output, statements);
+            IStatement.WriteSequence(d, output, statements);
 
             output.Dedent();
 

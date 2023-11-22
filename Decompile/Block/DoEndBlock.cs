@@ -36,11 +36,11 @@ namespace LuaDec.Decompile.Block
             throw new System.InvalidOperationException();
         }
 
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
             output.WriteLine("do");
             output.Indent();
-            printSequence(d, output, statements);
+            WriteSequence(d, output, statements);
             output.Dedent();
             output.WriteString("end");
         }

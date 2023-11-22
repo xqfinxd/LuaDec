@@ -33,7 +33,7 @@ namespace LuaDec.Decompile.Block
             // System.output.println("-- set block " + begin + " .. " + end);
         }
 
-        public override void walk(Walker w)
+        public override void Walk(Walker w)
         {
             throw new System.InvalidOperationException();
         }
@@ -58,12 +58,12 @@ namespace LuaDec.Decompile.Block
             throw new System.InvalidOperationException();
         }
 
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
             if (assign != null && assign.getFirstTarget() != null)
             {
                 Assignment assignOut = new Assignment(assign.getFirstTarget(), getValue(), assign.getFirstLine());
-                assignOut.print(d, output);
+                assignOut.Write(d, output);
             }
             else
             {

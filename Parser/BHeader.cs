@@ -59,7 +59,7 @@ namespace LuaDec.Parser
             upvalueType = lheader.upvalue;
             functionType = lheader.function;
             extractor = lheader.extractor;
-            opmap = version.OpcodeMap;
+            opmap = version.LOpCodeMap;
             this.main = main;
         }
 
@@ -125,7 +125,7 @@ namespace LuaDec.Parser
                             }
                             tok = t.next();
                             if (tok == null) throw new System.InvalidOperationException("Unexpected end of opmap file.");
-                            Op op = version.OpcodeMap.GetOpByName(tok);
+                            Op op = version.LOpCodeMap.GetOpByName(tok);
                             if (op == null) throw new System.InvalidOperationException("Unknown op name \"" + tok + "\" in opmap file.");
                             useropmap.Add(opcode, op);
                         }
@@ -143,7 +143,7 @@ namespace LuaDec.Parser
             }
             else
             {
-                opmap = version.OpcodeMap;
+                opmap = version.LOpCodeMap;
             }
 
             int upvalues = -1;

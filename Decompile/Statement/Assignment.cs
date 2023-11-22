@@ -20,12 +20,12 @@ namespace LuaDec.Decompile.Statement
 
         }
 
-        public override void walk(Walker w)
+        public override void Walk(Walker w)
         {
             w.VisitStatement(this);
             foreach (ITarget target in targets)
             {
-                target.walk(w);
+                target.Walk(w);
             }
             foreach (IExpression expression in values)
             {
@@ -33,9 +33,9 @@ namespace LuaDec.Decompile.Statement
             }
         }
 
-        public override bool beginsWithParen()
+        public override bool BeginsWithParen()
         {
-            return !declare && targets[0].beginsWithParen();
+            return !declare && targets[0].BeginsWithParen();
         }
 
         public ITarget getFirstTarget()
@@ -67,7 +67,7 @@ namespace LuaDec.Decompile.Statement
         {
             foreach (ITarget target in targets)
             {
-                if (target.isDeclaration(decl))
+                if (target.IsDeclaration(decl))
                 {
                     return true;
                 }
@@ -117,7 +117,7 @@ namespace LuaDec.Decompile.Statement
             int index = 0;
             foreach (ITarget t in targets)
             {
-                if (t.isLocal() && t.getIndex() == target)
+                if (t.IsLocal() && t.GetIndex() == target)
                 {
                     return values[index];
                 }
@@ -131,7 +131,7 @@ namespace LuaDec.Decompile.Statement
             int index = 0;
             foreach (ITarget t in targets)
             {
-                if (t.isLocal() && t.getIndex() == target)
+                if (t.IsLocal() && t.GetIndex() == target)
                 {
                     values[index] = value;
                     //lines.set(index, line);
@@ -151,7 +151,7 @@ namespace LuaDec.Decompile.Statement
                 bool found = false;
                 foreach (Declaration decl in decls)
                 {
-                    if (target.isDeclaration(decl))
+                    if (target.IsDeclaration(decl))
                     {
                         found = true;
                         break;
@@ -177,7 +177,7 @@ namespace LuaDec.Decompile.Statement
         {
             foreach (ITarget target in targets)
             {
-                if (target.isDeclaration(decl)) return true;
+                if (target.IsDeclaration(decl)) return true;
             }
             return false;
         }
@@ -189,7 +189,7 @@ namespace LuaDec.Decompile.Statement
                 bool isNewLocal = false;
                 foreach (Declaration decl in locals)
                 {
-                    if (target.isDeclaration(decl))
+                    if (target.IsDeclaration(decl))
                     {
                         isNewLocal = true;
                         break;
@@ -203,7 +203,7 @@ namespace LuaDec.Decompile.Statement
             return true;
         }
 
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
             if (targets.Count > 0)
             {
@@ -213,7 +213,7 @@ namespace LuaDec.Decompile.Statement
                 }
 
                 bool functionSugar = false;
-                if (targets.Count == 1 && values.Count == 1 && values[0].isClosure() && targets[0].isFunctionName())
+                if (targets.Count == 1 && values.Count == 1 && values[0].isClosure() && targets[0].IsFunctionName())
                 {
                     IExpression closure = values[0];
 
@@ -221,18 +221,18 @@ namespace LuaDec.Decompile.Statement
                     {
                         functionSugar = true;
                     }
-                    if (targets[0].isLocal() && closure.isUpvalueOf(targets[0].getIndex()))
+                    if (targets[0].IsLocal() && closure.isUpvalueOf(targets[0].GetIndex()))
                     {
                         functionSugar = true;
                     }
                 }
                 if (!functionSugar)
                 {
-                    targets[0].print(d, output, declare);
+                    targets[0].Write(d, output, declare);
                     for (int i = 1; i < targets.Count; i++)
                     {
                         output.WriteString(", ");
-                        targets[i].print(d, output, declare);
+                        targets[i].Write(d, output, declare);
                     }
                     if (!declare || !allnil)
                     {
@@ -281,10 +281,10 @@ namespace LuaDec.Decompile.Statement
                 {
                     values[0].printClosure(d, output, targets[0]);
                 }
-                if (comment != null)
+                if (Comment != null)
                 {
                     output.WriteString(" -- ");
-                    output.WriteString(comment);
+                    output.WriteString(Comment);
                 }
             }
         }

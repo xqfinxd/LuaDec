@@ -19,7 +19,7 @@ namespace LuaDec.Decompile.Block
             this.target = target;
         }
 
-        public override void walk(Walker w)
+        public override void Walk(Walker w)
         {
             w.VisitStatement(this);
         }
@@ -55,7 +55,7 @@ namespace LuaDec.Decompile.Block
             throw new System.InvalidOperationException();
         }
 
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
             output.WriteString("goto lbl_" + target);
         }

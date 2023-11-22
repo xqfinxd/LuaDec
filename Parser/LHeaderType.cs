@@ -65,7 +65,7 @@ namespace LuaDec.Parser
             LHeaderParseState s = new LHeaderParseState();
             parse_main(buffer, header, s);
             LBooleanType boolType = new LBooleanType();
-            LStringType stringType = version.LstringType;
+            LStringType stringType = version.LStringType;
             LConstantType constant = version.LConstantType;
             LAbsLineInfoType abslineinfo = new LAbsLineInfoType();
             LLocalType local = new LLocalType();

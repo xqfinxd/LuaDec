@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LuaDec.Decompile.Target
+﻿namespace LuaDec.Decompile.Target
 {
     public class UpvalueTarget : ITarget
     {
-
         private readonly string name;
 
         public UpvalueTarget(string name)
@@ -16,18 +9,17 @@ namespace LuaDec.Decompile.Target
             this.name = name;
         }
 
-        public override void walk(Walker w) { }
+        public override void Walk(Walker w)
+        { }
 
-        public override void print(Decompiler d, Output output, bool declare)
+        public override void Write(Decompiler d, Output output, bool declare)
         {
             output.WriteString(name);
         }
 
-        public override void printMethod(Decompiler d, Output output)
+        public override void WriteMethod(Decompiler d, Output output)
         {
             throw new System.InvalidOperationException();
         }
-
     }
-
 }

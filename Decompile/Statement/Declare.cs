@@ -13,11 +13,11 @@ namespace LuaDec.Decompile.Statement
         {
             this.decls = decls;
         }
-        public override void walk(Walker w)
+        public override void Walk(Walker w)
         {
             w.VisitStatement(this);
         }
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
             output.WriteString("local ");
             output.WriteString(decls[0].name);

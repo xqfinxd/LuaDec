@@ -1,45 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LuaDec.Decompile.Target
+﻿namespace LuaDec.Decompile.Target
 {
-    abstract public class ITarget
+    public abstract class ITarget
     {
-
-        public abstract void walk(Walker w);
-
-        public abstract void print(Decompiler d, Output output, bool declare);
-
-        public abstract void printMethod(Decompiler d, Output output);
-
-        public virtual bool isDeclaration(Declaration decl)
+        public virtual bool BeginsWithParen()
         {
             return false;
         }
 
-        public virtual bool isLocal()
+        public virtual int GetIndex()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public virtual bool IsDeclaration(Declaration decl)
         {
             return false;
         }
 
-        public virtual int getIndex()
-        {
-            throw new System.InvalidOperationException();
-        }
-
-        public virtual bool isFunctionName()
+        public virtual bool IsFunctionName()
         {
             return true;
         }
 
-        public virtual bool beginsWithParen()
+        public virtual bool IsLocal()
         {
             return false;
         }
 
-    }
+        public abstract void Write(Decompiler d, Output output, bool declare);
 
+        public abstract void WriteMethod(Decompiler d, Output output);
+
+        public abstract void Walk(Walker w);
+    }
 }

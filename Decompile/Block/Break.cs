@@ -20,7 +20,7 @@ namespace LuaDec.Decompile.Block
           this.target = target;
         }
 
-        public override void walk(Walker w)
+        public override void Walk(Walker w)
         {
             w.VisitStatement(this);
         }
@@ -56,13 +56,13 @@ namespace LuaDec.Decompile.Block
             throw new System.InvalidOperationException();
         }
 
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
             output.WriteString("do break end");
             if (breakComment != null) output.WriteString(" -- " + breakComment);
         }
 
-        public override void printTail(Decompiler d, Output output)
+        public override void WriteTail(Decompiler d, Output output)
         {
             output.WriteString("break");
             if (breakComment != null) output.WriteString(" -- " + breakComment);

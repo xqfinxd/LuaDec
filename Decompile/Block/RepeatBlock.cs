@@ -27,12 +27,12 @@ namespace LuaDec.Decompile.Block
             condexpr = cond.asExpression(r);
         }
 
-        public override void walk(Walker w)
+        public override void Walk(Walker w)
         {
             w.VisitStatement(this);
             foreach (IStatement statement in statements)
             {
-                statement.walk(w);
+                statement.Walk(w);
             }
             condexpr.walk(w);
         }
@@ -64,12 +64,12 @@ namespace LuaDec.Decompile.Block
             throw new System.InvalidOperationException();
         }
 
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
             output.WriteString("repeat");
             output.WriteLine();
             output.Indent();
-            printSequence(d, output, statements);
+            WriteSequence(d, output, statements);
             output.Dedent();
             output.WriteString("until ");
             condexpr.print(d, output);

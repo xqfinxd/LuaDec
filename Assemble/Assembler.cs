@@ -613,7 +613,7 @@ namespace LuaDec.Assemble
                         }
                         int opcode = a.getInteger();
                         string name = a.getName();
-                        Op op = version.OpcodeMap.GetOpByName(name);
+                        Op op = version.LOpCodeMap.GetOpByName(name);
                         if (op == null)
                         {
                             throw new AssemblerException("Unknown op name \"" + name + "\"");
@@ -679,7 +679,7 @@ namespace LuaDec.Assemble
         public void write(BinaryWriter output)
         {
             LBooleanType boolType = new LBooleanType();
-            LStringType stringType = version.LstringType;
+            LStringType stringType = version.LStringType;
             LConstantType constantType = version.LConstantType;
             LAbsLineInfoType abslineinfo = new LAbsLineInfoType();
             LLocalType local = new LLocalType();
@@ -890,7 +890,7 @@ namespace LuaDec.Assemble
                                 }
                                 else
                                 {
-                                    opmap = version.OpcodeMap;
+                                    opmap = version.LOpCodeMap;
                                 }
                                 oplookup = new Dictionary<string, Op>();
                                 opcodelookup = new Dictionary<Op, int>();

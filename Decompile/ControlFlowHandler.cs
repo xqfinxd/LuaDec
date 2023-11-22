@@ -1181,7 +1181,7 @@ namespace LuaDec.Decompile
                                 {
                                     Break breakStatement = new Break(state.function, b2.line, b2.targetFirst);
                                     state.blocks.Add(breakStatement);
-                                    breakStatement.comment = "pseudo-goto";
+                                    breakStatement.Comment = "pseudo-goto";
                                     RemoveBranch(state, b2);
                                     if (b.next == b2)
                                     {

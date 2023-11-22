@@ -36,7 +36,7 @@ namespace LuaDec.Decompile.Block
             return (end - 1) + function.header.version.outerBlockScopeAdjustment.Value;
         }
 
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
             /* extra return statement */
             int last = statements.Count - 1;
@@ -45,7 +45,7 @@ namespace LuaDec.Decompile.Block
                 throw new System.InvalidOperationException(statements[last].ToString());
             }
             statements.RemoveAt(last);
-            printSequence(d, output, statements);
+            WriteSequence(d, output, statements);
         }
 
     }

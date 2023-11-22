@@ -69,7 +69,7 @@ namespace LuaDec.Decompile
             {
                 if (unusedConstants.Contains(nextConstant))
                 {
-                    if (statement.useConstant(f, nextConstant))
+                    if (statement.UseConstant(f, nextConstant))
                     {
                         nextConstant++;
                     }
@@ -350,8 +350,8 @@ namespace LuaDec.Decompile
         private void handleUnusedConstants(IBlock outer)
         {
             HashSet<int> unusedConstants = new HashSet<int>();
-            outer.walk(new ConstantWalker(unusedConstants));
-            outer.walk(new FunctionConstantWalker(unusedConstants, f));
+            outer.Walk(new ConstantWalker(unusedConstants));
+            outer.Walk(new FunctionConstantWalker(unusedConstants, f));
         }
 
         private IExpression initialExpression(State state, int register, int line)
@@ -1067,7 +1067,7 @@ namespace LuaDec.Decompile
                     bool declare = false;
                     foreach (Declaration newLocal in r.GetNewLocals(line, block.closeRegister))
                     {
-                        if (assign.getFirstTarget().isDeclaration(newLocal))
+                        if (assign.getFirstTarget().IsDeclaration(newLocal))
                         {
                             declare = true;
                             break;
@@ -1330,7 +1330,7 @@ namespace LuaDec.Decompile
         public void print(State state, Output output)
         {
             handleInitialDeclares(output);
-            state.outer.print(this, output);
+            state.outer.Write(this, output);
         }
 
         /**

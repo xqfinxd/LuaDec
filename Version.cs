@@ -45,7 +45,7 @@ namespace LuaDec
             Lua54,
         }
 
-        public enum OpcodeMapType
+        public enum OpCodeMapType
         {
             Lua50,
             Lua51,
@@ -88,91 +88,56 @@ namespace LuaDec
 
         public class Setting<T>
         {
-            private readonly T _value;
+            private readonly T value;
 
-            public T Value => _value;
+            public T Value => value;
 
             public Setting(T value)
             {
-                _value = value;
+                this.value = value;
             }
         }
 
-        private readonly Op _defaultOp;
-
-        private readonly LConstantType _lconstantType;
-
-        private readonly LFunctionType _lfunctionType;
-
-        private readonly LHeaderType _lheaderType;
-
-        private readonly LStringType _lstringType;
-
-        private readonly LUpvalueType _lupvalueType;
-
-        private readonly int _major;
-
-        private readonly int _minor;
-
-        private readonly string _name;
-
-        private readonly OpCodeMap _opcodeMap;
-
-        private readonly HashSet<string> _reservedWords;
+        private readonly Op defaultOp;
+        private readonly LConstantType lconstantType;
+        private readonly LFunctionType lfunctionType;
+        private readonly LHeaderType lheaderType;
+        private readonly OpCodeMap lopCodeMap;
+        private readonly LStringType lstringType;
+        private readonly LUpvalueType lupvalueType;
+        private readonly int major;
+        private readonly int minor;
+        private readonly string name;
+        private readonly HashSet<string> reservedWords;
 
         public readonly Setting<bool> allowPreceedingSemicolon;
-
         public readonly Setting<bool> closeInScope;
-
         public readonly Setting<CloseSemantics> closeSemantics;
-
         public readonly Setting<string> envTable;
-
         public readonly Setting<bool> extendedRepeatScope;
-
         public readonly Setting<Op> forTarget;
-
         public readonly Setting<InstructionFormat> instructionFormat;
-
         public readonly Setting<int> outerBlockScopeAdjustment;
-
         public readonly Setting<int> rkOffset;
-
         public readonly Setting<Op> tforTarget;
-
         public readonly Setting<UpvalueDeclarationType> upvalueDeclarationType;
-
         public readonly Setting<bool> useGoto;
-
         public readonly Setting<bool> useIfBreakRewrite;
-
         public readonly Setting<bool> useNestingLongStrings;
-
         public readonly Setting<bool> useUpvalueCountInHeader;
-
         public readonly Setting<VarArgType> varArgtTpe;
-
         public readonly Setting<WhileFormat> whileFormat;
 
-        public Op DefaultOp => _defaultOp;
-
-        public LConstantType LConstantType => _lconstantType;
-
-        public LFunctionType LFunctionType => _lfunctionType;
-
-        public LHeaderType LHeaderType => _lheaderType;
-
-        public LStringType LstringType => _lstringType;
-
-        public LUpvalueType LUpvalueType => _lupvalueType;
-
-        public string Name => _name;
-
-        public OpCodeMap OpcodeMap => _opcodeMap;
-
-        public int VersionMajor => _major;
-
-        public int VersionMinor => _minor;
+        public Op DefaultOp => defaultOp;
+        public LConstantType LConstantType => lconstantType;
+        public LFunctionType LFunctionType => lfunctionType;
+        public LHeaderType LHeaderType => lheaderType;
+        public OpCodeMap LOpCodeMap => lopCodeMap;
+        public LStringType LStringType => lstringType;
+        public LUpvalueType LUpvalueType => lupvalueType;
+        public string Name => name;
+        public int VersionMajor => major;
+        public int VersionMinor => minor;
 
         private Version(int major, int minor)
         {
@@ -181,10 +146,10 @@ namespace LuaDec
             ConstantType constantType;
             UpvalueType upvalueType;
             FunctionType functionType;
-            OpcodeMapType opcodeMap;
-            _major = major;
-            _minor = minor;
-            _name = major + "." + minor;
+            OpCodeMapType opcodeMap;
+            this.major = major;
+            this.minor = minor;
+            name = major + "." + minor;
             if (major == 5 && minor >= 0 && minor <= 4)
             {
                 switch (minor)
@@ -197,8 +162,8 @@ namespace LuaDec
                         constantType = ConstantType.Lua50;
                         upvalueType = UpvalueType.Lua50;
                         functionType = FunctionType.Lua50;
-                        opcodeMap = OpcodeMapType.Lua50;
-                        _defaultOp = Op.DEFAULT;
+                        opcodeMap = OpCodeMapType.Lua50;
+                        defaultOp = Op.DEFAULT;
                         instructionFormat = new Setting<InstructionFormat>(InstructionFormat.Lua50);
                         outerBlockScopeAdjustment = new Setting<int>(-1);
                         extendedRepeatScope = new Setting<bool>(true);
@@ -224,8 +189,8 @@ namespace LuaDec
                         constantType = ConstantType.Lua50;
                         upvalueType = UpvalueType.Lua50;
                         functionType = FunctionType.Lua51;
-                        opcodeMap = OpcodeMapType.Lua51;
-                        _defaultOp = Op.DEFAULT;
+                        opcodeMap = OpCodeMapType.Lua51;
+                        defaultOp = Op.DEFAULT;
                         instructionFormat = new Setting<InstructionFormat>(InstructionFormat.Lua51);
                         outerBlockScopeAdjustment = new Setting<int>(-1);
                         extendedRepeatScope = new Setting<bool>(false);
@@ -251,8 +216,8 @@ namespace LuaDec
                         constantType = ConstantType.Lua50;
                         upvalueType = UpvalueType.Lua50;
                         functionType = FunctionType.Lua52;
-                        opcodeMap = OpcodeMapType.Lua52;
-                        _defaultOp = Op.DEFAULT;
+                        opcodeMap = OpCodeMapType.Lua52;
+                        defaultOp = Op.DEFAULT;
                         instructionFormat = new Setting<InstructionFormat>(InstructionFormat.Lua51);
                         outerBlockScopeAdjustment = new Setting<int>(0);
                         extendedRepeatScope = new Setting<bool>(false);
@@ -278,8 +243,8 @@ namespace LuaDec
                         constantType = ConstantType.Lua53;
                         upvalueType = UpvalueType.Lua50;
                         functionType = FunctionType.Lua53;
-                        opcodeMap = OpcodeMapType.Lua53;
-                        _defaultOp = Op.DEFAULT;
+                        opcodeMap = OpCodeMapType.Lua53;
+                        defaultOp = Op.DEFAULT;
                         instructionFormat = new Setting<InstructionFormat>(InstructionFormat.Lua51);
                         outerBlockScopeAdjustment = new Setting<int>(0);
                         extendedRepeatScope = new Setting<bool>(false);
@@ -305,8 +270,8 @@ namespace LuaDec
                         constantType = ConstantType.Lua54;
                         upvalueType = UpvalueType.Lua54;
                         functionType = FunctionType.Lua54;
-                        opcodeMap = OpcodeMapType.Lua54;
-                        _defaultOp = Op.DEFAULT54;
+                        opcodeMap = OpCodeMapType.Lua54;
+                        defaultOp = Op.DEFAULT54;
                         instructionFormat = new Setting<InstructionFormat>(InstructionFormat.Lua54);
                         outerBlockScopeAdjustment = new Setting<int>(0);
                         extendedRepeatScope = new Setting<bool>(false);
@@ -333,40 +298,41 @@ namespace LuaDec
                 throw new System.ArgumentException();
             }
 
-            _reservedWords = new HashSet<string>();
-            _reservedWords.Add("and");
-            _reservedWords.Add("break");
-            _reservedWords.Add("do");
-            _reservedWords.Add("else");
-            _reservedWords.Add("elseif");
-            _reservedWords.Add("end");
-            _reservedWords.Add("false");
-            _reservedWords.Add("for");
-            _reservedWords.Add("function");
-            _reservedWords.Add("if");
-            _reservedWords.Add("in");
-            _reservedWords.Add("local");
-            _reservedWords.Add("nil");
-            _reservedWords.Add("not");
-            _reservedWords.Add("or");
-            _reservedWords.Add("repeat");
-            _reservedWords.Add("return");
-            _reservedWords.Add("then");
-            _reservedWords.Add("true");
-            _reservedWords.Add("until");
-            _reservedWords.Add("while");
+            reservedWords = new HashSet<string>();
+            reservedWords.Add("and");
+            reservedWords.Add("break");
+            reservedWords.Add("do");
+            reservedWords.Add("else");
+            reservedWords.Add("elseif");
+            reservedWords.Add("end");
+            reservedWords.Add("false");
+            reservedWords.Add("for");
+            reservedWords.Add("function");
+            reservedWords.Add("if");
+            reservedWords.Add("in");
+            reservedWords.Add("local");
+            reservedWords.Add("nil");
+            reservedWords.Add("not");
+            reservedWords.Add("or");
+            reservedWords.Add("repeat");
+            reservedWords.Add("return");
+            reservedWords.Add("then");
+            reservedWords.Add("true");
+            reservedWords.Add("until");
+            reservedWords.Add("while");
             if (useGoto.Value)
             {
-                _reservedWords.Add("goto");
+                reservedWords.Add("goto");
             }
 
-            _lheaderType = LHeaderType.get(headerType);
-            _lstringType = LStringType.get(stringType);
-            _lconstantType = LConstantType.get(constantType);
-            _lupvalueType = LUpvalueType.get(upvalueType);
-            _lfunctionType = LFunctionType.get(functionType);
-            _opcodeMap = new OpCodeMap(opcodeMap);
+            lheaderType = LHeaderType.get(headerType);
+            lstringType = LStringType.get(stringType);
+            lconstantType = LConstantType.get(constantType);
+            lupvalueType = LUpvalueType.get(upvalueType);
+            lfunctionType = LFunctionType.get(functionType);
+            lopCodeMap = new OpCodeMap(opcodeMap);
         }
+
         public static Version GetVersion(int major, int minor)
         {
             return new Version(major, minor);
@@ -387,7 +353,7 @@ namespace LuaDec
 
         public bool IsReserved(string name)
         {
-            return _reservedWords.Contains(name);
+            return reservedWords.Contains(name);
         }
     }
 }

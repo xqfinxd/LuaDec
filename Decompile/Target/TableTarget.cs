@@ -1,17 +1,11 @@
 ﻿using LuaDec.Decompile.Expression;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LuaDec.Decompile.Target
 {
     public class TableTarget : ITarget
     {
-
-        private readonly IExpression table;
         private readonly IExpression index;
+        private readonly IExpression table;
 
         public TableTarget(IExpression table, IExpression index)
         {
@@ -19,25 +13,12 @@ namespace LuaDec.Decompile.Target
             this.index = index;
         }
 
-        public override void walk(Walker w)
+        public override bool BeginsWithParen()
         {
-            table.walk(w);
-            index.walk(w);
+            return table.isUngrouped() || table.beginsWithParen();
         }
 
-        public override void print(Decompiler d, Output output, bool declare)
-        {
-            new TableReference(table, index).print(d, output);
-        }
-
-        public override void printMethod(Decompiler d, Output output)
-        {
-            table.print(d, output);
-            output.WriteString(":");
-            output.WriteString(index.asName());
-        }
-
-        public override bool isFunctionName()
+        public override bool IsFunctionName()
         {
             if (!index.isIdentifier())
             {
@@ -50,11 +31,22 @@ namespace LuaDec.Decompile.Target
             return true;
         }
 
-        public override bool beginsWithParen()
+        public override void Walk(Walker w)
         {
-            return table.isUngrouped() || table.beginsWithParen();
+            table.walk(w);
+            index.walk(w);
         }
 
-    }
+        public override void Write(Decompiler d, Output output, bool declare)
+        {
+            new TableReference(table, index).print(d, output);
+        }
 
+        public override void WriteMethod(Decompiler d, Output output)
+        {
+            table.print(d, output);
+            output.WriteString(":");
+            output.WriteString(index.asName());
+        }
+    }
 }

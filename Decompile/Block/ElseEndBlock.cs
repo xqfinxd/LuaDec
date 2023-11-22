@@ -46,21 +46,21 @@ namespace LuaDec.Decompile.Block
             throw new System.InvalidOperationException();
         }
 
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
             if (statements.Count == 1 && statements[0] is IfThenEndBlock) {
                 output.WriteString("else");
-                statements[0].print(d, output);
+                statements[0].Write(d, output);
             } else if (statements.Count == 2 && statements[0] is IfThenElseBlock && statements[1] is ElseEndBlock) {
                 output.WriteString("else");
-                statements[0].print(d, output);
-                statements[1].print(d, output);
+                statements[0].Write(d, output);
+                statements[1].Write(d, output);
             } else
             {
                 output.WriteString("else");
                 output.WriteLine();
                 output.Indent();
-                printSequence(d, output, statements);
+                WriteSequence(d, output, statements);
                 output.Dedent();
                 output.WriteString("end");
             }

@@ -141,7 +141,7 @@ namespace LuaDec.Decompile.Block
             this.values = new IExpression[values.Count];
         }
 
-        public override void walk(Walker w)
+        public override void Walk(Walker w)
         {
             w.VisitStatement(this);
             foreach (IExpression expression in values)
@@ -150,7 +150,7 @@ namespace LuaDec.Decompile.Block
             }
             foreach (IStatement statement in statements)
             {
-                statement.walk(w);
+                statement.Walk(w);
             }
         }
 
@@ -174,14 +174,14 @@ namespace LuaDec.Decompile.Block
             throw new System.InvalidOperationException();
         }
 
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
             output.WriteString("for ");
-            targets[0].print(d, output, false);
+            targets[0].Write(d, output, false);
             for (int i = 1; i < targets.Length; i++)
             {
                 output.WriteString(", ");
-                targets[i].print(d, output, false);
+                targets[i].Write(d, output, false);
             }
             output.WriteString(" in ");
             values[0].print(d, output);
@@ -193,7 +193,7 @@ namespace LuaDec.Decompile.Block
             output.WriteString(" do");
             output.WriteLine();
             output.Indent();
-            IStatement.printSequence(d, output, statements);
+            IStatement.WriteSequence(d, output, statements);
             output.Dedent();
             output.WriteString("end");
         }
