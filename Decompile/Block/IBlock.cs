@@ -147,7 +147,7 @@ namespace LuaDec.Decompile.Block
             {
                 this.statement = statement;
             }
-            public override List<IStatement> process(Registers r, IBlock block)
+            public override List<IStatement> Process(Registers r, IBlock block)
             {
                 return new List<IStatement> { statement };
             }

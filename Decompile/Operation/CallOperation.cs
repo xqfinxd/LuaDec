@@ -7,20 +7,17 @@ namespace LuaDec.Decompile.Operation
 {
     public class CallOperation : IOperation
     {
-
         private FunctionCall call;
 
         public CallOperation(int line, FunctionCall call)
             : base(line)
         {
-          this.call = call;
+            this.call = call;
         }
 
-        public override List<IStatement> process(Registers r, IBlock block)
+        public override List<IStatement> Process(Registers r, IBlock block)
         {
             return new List<IStatement> { new FunctionCallStatement(call) };
         }
-
     }
-
 }

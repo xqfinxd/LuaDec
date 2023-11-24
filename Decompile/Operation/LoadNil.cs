@@ -1,28 +1,23 @@
 ﻿using LuaDec.Decompile.Block;
 using LuaDec.Decompile.Expression;
 using LuaDec.Decompile.Statement;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LuaDec.Decompile.Operation
 {
     public class LoadNil : IOperation
     {
-
         public readonly int registerFirst;
         public readonly int registerLast;
 
         public LoadNil(int line, int registerFirst, int registerLast)
             : base(line)
         {
-          this.registerFirst = registerFirst;
+            this.registerFirst = registerFirst;
             this.registerLast = registerLast;
         }
 
-        public override List<IStatement> process(Registers r, IBlock block)
+        public override List<IStatement> Process(Registers r, IBlock block)
         {
             List<IStatement> assignments = new List<IStatement>(registerLast - registerFirst + 1);
             IExpression nil = ConstantExpression.createNil(line);
@@ -57,7 +52,5 @@ namespace LuaDec.Decompile.Operation
             }
             return assignments;
         }
-
     }
-
 }

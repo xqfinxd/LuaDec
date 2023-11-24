@@ -78,7 +78,7 @@ namespace LuaDec.Decompile.Block
                 this.test = test;
             }
 
-            public override List<IStatement> process(Registers r, IBlock block)
+            public override List<IStatement> Process(Registers r, IBlock block)
             {
                 if (fassign == null)
                 {

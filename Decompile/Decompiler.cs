@@ -1053,7 +1053,7 @@ namespace LuaDec.Decompile
             Registers r = state.r;
             bool[] skip = state.skip;
             Assignment assign = null;
-            List<IStatement> stmts = operation.process(r, block);
+            List<IStatement> stmts = operation.Process(r, block);
             if (stmts.Count == 1)
             {
                 IStatement stmt = stmts[0];

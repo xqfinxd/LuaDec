@@ -106,7 +106,7 @@ namespace LuaDec.Decompile.Block
             {
                 this.assign = assign;
             }
-            public override List<IStatement> process(Registers r, IBlock block)
+            public override List<IStatement> Process(Registers r, IBlock block)
             {
                 return new List<IStatement> { assign };
             }
@@ -122,7 +122,7 @@ namespace LuaDec.Decompile.Block
                 this.target = target;
                 this.cond = cond;
             }
-            public override List<IStatement> process(Registers r, IBlock block)
+            public override List<IStatement> Process(Registers r, IBlock block)
             {
                 if (r.IsLocal(target, line))
                 {

@@ -8,22 +8,19 @@ namespace LuaDec.Decompile.Operation
 {
     public class GlobalSet : IOperation
     {
-
         private ConstantExpression global;
         private IExpression value;
 
         public GlobalSet(int line, ConstantExpression global, IExpression value)
             : base(line)
         {
-          this.global = global;
+            this.global = global;
             this.value = value;
         }
 
-        public override List<IStatement> process(Registers r, IBlock block)
+        public override List<IStatement> Process(Registers r, IBlock block)
         {
             return new List<IStatement> { new Assignment(new GlobalTarget(global), value, line) };
         }
-
     }
-
 }

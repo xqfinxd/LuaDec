@@ -8,7 +8,6 @@ namespace LuaDec.Decompile.Operation
 {
     public class UpvalueSet : IOperation
     {
-
         private UpvalueTarget target;
         private IExpression value;
 
@@ -19,11 +18,9 @@ namespace LuaDec.Decompile.Operation
             this.value = value;
         }
 
-        public override List<IStatement> process(Registers r, IBlock block)
+        public override List<IStatement> Process(Registers r, IBlock block)
         {
             return new List<IStatement> { new Assignment(target, value, line) };
         }
-
     }
-
 }
