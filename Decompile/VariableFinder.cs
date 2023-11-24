@@ -5,6 +5,8 @@ namespace LuaDec.Decompile
 {
     public class VariableFinder
     {
+        private static int LocalCounter = 0;
+
         private struct RegisterState
         {
             public bool hasRead;
@@ -30,9 +32,7 @@ namespace LuaDec.Decompile
         private class RegisterStates
         {
             private int lines;
-
             private int registers;
-
             private RegisterState[,] states;
 
             public RegisterStates(int registers, int lines)
@@ -121,8 +121,6 @@ namespace LuaDec.Decompile
                 GetState(register, line + 1).lastWritten = line;
             }
         }
-
-        private static int LocalCounter = 0;
 
         private VariableFinder()
         {
@@ -395,19 +393,7 @@ namespace LuaDec.Decompile
                     }
                 }
             }
-            /*
-            for(int register = 0; register < registers; register++) {
-              for(int line = 1; line <= code.Length(); line++) {
-                RegisterState s = states.get(register, line);
-                if(s.written || line == 1) {
-                  System.output.println("WRITE r:" + register + " l:" + line + " .. " + s.last_read);
-                  if(s.local) System.output.println("  LOCAL");
-                  if(s.temporary) System.output.println("  TEMPORARY");
-                  System.output.println("  READ_COUNT " + s.read_count);
-                }
-              }
-            }
-            //*/
+
             List<Declaration> declList = new List<Declaration>(registers);
             for (int register = 0; register < registers; register++)
             {
@@ -425,7 +411,7 @@ namespace LuaDec.Decompile
                 bool is_arg = false;
                 if (register == args)
                 {
-                    switch (d.getVersion().varArgtTpe.Value)
+                    switch (d.GetVersion().varArgtTpe.Value)
                     {
                         case Version.VarArgType.Arg:
                         case Version.VarArgType.Hybrid:
@@ -492,16 +478,11 @@ namespace LuaDec.Decompile
                     {
                         name = id + register + "_" + LocalCounter++;
                     }
-                    Declaration decl = new Declaration(name, start, code.Length + d.getVersion().outerBlockScopeAdjustment.Value);
+                    Declaration decl = new Declaration(name, start, code.Length + d.GetVersion().outerBlockScopeAdjustment.Value);
                     decl.register = register;
                     declList.Add(decl);
                 }
             }
-            //DEBUG
-            /*
-            foreach (Declaration decl  in declList) {
-              System.output.println("decl: " + decl.name + " " + decl.begin + " " + decl.end);
-            }*/
             return declList.ToArray();
         }
     }

@@ -68,9 +68,9 @@ namespace LuaDec
         {
             LFunction lmain = File2Function(input, config);
             Decompiler d = new Decompiler(lmain);
-            Decompiler.State result = d.decompile();
+            Decompiler.State result = d.Decompile();
             StreamWriter pout = new StreamWriter(output);
-            d.print(result, new Output(new FileOutputProvider(pout)));
+            d.Write(result, new Output(new FileOutputProvider(pout)));
             pout.Flush();
             pout.Close();
         }
@@ -80,7 +80,7 @@ namespace LuaDec
             LFunction lmain = File2Function(input, new Configuration());
             Disassembler d = new Disassembler(lmain);
             StreamWriter pout = new StreamWriter(output);
-            d.disassemble(new Output(new FileOutputProvider(pout)));
+            d.Disassemble(new Output(new FileOutputProvider(pout)));
             pout.Flush();
             pout.Close();
         }
@@ -181,8 +181,8 @@ namespace LuaDec
                             Error(e.Message, false);
                         }
                         Decompiler d = new Decompiler(lmain);
-                        Decompiler.State result = d.decompile();
-                        d.print(result, config.GetOutput());
+                        Decompiler.State result = d.Decompile();
+                        d.Write(result, config.GetOutput());
                         break;
                     }
                     case Configuration.OpMode.Disassemble:
@@ -197,7 +197,7 @@ namespace LuaDec
                             Error(e.Message, false);
                         }
                         Disassembler d = new Disassembler(lmain);
-                        d.disassemble(config.GetOutput());
+                        d.Disassemble(config.GetOutput());
                         break;
                     }
                     case Configuration.OpMode.Assemble:

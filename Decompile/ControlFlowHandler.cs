@@ -293,7 +293,7 @@ namespace LuaDec.Decompile
             if (IsConditional(branch0) && IsConditional(branch1))
             {
                 int branch0TargetSecond = branch0.targetSecond;
-                if (IsJmp(state, branch1.targetFirst) && state.code.target(branch1.targetFirst) == branch0TargetSecond)
+                if (IsJmp(state, branch1.targetFirst) && state.code.Target(branch1.targetFirst) == branch0TargetSecond)
                 {
                     branch0TargetSecond = branch1.targetFirst;
                 }
@@ -469,7 +469,7 @@ namespace LuaDec.Decompile
                         case Op.OpT.TEST50:
                         {
                             ICondition c = new TestCondition(line, code.BField(line));
-                            int target = code.target(line + 1);
+                            int target = code.Target(line + 1);
                             if (code.AField(line) == code.BField(line))
                             {
                                 HandleTest(state, skip, line, c, target, code.CField(line) != 0);
@@ -483,7 +483,7 @@ namespace LuaDec.Decompile
                         case Op.OpT.TEST:
                         {
                             ICondition c;
-                            int target = code.target(line + 1);
+                            int target = code.Target(line + 1);
                             c = new TestCondition(line, code.AField(line));
                             HandleTest(state, skip, line, c, target, code.CField(line) != 0);
                             break;
@@ -491,7 +491,7 @@ namespace LuaDec.Decompile
                         case Op.OpT.TEST54:
                         {
                             ICondition c;
-                            int target = code.target(line + 1);
+                            int target = code.Target(line + 1);
                             c = new TestCondition(line, code.AField(line));
                             HandleTest(state, skip, line, c, target, code.kField(line));
                             break;
@@ -499,14 +499,14 @@ namespace LuaDec.Decompile
                         case Op.OpT.TESTSET:
                         {
                             ICondition c = new TestCondition(line, code.BField(line));
-                            int target = code.target(line + 1);
+                            int target = code.Target(line + 1);
                             HandleTestSet(state, skip, line, c, target, code.AField(line), code.CField(line) != 0);
                             break;
                         }
                         case Op.OpT.TESTSET54:
                         {
                             ICondition c = new TestCondition(line, code.BField(line));
-                            int target = code.target(line + 1);
+                            int target = code.Target(line + 1);
                             HandleTestSet(state, skip, line, c, target, code.AField(line), code.kField(line));
                             break;
                         }
@@ -516,7 +516,7 @@ namespace LuaDec.Decompile
                         {
                             if (IsJmp(state, line))
                             {
-                                int target = code.target(line);
+                                int target = code.Target(line);
                                 int loadboolblock = FindLoadBoolBlock(state, target);
                                 if (loadboolblock >= 1)
                                 {
@@ -690,7 +690,7 @@ namespace LuaDec.Decompile
                     case Op.OpT.FORPREP54:
                     {
                         int A = code.AField(line);
-                        int target = code.target(line);
+                        int target = code.Target(line);
 
                         bool forvarClose = false;
                         int closeLine = target - 1;
@@ -711,7 +711,7 @@ namespace LuaDec.Decompile
                     }
                     case Op.OpT.TFORPREP:
                     {
-                        int target = code.target(line);
+                        int target = code.Target(line);
                         int A = code.AField(target);
                         int C = code.CField(target);
 
@@ -730,7 +730,7 @@ namespace LuaDec.Decompile
                     }
                     case Op.OpT.TFORPREP54:
                     {
-                        int target = code.target(line);
+                        int target = code.Target(line);
                         int A = code.AField(line);
                         int C = code.CField(target);
 
@@ -1280,7 +1280,7 @@ namespace LuaDec.Decompile
             {
                 if (IsJmp(state, line))
                 {
-                    int target = code.target(line);
+                    int target = code.Target(line);
                     if (target <= line)
                     {
                         reverse_targets[target] = true;
@@ -1394,7 +1394,7 @@ namespace LuaDec.Decompile
                         Unredirect(state, loopback, end, j.line, loopback);
                     }
                     if (loop == null && j.line - 5 >= 1 && state.code.GetOp(j.line - 3) == Op.CLOSE
-                      && IsJmpRaw(state, j.line - 2) && state.code.target(j.line - 2) == end
+                      && IsJmpRaw(state, j.line - 2) && state.code.Target(j.line - 2) == end
                       && state.code.GetOp(j.line - 1) == Op.CLOSE
                     )
                     {
@@ -1509,11 +1509,11 @@ namespace LuaDec.Decompile
             int readonly_line = -1;
             if (loadboolblock - 1 >= 1 && IsJmp(state, loadboolblock - 1))
             {
-                int boolskip_target = state.code.target(loadboolblock - 1);
+                int boolskip_target = state.code.Target(loadboolblock - 1);
                 int boolskip_target_redirected = -1;
                 if (IsJmpRaw(state, loadboolblock + 2))
                 {
-                    boolskip_target_redirected = state.code.target(loadboolblock + 2);
+                    boolskip_target_redirected = state.code.Target(loadboolblock + 2);
                 }
                 if (boolskip_target == loadboolblock + 2 || boolskip_target == boolskip_target_redirected)
                 {
@@ -1614,7 +1614,7 @@ namespace LuaDec.Decompile
             {
                 readonly_line = loadboolblock;
                 if (loadboolblock - 2 >= 1 && IsJmp(state, loadboolblock - 1) &&
-                  (state.code.target(loadboolblock - 1) == target || IsJmpRaw(state, target) && state.code.target(loadboolblock - 1) == state.code.target(target))
+                  (state.code.Target(loadboolblock - 1) == target || IsJmpRaw(state, target) && state.code.Target(loadboolblock - 1) == state.code.Target(target))
                 )
                 {
                     readonly_line = loadboolblock - 2;
@@ -1641,7 +1641,7 @@ namespace LuaDec.Decompile
                     return true;
                 }
             }
-            return state.d.hasStatement(begin, end);
+            return state.d.HasStatement(begin, end);
         }
 
         private static void InitializeBlocks(State state)
@@ -1674,7 +1674,7 @@ namespace LuaDec.Decompile
             }
             else if (op == Op.JMP52)
             {
-                int target = code.target(line);
+                int target = code.Target(line);
                 if (target == line + 1)
                 {
                     return code.AField(line) != 0;
@@ -1683,7 +1683,7 @@ namespace LuaDec.Decompile
                 {
                     if (line + 1 <= code.Length && code.GetOp(line + 1) == Op.JMP52)
                     {
-                        return target == code.target(line + 1) && code.AField(line) != 0;
+                        return target == code.Target(line + 1) && code.AField(line) != 0;
                     }
                     else
                     {
@@ -2070,7 +2070,7 @@ namespace LuaDec.Decompile
 
         private static void ProcessCondition(State state, bool[] skip, int line, ICondition c, bool invert)
         {
-            int target = state.code.target(line + 1);
+            int target = state.code.Target(line + 1);
             if (invert)
             {
                 c = c.inverse();
@@ -2261,7 +2261,7 @@ namespace LuaDec.Decompile
             if (stack.Count != 0 && StackReach(state, stack) <= line)
             {
                 Branch top = stack.Pop();
-                int literalEnd = state.code.target(top.targetFirst - 1);
+                int literalEnd = state.code.Target(top.targetFirst - 1);
                 block = new IfThenEndBlock(
                   state.function, state.r, top.condition, top.targetFirst, top.targetSecond,
                   GetCloseType(state, top.targetSecond - 1), top.targetSecond - 1,

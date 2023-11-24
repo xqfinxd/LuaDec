@@ -95,7 +95,7 @@ namespace LuaDec.Decompile.Block
         {
             int test = cond.register();
             //System.err.println(cond);
-            if (!scopeUsed && !redirected && test >= 0 && r.GetUpdated(test, end - 1) >= begin && !d.getNoDebug())
+            if (!scopeUsed && !redirected && test >= 0 && r.GetUpdated(test, end - 1) >= begin && !d.GetNoDebug())
             {
                 // Check for a single assignment
                 Assignment assign = null;
@@ -105,9 +105,9 @@ namespace LuaDec.Decompile.Block
                     if (stmt is Assignment)
                     {
                         assign = (Assignment)stmt;
-                        if (assign.getArity() > 1)
+                        if (assign.GetArity() > 1)
                         {
-                            int line = assign.getFirstLine();
+                            int line = assign.GetFirstLine();
                             if (line >= begin && line < end)
                             {
                                 assign = null;
@@ -115,7 +115,7 @@ namespace LuaDec.Decompile.Block
                         }
                     }
                 }
-                if (assign != null && (cond.isRegisterTest() || cond.isOrCondition() || assign.GetDeclaration()) && assign.getLastTarget().IsLocal() && assign.getLastTarget().GetIndex() == test || statements.Count == 0)
+                if (assign != null && (cond.isRegisterTest() || cond.isOrCondition() || assign.GetDeclaration()) && assign.GetLastTarget().IsLocal() && assign.GetLastTarget().GetIndex() == test || statements.Count == 0)
                 {
                     FinalSetCondition readonlyset = new FinalSetCondition(end - 1, test);
                     readonlyset.type = FinalSetCondition.Type.VALUE;
@@ -133,7 +133,7 @@ namespace LuaDec.Decompile.Block
                     if (assign != null)
                     {
                         fassign = assign;
-                        fassign.replaceLastValue(combined.asExpression(r));
+                        fassign.ReplaceLastValue(combined.asExpression(r));
                     }
                     else
                     {

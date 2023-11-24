@@ -6,78 +6,15 @@ namespace LuaDec.Decompile.Statement
 {
     public class Assignment : IStatement
     {
-
+        private readonly List<int> lines = new List<int>(5);
         private readonly List<ITarget> targets = new List<ITarget>(5);
         private readonly List<IExpression> values = new List<IExpression>(5);
-        private readonly List<int> lines = new List<int>(5);
-
         private bool allnil = true;
         private bool declare = false;
         private int declareStart = 0;
 
         public Assignment()
         {
-
-        }
-
-        public override void Walk(Walker w)
-        {
-            w.VisitStatement(this);
-            foreach (ITarget target in targets)
-            {
-                target.Walk(w);
-            }
-            foreach (IExpression expression in values)
-            {
-                expression.walk(w);
-            }
-        }
-
-        public override bool BeginsWithParen()
-        {
-            return !declare && targets[0].BeginsWithParen();
-        }
-
-        public ITarget getFirstTarget()
-        {
-            return targets[0];
-        }
-
-        public ITarget getLastTarget()
-        {
-            return targets[targets.Count - 1];
-        }
-
-        public IExpression getFirstValue()
-        {
-            return values[0];
-        }
-
-        public void replaceLastValue(IExpression value)
-        {
-            values[values.Count - 1] = value;
-        }
-
-        public int getFirstLine()
-        {
-            return lines[0];
-        }
-
-        public bool assignsTarget(Declaration decl)
-        {
-            foreach (ITarget target in targets)
-            {
-                if (target.IsDeclaration(decl))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public int getArity()
-        {
-            return targets.Count;
         }
 
         public Assignment(ITarget target, IExpression value, int line)
@@ -88,7 +25,7 @@ namespace LuaDec.Decompile.Statement
             allnil = allnil && value.isNil();
         }
 
-        public void addFirst(ITarget target, IExpression value, int line)
+        public void AddFirst(ITarget target, IExpression value, int line)
         {
             targets.Insert(0, target);
             values.Insert(0, value);
@@ -96,7 +33,7 @@ namespace LuaDec.Decompile.Statement
             allnil = allnil && value.isNil();
         }
 
-        public void addLast(ITarget target, IExpression value, int line)
+        public void AddLast(ITarget target, IExpression value, int line)
         {
             if (targets.Contains(target))
             {
@@ -112,37 +49,7 @@ namespace LuaDec.Decompile.Statement
             allnil = allnil && value.isNil();
         }
 
-        public IExpression getValue(int target)
-        {
-            int index = 0;
-            foreach (ITarget t in targets)
-            {
-                if (t.IsLocal() && t.GetIndex() == target)
-                {
-                    return values[index];
-                }
-                index++;
-            }
-            throw new System.InvalidOperationException();
-        }
-
-        public void replaceValue(int target, IExpression value)
-        {
-            int index = 0;
-            foreach (ITarget t in targets)
-            {
-                if (t.IsLocal() && t.GetIndex() == target)
-                {
-                    values[index] = value;
-                    //lines.set(index, line);
-                    return;
-                }
-                index++;
-            }
-            throw new System.InvalidOperationException();
-        }
-
-        public bool assignListEquals(List<Declaration> decls)
+        public bool AssignListEquals(List<Declaration> decls)
         {
             if (decls.Count != targets.Count) return false;
 
@@ -162,18 +69,7 @@ namespace LuaDec.Decompile.Statement
             return true;
         }
 
-        public void SetDeclare(int declareStart)
-        {
-            declare = true;
-            this.declareStart = declareStart;
-        }
-
-        public bool GetDeclaration()
-        {
-            return declare;
-        }
-
-        public bool assigns(Declaration decl)
+        public bool Assigns(Declaration decl)
         {
             foreach (ITarget target in targets)
             {
@@ -182,7 +78,24 @@ namespace LuaDec.Decompile.Statement
             return false;
         }
 
-        public bool canDeclare(List<Declaration> locals)
+        public bool AssignsTarget(Declaration decl)
+        {
+            foreach (ITarget target in targets)
+            {
+                if (target.IsDeclaration(decl))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public override bool BeginsWithParen()
+        {
+            return !declare && targets[0].BeginsWithParen();
+        }
+
+        public bool CanDeclare(List<Declaration> locals)
         {
             foreach (ITarget target in targets)
             {
@@ -201,6 +114,90 @@ namespace LuaDec.Decompile.Statement
                 }
             }
             return true;
+        }
+
+        public int GetArity()
+        {
+            return targets.Count;
+        }
+
+        public bool GetDeclaration()
+        {
+            return declare;
+        }
+
+        public int GetFirstLine()
+        {
+            return lines[0];
+        }
+
+        public ITarget GetFirstTarget()
+        {
+            return targets[0];
+        }
+
+        public IExpression GetFirstValue()
+        {
+            return values[0];
+        }
+
+        public ITarget GetLastTarget()
+        {
+            return targets[targets.Count - 1];
+        }
+
+        public IExpression GetValue(int target)
+        {
+            int index = 0;
+            foreach (ITarget t in targets)
+            {
+                if (t.IsLocal() && t.GetIndex() == target)
+                {
+                    return values[index];
+                }
+                index++;
+            }
+            throw new System.InvalidOperationException();
+        }
+
+        public void ReplaceLastValue(IExpression value)
+        {
+            values[values.Count - 1] = value;
+        }
+
+        public void ReplaceValue(int target, IExpression value)
+        {
+            int index = 0;
+            foreach (ITarget t in targets)
+            {
+                if (t.IsLocal() && t.GetIndex() == target)
+                {
+                    values[index] = value;
+                    //lines.set(index, line);
+                    return;
+                }
+                index++;
+            }
+            throw new System.InvalidOperationException();
+        }
+
+        public void SetDeclare(int declareStart)
+        {
+            declare = true;
+            this.declareStart = declareStart;
+        }
+
+        public override void Walk(Walker w)
+        {
+            w.VisitStatement(this);
+            foreach (ITarget target in targets)
+            {
+                target.Walk(w);
+            }
+            foreach (IExpression expression in values)
+            {
+                expression.walk(w);
+            }
         }
 
         public override void Write(Decompiler d, Output output)
@@ -250,7 +247,6 @@ namespace LuaDec.Decompile.Statement
                         }
                         else
                         {
-
                             bool include = false;
                             for (int i = size - 1; i >= 0; i--)
                             {
@@ -288,7 +284,5 @@ namespace LuaDec.Decompile.Statement
                 }
             }
         }
-
     }
-
 }

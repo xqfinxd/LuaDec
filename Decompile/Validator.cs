@@ -2,7 +2,6 @@
 {
     public class Validator
     {
-        //static only
         private Validator()
         {
         }
@@ -16,12 +15,6 @@
                 {
                     case Op.OpT.EQ:
                     {
-                        /* TODO
-                          AssertionManager.assertCritical(
-                              line + 1 <= code.length && code.isJMP(line + 1),
-                              "ByteCode validation failed; EQ instruction is not followed by JMP"
-                          );
-                          break;*/
                         break;
                     }
                     case Op.OpT.LT:

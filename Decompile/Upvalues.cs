@@ -40,12 +40,12 @@ namespace LuaDec.Decompile
             }
         }
 
-        public UpvalueExpression getExpression(int index)
+        public UpvalueExpression GetExpression(int index)
         {
-            return new UpvalueExpression(getName(index));
+            return new UpvalueExpression(GetName(index));
         }
 
-        public string getName(int index)
+        public string GetName(int index)
         {
             if (index < upvalues.Length && upvalues[index].name != null && upvalues[index].name.Length != 0)
             {
@@ -53,7 +53,6 @@ namespace LuaDec.Decompile
             }
             else
             {
-                //TODO: SET ERROR
                 return "_UPVALUE" + index + "_";
             }
         }

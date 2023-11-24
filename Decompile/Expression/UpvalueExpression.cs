@@ -43,7 +43,7 @@ namespace LuaDec.Decompile.Expression
 
         public override bool isEnvironmentTable(Decompiler d)
         {
-            return d.getVersion().IsEnvTable(name);
+            return d.GetVersion().IsEnvTable(name);
         }
 
     }

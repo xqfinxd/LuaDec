@@ -15,7 +15,7 @@ namespace LuaDec.Decompile.Statement
             {
                 bool last = (i + 1 == n);
                 IStatement stmt = stmts[i];
-                if (stmt.BeginsWithParen() && (i > 0 || d.getVersion().allowPreceedingSemicolon.Value))
+                if (stmt.BeginsWithParen() && (i > 0 || d.GetVersion().allowPreceedingSemicolon.Value))
                 {
                     output.WriteString(";");
                 }

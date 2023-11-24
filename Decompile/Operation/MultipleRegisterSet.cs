@@ -33,7 +33,7 @@ namespace LuaDec.Decompile.Operation
                 r.SetValue(register, line, value);
                 if (r.IsAssignable(register, line))
                 {
-                    assignment.addLast(r.GetTarget(register, line), value, line);
+                    assignment.AddLast(r.GetTarget(register, line), value, line);
                     count++;
                 }
             }

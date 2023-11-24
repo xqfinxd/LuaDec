@@ -239,12 +239,12 @@ namespace LuaDec.Assemble
                         else if (value.StartsWith("\""))
                         {
                             constant.type = AssemblerConstant.Type.STRING;
-                            constant.stringValue = StringUtils.fromPrintString(value);
+                            constant.stringValue = StringUtils.ParseString(value);
                         }
                         else if (value.StartsWith("L\""))
                         {
                             constant.type = AssemblerConstant.Type.LONGSTRING;
-                            constant.stringValue = StringUtils.fromPrintString(value.Substring(1));
+                            constant.stringValue = StringUtils.ParseString(value.Substring(1));
                         }
                         else if (value == "null")
                         {
@@ -958,7 +958,7 @@ namespace LuaDec.Assemble
         {
             string s = t.next();
             if (s == null) throw new AssemblerException("Unexcepted end of file");
-            return StringUtils.fromPrintString(s);
+            return StringUtils.ParseString(s);
         }
 
         public int getInteger()

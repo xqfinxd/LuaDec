@@ -16,7 +16,6 @@ namespace LuaDec.Decompile
         private bool[] startedLines;
 
         public bool IsNoDebug => isNoDebug;
-
         public int Value => value;
 
         public Registers(int registers, int length, Declaration[] declList, Function f, bool isNoDebug)

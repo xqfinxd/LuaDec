@@ -114,8 +114,8 @@ namespace LuaDec.Decompile.Expression
             output.WriteString(")");
             output.WriteLine();
             output.Indent();
-            Decompiler.State result = d.decompile();
-            d.print(result, output);
+            Decompiler.State result = d.Decompile();
+            d.Write(result, output);
             output.Dedent();
             output.WriteString("end");
             //output.println(); //This is an extra space for formatting

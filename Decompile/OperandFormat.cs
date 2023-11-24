@@ -32,7 +32,8 @@
             Jump,
             JumpNegative,
         }
-
+        
+        #region Enum
         public static readonly OperandFormat A = new OperandFormat(Field.A, Format.Raw);
         public static readonly OperandFormat AR = new OperandFormat(Field.A, Format.Register);
         public static readonly OperandFormat AU = new OperandFormat(Field.A, Format.Upvalue);
@@ -66,6 +67,7 @@
         public static readonly OperandFormat sBxJ = new OperandFormat(Field.sBx, Format.Jump);
         public static readonly OperandFormat sJ = new OperandFormat(Field.sJ, Format.Jump);
         public static readonly OperandFormat x = new OperandFormat(Field.x, Format.Raw);
+        #endregion
 
         public readonly Field field;
         public readonly Format format;

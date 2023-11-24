@@ -107,9 +107,9 @@ namespace LuaDec.Decompile
             registers = function.maximumStackSize;
             length = function.code.Length;
             code = new Code(function);
-            if (function.stripped || getConfiguration().Variable == Configuration.VariableMode.Nodebug)
+            if (function.stripped || GetConfiguration().Variable == Configuration.VariableMode.Nodebug)
             {
-                if (getConfiguration().Variable == Configuration.VariableMode.Finder)
+                if (GetConfiguration().Variable == Configuration.VariableMode.Finder)
                 {
                     declarations = VariableFinder.Process(this, function.numParams, function.maximumStackSize);
                 }
@@ -122,7 +122,7 @@ namespace LuaDec.Decompile
                     {
                         declarations[i] = new Declaration("A" + i + "_" + function.level, 0, scopeEnd);
                     }
-                    if (getVersion().varArgtTpe.Value != Version.VarArgType.Ellipsis && (function.varArg & 1) != 0 && i < function.maximumStackSize)
+                    if (GetVersion().varArgtTpe.Value != Version.VarArgType.Ellipsis && (function.varArg & 1) != 0 && i < function.maximumStackSize)
                     {
                         declarations[i++] = new Declaration("arg", 0, scopeEnd);
                     }
@@ -154,7 +154,7 @@ namespace LuaDec.Decompile
             varArg = function.varArg;
         }
 
-        private IExpression.BinaryOperation decodeBinOp(int tm)
+        private IExpression.BinaryOperation DecodeBinOp(int tm)
         {
             switch (tm)
             {
@@ -174,7 +174,7 @@ namespace LuaDec.Decompile
             }
         }
 
-        private int fb2int(int fb)
+        private int FB2Int(int fb)
         {
             int exponent = (fb >> 3) & 0x1f;
             if (exponent == 0)
@@ -187,12 +187,12 @@ namespace LuaDec.Decompile
             }
         }
 
-        private int fb2int50(int fb)
+        private int FB2Int50(int fb)
         {
             return (fb & 7) << (fb >> 3);
         }
 
-        private ITarget getMoveIntoTargetTarget(Registers r, int line, int previous)
+        private ITarget GetMoveIntoTargetTarget(Registers r, int line, int previous)
         {
             switch (code.GetOp(line).Type)
             {
@@ -200,7 +200,7 @@ namespace LuaDec.Decompile
                     return r.GetTarget(code.AField(line), line);
 
                 case Op.OpT.SETUPVALUE:
-                    return new UpvalueTarget(upvalues.getName(code.BField(line)));
+                    return new UpvalueTarget(upvalues.GetName(code.BField(line)));
 
                 case Op.OpT.SETGLOBAL:
                     return new GlobalTarget(f.GetGlobalName(code.BxField(line)));
@@ -221,20 +221,20 @@ namespace LuaDec.Decompile
                 {
                     int A = code.AField(line);
                     int B = code.BField(line);
-                    return new TableTarget(upvalues.getExpression(A), r.GetKExpression(B, previous));
+                    return new TableTarget(upvalues.GetExpression(A), r.GetKExpression(B, previous));
                 }
                 case Op.OpT.SETTABUP54:
                 {
                     int A = code.AField(line);
                     int B = code.BField(line);
-                    return new TableTarget(upvalues.getExpression(A), f.GetConstantExpression(B));
+                    return new TableTarget(upvalues.GetExpression(A), f.GetConstantExpression(B));
                 }
                 default:
                     throw new System.InvalidOperationException();
             }
         }
 
-        private IExpression getMoveIntoTargetValue(Registers r, int line, int previous)
+        private IExpression GetMoveIntoTargetValue(Registers r, int line, int previous)
         {
             int A = code.AField(line);
             int B = code.BField(line);
@@ -275,12 +275,12 @@ namespace LuaDec.Decompile
             }
         }
 
-        private void handle50BinOp(List<IOperation> operations, State state, int line, IExpression.BinaryOperation op)
+        private void Handle50BinOp(List<IOperation> operations, State state, int line, IExpression.BinaryOperation op)
         {
             operations.Add(new RegisterSet(line, code.AField(line), IExpression.make(op, state.r.GetKExpression(code.BField(line), line), state.r.GetKExpression(code.CField(line), line))));
         }
 
-        private void handle54BinKOp(List<IOperation> operations, State state, int line, IExpression.BinaryOperation op)
+        private void Handle54BinKOp(List<IOperation> operations, State state, int line, IExpression.BinaryOperation op)
         {
             if (line + 1 > code.Length || code.GetOp(line + 1) != Op.MMBINK) throw new System.InvalidOperationException();
             IExpression left = state.r.GetExpression(code.BField(line), line);
@@ -294,16 +294,16 @@ namespace LuaDec.Decompile
             operations.Add(new RegisterSet(line, code.AField(line), IExpression.make(op, left, right)));
         }
 
-        private void handle54BinOp(List<IOperation> operations, State state, int line, IExpression.BinaryOperation op)
+        private void Handle54BinOp(List<IOperation> operations, State state, int line, IExpression.BinaryOperation op)
         {
             operations.Add(new RegisterSet(line, code.AField(line), IExpression.make(op, state.r.GetExpression(code.BField(line), line), state.r.GetExpression(code.CField(line), line))));
         }
 
-        private void handleInitialDeclares(Output output)
+        private void HandleInitialDeclares(Output output)
         {
             List<Declaration> initdecls = new List<Declaration>(declarations.Length);
             int initdeclcount = paramNum;
-            switch (getVersion().varArgtTpe.Value)
+            switch (GetVersion().varArgtTpe.Value)
             {
                 case Version.VarArgType.Arg:
                 case Version.VarArgType.Hybrid:
@@ -333,7 +333,7 @@ namespace LuaDec.Decompile
             }
         }
 
-        private void handleSetList(List<IOperation> operations, State state, int line, int stack, int count, int offset)
+        private void HandleSetList(List<IOperation> operations, State state, int line, int stack, int count, int offset)
         {
             IExpression table = state.r.GetValue(stack, line);
             for (int i = 1; i <= count; i++)
@@ -342,19 +342,19 @@ namespace LuaDec.Decompile
             }
         }
 
-        private void handleUnaryOp(List<IOperation> operations, State state, int line, IExpression.UnaryOperation op)
+        private void HandleUnaryOp(List<IOperation> operations, State state, int line, IExpression.UnaryOperation op)
         {
             operations.Add(new RegisterSet(line, code.AField(line), IExpression.make(op, state.r.GetExpression(code.BField(line), line))));
         }
 
-        private void handleUnusedConstants(IBlock outer)
+        private void HandleUnusedConstants(IBlock outer)
         {
             HashSet<int> unusedConstants = new HashSet<int>();
             outer.Walk(new ConstantWalker(unusedConstants));
             outer.Walk(new FunctionConstantWalker(unusedConstants, f));
         }
 
-        private IExpression initialExpression(State state, int register, int line)
+        private IExpression InitialExpression(State state, int register, int line)
         {
             if (line == 1)
             {
@@ -367,7 +367,7 @@ namespace LuaDec.Decompile
             }
         }
 
-        private bool isMoveIntoTarget(Registers r, int line)
+        private bool IsMoveIntoTarget(Registers r, int line)
         {
             if (code.IsUpvalueDeclaration(line)) return false;
             switch (code.GetOp(line).Type)
@@ -411,7 +411,7 @@ namespace LuaDec.Decompile
             }
         }
 
-        private List<IOperation> processLine(State state, int line)
+        private List<IOperation> ProcessLine(State state, int line)
         {
             Registers r = state.r;
             bool[] skip = state.skip;
@@ -473,19 +473,19 @@ namespace LuaDec.Decompile
                     break;
 
                 case Op.OpT.GETUPVALUE:
-                    operations.Add(new RegisterSet(line, A, upvalues.getExpression(B)));
+                    operations.Add(new RegisterSet(line, A, upvalues.GetExpression(B)));
                     break;
 
                 case Op.OpT.SETUPVALUE:
-                    operations.Add(new UpvalueSet(line, upvalues.getName(B), r.GetExpression(A, line)));
+                    operations.Add(new UpvalueSet(line, upvalues.GetName(B), r.GetExpression(A, line)));
                     break;
 
                 case Op.OpT.GETTABUP:
-                    operations.Add(new RegisterSet(line, A, new TableReference(upvalues.getExpression(B), r.GetKExpression(C, line))));
+                    operations.Add(new RegisterSet(line, A, new TableReference(upvalues.GetExpression(B), r.GetKExpression(C, line))));
                     break;
 
                 case Op.OpT.GETTABUP54:
-                    operations.Add(new RegisterSet(line, A, new TableReference(upvalues.getExpression(B), f.GetConstantExpression(C))));
+                    operations.Add(new RegisterSet(line, A, new TableReference(upvalues.GetExpression(B), f.GetConstantExpression(C))));
                     break;
 
                 case Op.OpT.GETTABLE:
@@ -521,19 +521,19 @@ namespace LuaDec.Decompile
                     break;
 
                 case Op.OpT.SETTABUP:
-                    operations.Add(new TableSet(line, upvalues.getExpression(A), r.GetKExpression(B, line), r.GetKExpression(C, line), true, line));
+                    operations.Add(new TableSet(line, upvalues.GetExpression(A), r.GetKExpression(B, line), r.GetKExpression(C, line), true, line));
                     break;
 
                 case Op.OpT.SETTABUP54:
-                    operations.Add(new TableSet(line, upvalues.getExpression(A), f.GetConstantExpression(B), r.GetKExpression54(C, code.kField(line), line), true, line));
+                    operations.Add(new TableSet(line, upvalues.GetExpression(A), f.GetConstantExpression(B), r.GetKExpression54(C, code.kField(line), line), true, line));
                     break;
 
                 case Op.OpT.NEWTABLE50:
-                    operations.Add(new RegisterSet(line, A, new TableLiteral(fb2int50(B), C == 0 ? 0 : 1 << C)));
+                    operations.Add(new RegisterSet(line, A, new TableLiteral(FB2Int50(B), C == 0 ? 0 : 1 << C)));
                     break;
 
                 case Op.OpT.NEWTABLE:
-                    operations.Add(new RegisterSet(line, A, new TableLiteral(fb2int(B), fb2int(C))));
+                    operations.Add(new RegisterSet(line, A, new TableLiteral(FB2Int(B), FB2Int(C))));
                     break;
 
                 case Op.OpT.NEWTABLE54:
@@ -564,105 +564,105 @@ namespace LuaDec.Decompile
                     break;
                 }
                 case Op.OpT.ADD:
-                    handle50BinOp(operations, state, line, IExpression.BinaryOperation.ADD);
+                    Handle50BinOp(operations, state, line, IExpression.BinaryOperation.ADD);
                     break;
 
                 case Op.OpT.SUB:
-                    handle50BinOp(operations, state, line, IExpression.BinaryOperation.SUB);
+                    Handle50BinOp(operations, state, line, IExpression.BinaryOperation.SUB);
                     break;
 
                 case Op.OpT.MUL:
-                    handle50BinOp(operations, state, line, IExpression.BinaryOperation.MUL);
+                    Handle50BinOp(operations, state, line, IExpression.BinaryOperation.MUL);
                     break;
 
                 case Op.OpT.DIV:
-                    handle50BinOp(operations, state, line, IExpression.BinaryOperation.DIV);
+                    Handle50BinOp(operations, state, line, IExpression.BinaryOperation.DIV);
                     break;
 
                 case Op.OpT.IDIV:
-                    handle50BinOp(operations, state, line, IExpression.BinaryOperation.IDIV);
+                    Handle50BinOp(operations, state, line, IExpression.BinaryOperation.IDIV);
                     break;
 
                 case Op.OpT.MOD:
-                    handle50BinOp(operations, state, line, IExpression.BinaryOperation.MOD);
+                    Handle50BinOp(operations, state, line, IExpression.BinaryOperation.MOD);
                     break;
 
                 case Op.OpT.POW:
-                    handle50BinOp(operations, state, line, IExpression.BinaryOperation.POW);
+                    Handle50BinOp(operations, state, line, IExpression.BinaryOperation.POW);
                     break;
 
                 case Op.OpT.BAND:
-                    handle50BinOp(operations, state, line, IExpression.BinaryOperation.BAND);
+                    Handle50BinOp(operations, state, line, IExpression.BinaryOperation.BAND);
                     break;
 
                 case Op.OpT.BOR:
-                    handle50BinOp(operations, state, line, IExpression.BinaryOperation.BOR);
+                    Handle50BinOp(operations, state, line, IExpression.BinaryOperation.BOR);
                     break;
 
                 case Op.OpT.BXOR:
-                    handle50BinOp(operations, state, line, IExpression.BinaryOperation.BXOR);
+                    Handle50BinOp(operations, state, line, IExpression.BinaryOperation.BXOR);
                     break;
 
                 case Op.OpT.SHL:
-                    handle50BinOp(operations, state, line, IExpression.BinaryOperation.SHL);
+                    Handle50BinOp(operations, state, line, IExpression.BinaryOperation.SHL);
                     break;
 
                 case Op.OpT.SHR:
-                    handle50BinOp(operations, state, line, IExpression.BinaryOperation.SHR);
+                    Handle50BinOp(operations, state, line, IExpression.BinaryOperation.SHR);
                     break;
 
                 case Op.OpT.ADD54:
-                    handle54BinOp(operations, state, line, IExpression.BinaryOperation.ADD);
+                    Handle54BinOp(operations, state, line, IExpression.BinaryOperation.ADD);
                     break;
 
                 case Op.OpT.SUB54:
-                    handle54BinOp(operations, state, line, IExpression.BinaryOperation.SUB);
+                    Handle54BinOp(operations, state, line, IExpression.BinaryOperation.SUB);
                     break;
 
                 case Op.OpT.MUL54:
-                    handle54BinOp(operations, state, line, IExpression.BinaryOperation.MUL);
+                    Handle54BinOp(operations, state, line, IExpression.BinaryOperation.MUL);
                     break;
 
                 case Op.OpT.DIV54:
-                    handle54BinOp(operations, state, line, IExpression.BinaryOperation.DIV);
+                    Handle54BinOp(operations, state, line, IExpression.BinaryOperation.DIV);
                     break;
 
                 case Op.OpT.IDIV54:
-                    handle54BinOp(operations, state, line, IExpression.BinaryOperation.IDIV);
+                    Handle54BinOp(operations, state, line, IExpression.BinaryOperation.IDIV);
                     break;
 
                 case Op.OpT.MOD54:
-                    handle54BinOp(operations, state, line, IExpression.BinaryOperation.MOD);
+                    Handle54BinOp(operations, state, line, IExpression.BinaryOperation.MOD);
                     break;
 
                 case Op.OpT.POW54:
-                    handle54BinOp(operations, state, line, IExpression.BinaryOperation.POW);
+                    Handle54BinOp(operations, state, line, IExpression.BinaryOperation.POW);
                     break;
 
                 case Op.OpT.BAND54:
-                    handle54BinOp(operations, state, line, IExpression.BinaryOperation.BAND);
+                    Handle54BinOp(operations, state, line, IExpression.BinaryOperation.BAND);
                     break;
 
                 case Op.OpT.BOR54:
-                    handle54BinOp(operations, state, line, IExpression.BinaryOperation.BOR);
+                    Handle54BinOp(operations, state, line, IExpression.BinaryOperation.BOR);
                     break;
 
                 case Op.OpT.BXOR54:
-                    handle54BinOp(operations, state, line, IExpression.BinaryOperation.BXOR);
+                    Handle54BinOp(operations, state, line, IExpression.BinaryOperation.BXOR);
                     break;
 
                 case Op.OpT.SHL54:
-                    handle54BinOp(operations, state, line, IExpression.BinaryOperation.SHL);
+                    Handle54BinOp(operations, state, line, IExpression.BinaryOperation.SHL);
                     break;
 
                 case Op.OpT.SHR54:
-                    handle54BinOp(operations, state, line, IExpression.BinaryOperation.SHR);
+                    Handle54BinOp(operations, state, line, IExpression.BinaryOperation.SHR);
                     break;
 
                 case Op.OpT.ADDI:
                 {
                     if (line + 1 > code.Length || code.GetOp(line + 1) != Op.MMBINI) throw new System.InvalidOperationException();
-                    IExpression.BinaryOperation op = decodeBinOp(code.CField(line + 1));
+                    IExpression.BinaryOperation op = DecodeBinOp(code.CField(line + 1));
                     int immediate = code.sCField(line);
                     bool swap = false;
                     if (code.kField(line + 1))
@@ -700,50 +700,50 @@ namespace LuaDec.Decompile
                     break;
                 }
                 case Op.OpT.ADDK:
-                    handle54BinKOp(operations, state, line, IExpression.BinaryOperation.ADD);
+                    Handle54BinKOp(operations, state, line, IExpression.BinaryOperation.ADD);
                     break;
 
                 case Op.OpT.SUBK:
-                    handle54BinKOp(operations, state, line, IExpression.BinaryOperation.SUB);
+                    Handle54BinKOp(operations, state, line, IExpression.BinaryOperation.SUB);
                     break;
 
                 case Op.OpT.MULK:
-                    handle54BinKOp(operations, state, line, IExpression.BinaryOperation.MUL);
+                    Handle54BinKOp(operations, state, line, IExpression.BinaryOperation.MUL);
                     break;
 
                 case Op.OpT.DIVK:
-                    handle54BinKOp(operations, state, line, IExpression.BinaryOperation.DIV);
+                    Handle54BinKOp(operations, state, line, IExpression.BinaryOperation.DIV);
                     break;
 
                 case Op.OpT.IDIVK:
-                    handle54BinKOp(operations, state, line, IExpression.BinaryOperation.IDIV);
+                    Handle54BinKOp(operations, state, line, IExpression.BinaryOperation.IDIV);
                     break;
 
                 case Op.OpT.MODK:
-                    handle54BinKOp(operations, state, line, IExpression.BinaryOperation.MOD);
+                    Handle54BinKOp(operations, state, line, IExpression.BinaryOperation.MOD);
                     break;
 
                 case Op.OpT.POWK:
-                    handle54BinKOp(operations, state, line, IExpression.BinaryOperation.POW);
+                    Handle54BinKOp(operations, state, line, IExpression.BinaryOperation.POW);
                     break;
 
                 case Op.OpT.BANDK:
-                    handle54BinKOp(operations, state, line, IExpression.BinaryOperation.BAND);
+                    Handle54BinKOp(operations, state, line, IExpression.BinaryOperation.BAND);
                     break;
 
                 case Op.OpT.BORK:
-                    handle54BinKOp(operations, state, line, IExpression.BinaryOperation.BOR);
+                    Handle54BinKOp(operations, state, line, IExpression.BinaryOperation.BOR);
                     break;
 
                 case Op.OpT.BXORK:
-                    handle54BinKOp(operations, state, line, IExpression.BinaryOperation.BXOR);
+                    Handle54BinKOp(operations, state, line, IExpression.BinaryOperation.BXOR);
                     break;
 
                 case Op.OpT.SHRI:
                 {
                     if (line + 1 > code.Length || code.GetOp(line + 1) != Op.MMBINI) throw new System.InvalidOperationException();
                     int immediate = code.sCField(line);
-                    IExpression.BinaryOperation op = decodeBinOp(code.CField(line + 1));
+                    IExpression.BinaryOperation op = DecodeBinOp(code.CField(line + 1));
                     if (op == IExpression.BinaryOperation.SHR)
                     {
                         // okay
@@ -771,19 +771,19 @@ namespace LuaDec.Decompile
                     break;
 
                 case Op.OpT.UNM:
-                    handleUnaryOp(operations, state, line, IExpression.UnaryOperation.UNM);
+                    HandleUnaryOp(operations, state, line, IExpression.UnaryOperation.UNM);
                     break;
 
                 case Op.OpT.NOT:
-                    handleUnaryOp(operations, state, line, IExpression.UnaryOperation.NOT);
+                    HandleUnaryOp(operations, state, line, IExpression.UnaryOperation.NOT);
                     break;
 
                 case Op.OpT.LEN:
-                    handleUnaryOp(operations, state, line, IExpression.UnaryOperation.LEN);
+                    HandleUnaryOp(operations, state, line, IExpression.UnaryOperation.LEN);
                     break;
 
                 case Op.OpT.BNOT:
-                    handleUnaryOp(operations, state, line, IExpression.UnaryOperation.BNOT);
+                    HandleUnaryOp(operations, state, line, IExpression.UnaryOperation.BNOT);
                     break;
 
                 case Op.OpT.CONCAT:
@@ -831,18 +831,18 @@ namespace LuaDec.Decompile
 
                 case Op.OpT.TEST50:
                 {
-                    if (getNoDebug() && A != B)
+                    if (GetNoDebug() && A != B)
                     {
-                        operations.Add(new RegisterSet(line, A, IExpression.make(IExpression.BinaryOperation.OR, r.GetExpression(B, line), initialExpression(state, A, line))));
+                        operations.Add(new RegisterSet(line, A, IExpression.make(IExpression.BinaryOperation.OR, r.GetExpression(B, line), InitialExpression(state, A, line))));
                     }
                     break;
                 }
                 case Op.OpT.TESTSET:
                 case Op.OpT.TESTSET54:
                 {
-                    if (getNoDebug())
+                    if (GetNoDebug())
                     {
-                        operations.Add(new RegisterSet(line, A, IExpression.make(IExpression.BinaryOperation.OR, r.GetExpression(B, line), initialExpression(state, A, line))));
+                        operations.Add(new RegisterSet(line, A, IExpression.make(IExpression.BinaryOperation.OR, r.GetExpression(B, line), InitialExpression(state, A, line))));
                     }
                     break;
                 }
@@ -926,12 +926,12 @@ namespace LuaDec.Decompile
 
                 case Op.OpT.SETLIST50:
                 {
-                    handleSetList(operations, state, line, A, 1 + Bx % 32, Bx - Bx % 32);
+                    HandleSetList(operations, state, line, A, 1 + Bx % 32, Bx - Bx % 32);
                     break;
                 }
                 case Op.OpT.SETLISTO:
                 {
-                    handleSetList(operations, state, line, A, registers - A - 1, Bx - Bx % 32);
+                    HandleSetList(operations, state, line, A, registers - A - 1, Bx - Bx % 32);
                     break;
                 }
                 case Op.OpT.SETLIST:
@@ -945,7 +945,7 @@ namespace LuaDec.Decompile
                     {
                         B = registers - A - 1;
                     }
-                    handleSetList(operations, state, line, A, B, (C - 1) * 50);
+                    HandleSetList(operations, state, line, A, B, (C - 1) * 50);
                     break;
                 }
                 case Op.OpT.SETLIST52:
@@ -960,7 +960,7 @@ namespace LuaDec.Decompile
                     {
                         B = registers - A - 1;
                     }
-                    handleSetList(operations, state, line, A, B, (C - 1) * 50);
+                    HandleSetList(operations, state, line, A, B, (C - 1) * 50);
                     break;
                 }
                 case Op.OpT.SETLIST54:
@@ -975,7 +975,7 @@ namespace LuaDec.Decompile
                     {
                         B = registers - A - 1;
                     }
-                    handleSetList(operations, state, line, A, B, C);
+                    HandleSetList(operations, state, line, A, B, C);
                     break;
                 }
                 case Op.OpT.TBC:
@@ -1048,7 +1048,7 @@ namespace LuaDec.Decompile
             return operations;
         }
 
-        private Assignment processOperation(State state, IOperation operation, int line, int nextLine, IBlock block)
+        private Assignment ProcessOperation(State state, IOperation operation, int line, int nextLine, IBlock block)
         {
             Registers r = state.r;
             bool[] skip = state.skip;
@@ -1067,7 +1067,7 @@ namespace LuaDec.Decompile
                     bool declare = false;
                     foreach (Declaration newLocal in r.GetNewLocals(line, block.closeRegister))
                     {
-                        if (assign.getFirstTarget().IsDeclaration(newLocal))
+                        if (assign.GetFirstTarget().IsDeclaration(newLocal))
                         {
                             declare = true;
                             break;
@@ -1077,12 +1077,12 @@ namespace LuaDec.Decompile
                     while (!declare && nextLine < block.end)
                     {
                         Op op = code.GetOp(nextLine);
-                        if (isMoveIntoTarget(r, nextLine))
+                        if (IsMoveIntoTarget(r, nextLine))
                         {
                             //System.output.println("-- found multiassign @" + nextLine);
-                            ITarget target = getMoveIntoTargetTarget(r, nextLine, line + 1);
-                            IExpression value = getMoveIntoTargetValue(r, nextLine, line + 1); //updated?
-                            assign.addFirst(target, value, nextLine);
+                            ITarget target = GetMoveIntoTargetTarget(r, nextLine, line + 1);
+                            IExpression value = GetMoveIntoTargetValue(r, nextLine, line + 1); //updated?
+                            assign.AddFirst(target, value, nextLine);
                             skip[nextLine] = true;
                             nextLine++;
                         }
@@ -1105,7 +1105,7 @@ namespace LuaDec.Decompile
             return assign;
         }
 
-        private void processSequence(State state, List<IBlock> blocks, int begin, int end)
+        private void ProcessSequence(State state, List<IBlock> blocks, int begin, int end)
         {
             Registers r = state.r;
             int blockContainerIndex = 0;
@@ -1170,7 +1170,7 @@ namespace LuaDec.Decompile
                             while (rLocals.Count != 0 && rLocals[0].end == declareEnd && (next.closeRegister == -1 || rLocals[0].register < next.closeRegister))
                             {
                                 Declaration decl = rLocals[0];
-                                declaration.addLast(new VariableTarget(decl), ConstantExpression.createNil(line), line);
+                                declaration.AddLast(new VariableTarget(decl), ConstantExpression.createNil(line), line);
                                 rLocals.RemoveAt(0);
                             }
                             blockStack.Peek().addStatement(declaration);
@@ -1198,7 +1198,7 @@ namespace LuaDec.Decompile
                         nextline = line + 1;
                         if (!skip[line] && line >= begin && line <= end)
                         {
-                            operations = processLine(state, line);
+                            operations = ProcessLine(state, line);
                         }
                         else
                         {
@@ -1216,7 +1216,7 @@ namespace LuaDec.Decompile
 
                 foreach (IOperation operation in operations)
                 {
-                    Assignment operationAssignment = processOperation(state, operation, line, nextline, block);
+                    Assignment operationAssignment = ProcessOperation(state, operation, line, nextline, block);
                     if (operationAssignment != null)
                     {
                         assignment = operationAssignment;
@@ -1243,7 +1243,7 @@ namespace LuaDec.Decompile
                     {
                         foreach (Declaration decl in locals)
                         {
-                            if (assignment.assigns(decl))
+                            if (assignment.Assigns(decl))
                             {
                                 scopeEnd = decl.end;
                                 break;
@@ -1256,7 +1256,7 @@ namespace LuaDec.Decompile
                     {
                         if ((scopeEnd == -1 || decl.end == scopeEnd) && decl.register >= block.closeRegister)
                         {
-                            assignment.addLast(new VariableTarget(decl), r.GetValue(decl.register, line + 1), r.GetUpdated(decl.register, line - 1));
+                            assignment.AddLast(new VariableTarget(decl), r.GetValue(decl.register, line + 1), r.GetUpdated(decl.register, line - 1));
                         }
                     }
                 }
@@ -1265,50 +1265,50 @@ namespace LuaDec.Decompile
             }
         }
 
-        public State decompile()
+        public State Decompile()
         {
             State state = new State();
-            state.r = new Registers(registers, length, declarations, f, getNoDebug());
+            state.r = new Registers(registers, length, declarations, f, GetNoDebug());
             ControlFlowHandler.Result result = ControlFlowHandler.Process(this, state.r);
             List<IBlock> blocks = result.blocks;
             state.outer = blocks[0];
             state.labels = result.labels;
-            processSequence(state, blocks, 1, code.Length);
+            ProcessSequence(state, blocks, 1, code.Length);
             foreach (IBlock block in blocks)
             {
                 block.resolve(state.r);
             }
-            handleUnusedConstants(state.outer);
+            HandleUnusedConstants(state.outer);
             return state;
         }
 
-        public Configuration getConfiguration()
+        public Configuration GetConfiguration()
         {
             return function.header.config;
         }
 
-        public bool getNoDebug()
+        public bool GetNoDebug()
         {
             return function.header.config.Variable == Configuration.VariableMode.Nodebug ||
                 function.stripped && function.header.config.Variable == Configuration.VariableMode.Default;
         }
 
-        public Version getVersion()
+        public Version GetVersion()
         {
             return function.header.version;
         }
 
-        public bool hasStatement(int begin, int end)
+        public bool HasStatement(int begin, int end)
         {
             if (begin <= end)
             {
                 State state = new State();
-                state.r = new Registers(registers, length, declarations, f, getNoDebug());
+                state.r = new Registers(registers, length, declarations, f, GetNoDebug());
                 state.outer = new OuterBlock(function, code.Length);
                 IBlock scoped = new DoEndBlock(function, begin, end + 1);
                 state.labels = new bool[code.Length + 1];
                 List<IBlock> blocks = new List<IBlock> { state.outer, scoped };
-                processSequence(state, blocks, 1, code.Length);
+                ProcessSequence(state, blocks, 1, code.Length);
                 return !scoped.isEmpty();
             }
             else
@@ -1317,24 +1317,20 @@ namespace LuaDec.Decompile
             }
         }
 
-        public void print(State state)
+        public void Write(State state)
         {
-            print(state, new Output());
+            Write(state, new Output());
         }
 
-        public void print(State state, IOutputProvider output)
+        public void Write(State state, IOutputProvider output)
         {
-            print(state, new Output(output));
+            Write(state, new Output(output));
         }
 
-        public void print(State state, Output output)
+        public void Write(State state, Output output)
         {
-            handleInitialDeclares(output);
+            HandleInitialDeclares(output);
             state.outer.Write(this, output);
         }
-
-        /**
-         * Decodes values from the Lua TMS enumeration used for the MMBIN family of operations.
-         */
     }
 }

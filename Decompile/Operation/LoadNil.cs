@@ -47,7 +47,7 @@ namespace LuaDec.Decompile.Operation
                             declare = new Assignment();
                             assignments.Add(declare);
                         }
-                        declare.addLast(r.GetTarget(register, line), nil, line);
+                        declare.AddLast(r.GetTarget(register, line), nil, line);
                     }
                     else
                     {

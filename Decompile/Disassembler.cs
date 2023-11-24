@@ -23,7 +23,7 @@ namespace LuaDec.Decompile
         {
         }
 
-        private void disassemble(Output output, int level, int index)
+        private void Disassemble(Output output, int level, int index)
         {
             if (parent == null)
             {
@@ -84,7 +84,7 @@ namespace LuaDec.Decompile
                 for (int upvalue = 1; upvalue <= function.upvalues.Length; upvalue++)
                 {
                     LUpvalue u = function.upvalues[upvalue - 1];
-                    output.WriteLine(".upvalue\t" + StringUtils.toPrintString(u.name) + "\t" + u.idx + "\t" + u.instack);
+                    output.WriteLine(".upvalue\t" + StringUtils.ToString(u.name) + "\t" + u.idx + "\t" + u.instack);
                 }
                 output.WriteLine();
             }
@@ -104,7 +104,7 @@ namespace LuaDec.Decompile
                 Op op = code.GetOp(line);
                 if (op != null && op.hasJump())
                 {
-                    int target = code.target(line);
+                    int target = code.Target(line);
                     if (target >= 1 && target <= label.Length)
                     {
                         label[target - 1] = true;
@@ -133,7 +133,7 @@ namespace LuaDec.Decompile
                 string cpLabel = null;
                 if (op != null && op.hasJump())
                 {
-                    int target = code.target(line);
+                    int target = code.Target(line);
                     if (target >= 1 && target <= code.Length)
                     {
                         cpLabel = "l" + target;
@@ -171,14 +171,14 @@ namespace LuaDec.Decompile
             int subindex = 0;
             foreach (LFunction child in function.functions)
             {
-                new Disassembler(child, "f" + subindex, fullname).disassemble(output, level + 1, subindex);
+                new Disassembler(child, "f" + subindex, fullname).Disassemble(output, level + 1, subindex);
                 subindex++;
             }
         }
 
-        public void disassemble(Output output)
+        public void Disassemble(Output output)
         {
-            disassemble(output, 0, 0);
+            Disassemble(output, 0, 0);
         }
     }
 }

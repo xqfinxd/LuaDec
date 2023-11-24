@@ -9,7 +9,7 @@ namespace LuaDec.Util
     public class StringUtils
     {
 
-        public static string toPrintString(string s)
+        public static string ToString(string s)
         {
             if (s == null) return "null";
             StringBuilder b = new StringBuilder();
@@ -67,7 +67,7 @@ namespace LuaDec.Util
             return b.ToString();
         }
 
-        public static String fromPrintString(String s)
+        public static string ParseString(string s)
         {
             if (s == "null") return null;
             if (s[0] != '"') throw new System.InvalidOperationException("Bad string " + s);

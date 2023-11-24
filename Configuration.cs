@@ -35,22 +35,22 @@ namespace LuaDec
 
         public Configuration()
         {
-            RawString = false;
-            Mode = OpMode.Decompile;
-            Variable = VariableMode.Default;
-            StrictScope = false;
-            OpMapFile = null;
-            Output = null;
+            rawString = false;
+            mode = OpMode.Decompile;
+            variable = VariableMode.Default;
+            strictScope = false;
+            opMapFile = null;
+            output = null;
         }
 
         public Configuration(Configuration other)
         {
-            RawString = other.RawString;
-            Mode = other.Mode;
-            Variable = other.Variable;
-            StrictScope = other.StrictScope;
-            OpMapFile = other.OpMapFile;
-            Output = other.Output;
+            rawString = other.RawString;
+            mode = other.Mode;
+            variable = other.Variable;
+            strictScope = other.StrictScope;
+            opMapFile = other.OpMapFile;
+            output = other.Output;
         }
 
         public Output GetOutput()

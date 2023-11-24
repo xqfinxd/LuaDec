@@ -23,6 +23,15 @@ namespace LuaDec.Decompile.Statement
             this.values = values;
         }
 
+        public override void Walk(Walker w)
+        {
+            w.VisitStatement(this);
+            foreach (IExpression expression in values)
+            {
+                expression.walk(w);
+            }
+        }
+
         public override void Write(Decompiler d, Output output)
         {
             output.WriteString("do ");
@@ -42,15 +51,6 @@ namespace LuaDec.Decompile.Statement
                     rtns.Add(value);
                 }
                 IExpression.printSequence(d, output, rtns, false, true);
-            }
-        }
-
-        public override void Walk(Walker w)
-        {
-            w.VisitStatement(this);
-            foreach (IExpression expression in values)
-            {
-                expression.walk(w);
             }
         }
     }

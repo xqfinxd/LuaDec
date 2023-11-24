@@ -60,9 +60,9 @@ namespace LuaDec.Decompile.Block
 
         public override void Write(Decompiler d, Output output)
         {
-            if (assign != null && assign.getFirstTarget() != null)
+            if (assign != null && assign.GetFirstTarget() != null)
             {
-                Assignment assignOut = new Assignment(assign.getFirstTarget(), getValue(), assign.getFirstLine());
+                Assignment assignOut = new Assignment(assign.GetFirstTarget(), getValue(), assign.GetFirstLine());
                 assignOut.Write(d, output);
             }
             else
@@ -145,7 +145,7 @@ namespace LuaDec.Decompile.Block
             }
             if (assign != null)
             {
-                assign.replaceValue(target, getValue());
+                assign.ReplaceValue(target, getValue());
                 return new SetBlockOperation_1(assign, end - 1);
             }
             else

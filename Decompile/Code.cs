@@ -128,7 +128,7 @@ namespace LuaDec.Decompile
             return C - extractor.C.Max() / 2;
         }
 
-        public int target(int line)
+        public int Target(int line)
         {
             return line + 1 + GetOp(line).jumpField(CodePoint(line), extractor);
         }
