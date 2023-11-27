@@ -1,57 +1,36 @@
 ﻿using LuaDec.Decompile.Target;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LuaDec.Decompile.Expression
 {
     public abstract class IExpression
     {
-        public static readonly int PRECEDENCE_OR = 1;
-        public static readonly int PRECEDENCE_AND = 2;
-        public static readonly int PRECEDENCE_COMPARE = 3;
-        public static readonly int PRECEDENCE_BOR = 4;
-        public static readonly int PRECEDENCE_BXOR = 5;
-        public static readonly int PRECEDENCE_BAND = 6;
-        public static readonly int PRECEDENCE_SHIFT = 7;
-        public static readonly int PRECEDENCE_CONCAT = 8;
-        public static readonly int PRECEDENCE_ADD = 9;
-        public static readonly int PRECEDENCE_MUL = 10;
-        public static readonly int PRECEDENCE_UNARY = 11;
-        public static readonly int PRECEDENCE_POW = 12;
-        public static readonly int PRECEDENCE_ATOMIC = 13;
-
-        public static readonly int ASSOCIATIVITY_NONE = 0;
-        public static readonly int ASSOCIATIVITY_LEFT = 1;
-        public static readonly int ASSOCIATIVITY_RIGHT = 2;
-
         public class BinaryOperation
         {
-            public static BinaryOperation CONCAT = new BinaryOperation("..", PRECEDENCE_CONCAT, ASSOCIATIVITY_RIGHT);
             public static BinaryOperation ADD = new BinaryOperation("+", PRECEDENCE_ADD, ASSOCIATIVITY_LEFT);
-            public static BinaryOperation SUB = new BinaryOperation("-", PRECEDENCE_ADD, ASSOCIATIVITY_LEFT);
-            public static BinaryOperation MUL = new BinaryOperation("*", PRECEDENCE_MUL, ASSOCIATIVITY_LEFT);
-            public static BinaryOperation DIV = new BinaryOperation("/", PRECEDENCE_MUL, ASSOCIATIVITY_LEFT);
-            public static BinaryOperation IDIV = new BinaryOperation("//", PRECEDENCE_MUL, ASSOCIATIVITY_LEFT);
-            public static BinaryOperation MOD = new BinaryOperation("%", PRECEDENCE_MUL, ASSOCIATIVITY_LEFT);
-            public static BinaryOperation POW = new BinaryOperation("^", PRECEDENCE_POW, ASSOCIATIVITY_RIGHT);
+            public static BinaryOperation AND = new BinaryOperation("and", PRECEDENCE_AND, ASSOCIATIVITY_NONE);
             public static BinaryOperation BAND = new BinaryOperation("&", PRECEDENCE_BAND, ASSOCIATIVITY_LEFT);
             public static BinaryOperation BOR = new BinaryOperation("|", PRECEDENCE_BOR, ASSOCIATIVITY_LEFT);
             public static BinaryOperation BXOR = new BinaryOperation("~", PRECEDENCE_BXOR, ASSOCIATIVITY_LEFT);
+            public static BinaryOperation CONCAT = new BinaryOperation("..", PRECEDENCE_CONCAT, ASSOCIATIVITY_RIGHT);
+            public static BinaryOperation DIV = new BinaryOperation("/", PRECEDENCE_MUL, ASSOCIATIVITY_LEFT);
+            public static BinaryOperation IDIV = new BinaryOperation("//", PRECEDENCE_MUL, ASSOCIATIVITY_LEFT);
+            public static BinaryOperation MOD = new BinaryOperation("%", PRECEDENCE_MUL, ASSOCIATIVITY_LEFT);
+            public static BinaryOperation MUL = new BinaryOperation("*", PRECEDENCE_MUL, ASSOCIATIVITY_LEFT);
+            public static BinaryOperation OR = new BinaryOperation("or", PRECEDENCE_OR, ASSOCIATIVITY_NONE);
+            public static BinaryOperation POW = new BinaryOperation("^", PRECEDENCE_POW, ASSOCIATIVITY_RIGHT);
             public static BinaryOperation SHL = new BinaryOperation("<<", PRECEDENCE_SHIFT, ASSOCIATIVITY_LEFT);
             public static BinaryOperation SHR = new BinaryOperation(">>", PRECEDENCE_SHIFT, ASSOCIATIVITY_LEFT);
-            public static BinaryOperation OR = new BinaryOperation("or", PRECEDENCE_OR, ASSOCIATIVITY_NONE);
-            public static BinaryOperation AND = new BinaryOperation("and", PRECEDENCE_AND, ASSOCIATIVITY_NONE);
+            public static BinaryOperation SUB = new BinaryOperation("-", PRECEDENCE_ADD, ASSOCIATIVITY_LEFT);
 
+            private readonly int associativity;
             private readonly string op;
             private readonly int precedence;
-            private readonly int associativity;
-
+            
+            public int Associativity => associativity;
             public string Op => op;
             public int Precedence => precedence;
-            public int Associativity => associativity;
 
             private BinaryOperation(string op, int precedence, int associativity)
             {
@@ -63,23 +42,58 @@ namespace LuaDec.Decompile.Expression
 
         public class UnaryOperation
         {
-            public static UnaryOperation UNM = new UnaryOperation("-");
-            public static UnaryOperation NOT = new UnaryOperation("not ");
-            public static UnaryOperation LEN = new UnaryOperation("#");
-            public static UnaryOperation BNOT = new UnaryOperation("~");
-
-
             private readonly string op;
+            public static UnaryOperation BNOT = new UnaryOperation("~");
+            public static UnaryOperation LEN = new UnaryOperation("#");
+            public static UnaryOperation NOT = new UnaryOperation("not ");
+            public static UnaryOperation UNM = new UnaryOperation("-");
+            public string Op => op;
 
             private UnaryOperation(String op)
             {
                 this.op = op;
             }
-
-            public string Op => op;
         }
 
-        public static BinaryExpression make(BinaryOperation op, IExpression left, IExpression right, bool flip)
+        public static readonly int ASSOCIATIVITY_LEFT = 1;
+        public static readonly int ASSOCIATIVITY_NONE = 0;
+        public static readonly int ASSOCIATIVITY_RIGHT = 2;
+        public static readonly int PRECEDENCE_ADD = 9;
+        public static readonly int PRECEDENCE_AND = 2;
+        public static readonly int PRECEDENCE_ATOMIC = 13;
+        public static readonly int PRECEDENCE_BAND = 6;
+        public static readonly int PRECEDENCE_BOR = 4;
+        public static readonly int PRECEDENCE_BXOR = 5;
+        public static readonly int PRECEDENCE_COMPARE = 3;
+        public static readonly int PRECEDENCE_CONCAT = 8;
+        public static readonly int PRECEDENCE_MUL = 10;
+        public static readonly int PRECEDENCE_OR = 1;
+        public static readonly int PRECEDENCE_POW = 12;
+        public static readonly int PRECEDENCE_SHIFT = 7;
+        public static readonly int PRECEDENCE_UNARY = 11;
+        public readonly int precedence;
+
+        public IExpression(int precedence)
+        {
+            this.precedence = precedence;
+        }
+
+        protected static void WriteBinary(Decompiler d, Output output, String op, IExpression left, IExpression right)
+        {
+            left.Write(d, output);
+            output.WriteString(" ");
+            output.WriteString(op);
+            output.WriteString(" ");
+            right.Write(d, output);
+        }
+
+        protected static void WriteUnary(Decompiler d, Output output, String op, IExpression expression)
+        {
+            output.WriteString(op);
+            expression.Write(d, output);
+        }
+
+        public static BinaryExpression Make(BinaryOperation op, IExpression left, IExpression right, bool flip)
         {
             if (flip)
             {
@@ -90,28 +104,24 @@ namespace LuaDec.Decompile.Expression
             return new BinaryExpression(op.Op, left, right, op.Precedence, op.Associativity);
         }
 
-        public static BinaryExpression make(BinaryOperation op, IExpression left, IExpression right)
+        public static BinaryExpression Make(BinaryOperation op, IExpression left, IExpression right)
         {
-            return make(op, left, right, false);
+            return Make(op, left, right, false);
         }
 
-        public static UnaryExpression make(UnaryOperation op, IExpression expression)
+        public static UnaryExpression Make(UnaryOperation op, IExpression expression)
         {
             return new UnaryExpression(op.Op, expression, PRECEDENCE_UNARY);
         }
 
-        /**
-         * Prints out a sequences of expressions with commas, and optionally
-         * handling multiple expressions and return value adjustment.
-         */
-        public static void printSequence(Decompiler d, Output output, List<IExpression> exprs, bool linebreak, bool multiple)
+        public static void WriteSequence(Decompiler d, Output output, List<IExpression> exprs, bool linebreak, bool multiple)
         {
             int n = exprs.Count;
             int i = 1;
             foreach (IExpression expr in exprs)
             {
                 bool last = (i == n);
-                if (expr.isMultiple())
+                if (expr.IsMultiple())
                 {
                     last = true;
                 }
@@ -119,17 +129,17 @@ namespace LuaDec.Decompile.Expression
                 {
                     if (multiple)
                     {
-                        expr.printMultiple(d, output);
+                        expr.WriteMultiple(d, output);
                     }
                     else
                     {
-                        expr.print(d, output);
+                        expr.Write(d, output);
                     }
                     break;
                 }
                 else
                 {
-                    expr.print(d, output);
+                    expr.Write(d, output);
                     output.WriteString(",");
                     if (linebreak)
                     {
@@ -144,198 +154,146 @@ namespace LuaDec.Decompile.Expression
             }
         }
 
-        public readonly int precedence;
-
-        public IExpression(int precedence)
+        public virtual void AddEntry(TableLiteral.Entry entry)
         {
-            this.precedence = precedence;
+            throw new System.NotImplementedException();
         }
 
-        protected static void printUnary(Decompiler d, Output output, String op, IExpression expression)
+        public virtual int AsInteger()
         {
-            output.WriteString(op);
-            expression.print(d, output);
+            throw new System.NotImplementedException();
         }
 
-        protected static void printBinary(Decompiler d, Output output, String op, IExpression left, IExpression right)
+        public virtual string AsName()
         {
-            left.print(d, output);
-            output.WriteString(" ");
-            output.WriteString(op);
-            output.WriteString(" ");
-            right.print(d, output);
+            throw new System.NotImplementedException();
         }
 
-        public abstract void walk(Walker w);
-
-        public abstract void print(Decompiler d, Output output);
-
-        /**
-         * Prints the expression in a context where it is surrounded by braces.
-         * (Thus if the expression would begin with a brace, it must be enclosed
-         * in parentheses to avoid ambiguity.)
-         */
-        public virtual void printBraced(Decompiler d, Output output)
+        public virtual bool BeginsWithParen()
         {
-            print(d, output);
+            return false;
         }
 
-        /**
-         * Prints the expression in a context that accepts multiple values.
-         * (Thus, if an expression that normally could return multiple values
-         * doesn't, it should use parens to adjust to 1.)
-         */
-        public virtual void printMultiple(Decompiler d, Output output)
+        public virtual int ClosureUpvalueLine()
         {
-            print(d, output);
+            throw new System.NotImplementedException();
         }
 
-        /**
-         * Determines the index of the last-declared constant in this expression.
-         * If there is no constant in the expression, return -1.
-         */
-        public abstract int getConstantIndex();
+        public abstract int GetConstantIndex();
 
-        public virtual int getConstantLine()
+        public virtual int GetConstantLine()
         {
             return -1;
         }
 
-        public virtual bool beginsWithParen()
+        public virtual string GetField()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public virtual IExpression GetTable()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public virtual bool IsBool()
         {
             return false;
         }
 
-        public virtual bool isNil()
+        public virtual bool IsBrief()
         {
             return false;
         }
 
-        public virtual bool isClosure()
+        public virtual bool IsClosure()
         {
             return false;
         }
 
-        public virtual bool isConstant()
+        public virtual bool IsConstant()
         {
             return false;
         }
 
-        /**
-         * An ungrouped expression is one that needs to be enclosed in parentheses
-         * before it can be dereferenced. This doesn't apply to multiply-valued expressions
-         * as those will be given parentheses automatically when converted to a single value.
-         * e.g.
-         *  (a+b).c; ("asdf"):gsub()
-         */
-        public virtual bool isUngrouped()
+        public virtual bool IsDotChain()
+        {
+            return false;
+        }
+
+        public virtual bool IsEnvironmentTable(Decompiler d)
+        {
+            return false;
+        }
+
+        public virtual bool IsIdentifier()
+        {
+            return false;
+        }
+
+        public virtual bool IsInteger()
+        {
+            return false;
+        }
+
+        public virtual bool IsMemberAccess()
+        {
+            return false;
+        }
+
+        public virtual bool IsMultiple()
+        {
+            return false;
+        }
+
+        public virtual bool IsNewEntryAllowed()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public virtual bool IsNil()
+        {
+            return false;
+        }
+
+        public virtual bool IsString()
+        {
+            return false;
+        }
+
+        public virtual bool IsTableLiteral()
+        {
+            return false;
+        }
+
+        public virtual bool IsUngrouped()
         {
             return false;
         }
 
         // Only supported for closures
-        public virtual bool isUpvalueOf(int register)
+        public virtual bool IsUpvalueOf(int register)
         {
-            throw new System.InvalidOperationException();
+            throw new System.NotImplementedException();
         }
 
-        public virtual bool isbool()
+        public abstract void Write(Decompiler d, Output output);
+
+        public virtual void WriteBraced(Decompiler d, Output output)
         {
-            return false;
+            Write(d, output);
         }
 
-        public virtual bool isInteger()
+        public virtual void WriteClosure(Decompiler d, Output output, ITarget name)
         {
-            return false;
+            throw new System.NotImplementedException();
         }
 
-        public virtual int asInteger()
+        public virtual void WriteMultiple(Decompiler d, Output output)
         {
-            throw new System.InvalidOperationException();
+            Write(d, output);
         }
 
-        public virtual bool isString()
-        {
-            return false;
-        }
-
-        public virtual bool isIdentifier()
-        {
-            return false;
-        }
-
-        /**
-         * Determines if this can be part of a function name.
-         * Is it of the form: {Name . } Name
-         */
-        public virtual bool isDotChain()
-        {
-            return false;
-        }
-
-        public virtual int closureUpvalueLine()
-        {
-            throw new System.InvalidOperationException();
-        }
-
-        public virtual void printClosure(Decompiler d, Output output, ITarget name)
-        {
-            throw new System.InvalidOperationException();
-        }
-
-        public virtual string asName()
-        {
-            throw new System.InvalidOperationException();
-        }
-
-        public virtual bool isTableLiteral()
-        {
-            return false;
-        }
-
-        public virtual bool isNewEntryAllowed()
-        {
-            throw new System.InvalidOperationException();
-        }
-
-        public virtual void addEntry(TableLiteral.Entry entry)
-        {
-            throw new System.InvalidOperationException();
-        }
-
-        /**
-         * Whether the expression has more than one return stored into registers.
-         */
-        public virtual bool isMultiple()
-        {
-            return false;
-        }
-
-        public virtual bool isMemberAccess()
-        {
-            return false;
-        }
-
-        public virtual IExpression getTable()
-        {
-            throw new System.InvalidOperationException();
-        }
-
-        public virtual string getField()
-        {
-            throw new System.InvalidOperationException();
-        }
-
-        public virtual bool isBrief()
-        {
-            return false;
-        }
-
-        public virtual bool isEnvironmentTable(Decompiler d)
-        {
-            return false;
-        }
-
+        public abstract void Walk(Walker w);
     }
-
 }

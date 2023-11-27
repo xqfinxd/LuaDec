@@ -23,9 +23,9 @@ namespace LuaDec.Decompile
 
             public override void VisitExpression(IExpression expression)
             {
-                if (expression.isConstant())
+                if (expression.IsConstant())
                 {
-                    int index = expression.getConstantIndex();
+                    int index = expression.GetConstantIndex();
                     if (index >= 0)
                     {
                         while (index > nextConstant)
@@ -55,9 +55,9 @@ namespace LuaDec.Decompile
 
             public override void VisitExpression(IExpression expression)
             {
-                if (expression.isConstant())
+                if (expression.IsConstant())
                 {
-                    int index = expression.getConstantIndex();
+                    int index = expression.GetConstantIndex();
                     if (index >= nextConstant)
                     {
                         nextConstant = index + 1;
@@ -277,7 +277,7 @@ namespace LuaDec.Decompile
 
         private void Handle50BinOp(List<IOperation> operations, State state, int line, IExpression.BinaryOperation op)
         {
-            operations.Add(new RegisterSet(line, code.AField(line), IExpression.make(op, state.r.GetKExpression(code.BField(line), line), state.r.GetKExpression(code.CField(line), line))));
+            operations.Add(new RegisterSet(line, code.AField(line), IExpression.Make(op, state.r.GetKExpression(code.BField(line), line), state.r.GetKExpression(code.CField(line), line))));
         }
 
         private void Handle54BinKOp(List<IOperation> operations, State state, int line, IExpression.BinaryOperation op)
@@ -291,12 +291,12 @@ namespace LuaDec.Decompile
                 left = right;
                 right = temp;
             }
-            operations.Add(new RegisterSet(line, code.AField(line), IExpression.make(op, left, right)));
+            operations.Add(new RegisterSet(line, code.AField(line), IExpression.Make(op, left, right)));
         }
 
         private void Handle54BinOp(List<IOperation> operations, State state, int line, IExpression.BinaryOperation op)
         {
-            operations.Add(new RegisterSet(line, code.AField(line), IExpression.make(op, state.r.GetExpression(code.BField(line), line), state.r.GetExpression(code.CField(line), line))));
+            operations.Add(new RegisterSet(line, code.AField(line), IExpression.Make(op, state.r.GetExpression(code.BField(line), line), state.r.GetExpression(code.CField(line), line))));
         }
 
         private void HandleInitialDeclares(Output output)
@@ -344,7 +344,7 @@ namespace LuaDec.Decompile
 
         private void HandleUnaryOp(List<IOperation> operations, State state, int line, IExpression.UnaryOperation op)
         {
-            operations.Add(new RegisterSet(line, code.AField(line), IExpression.make(op, state.r.GetExpression(code.BField(line), line))));
+            operations.Add(new RegisterSet(line, code.AField(line), IExpression.Make(op, state.r.GetExpression(code.BField(line), line))));
         }
 
         private void HandleUnusedConstants(IBlock outer)
@@ -696,7 +696,7 @@ namespace LuaDec.Decompile
                         left = right;
                         right = temp;
                     }
-                    operations.Add(new RegisterSet(line, A, IExpression.make(op, left, right)));
+                    operations.Add(new RegisterSet(line, A, IExpression.Make(op, left, right)));
                     break;
                 }
                 case Op.OpT.ADDK:
@@ -756,12 +756,12 @@ namespace LuaDec.Decompile
                     {
                         throw new System.InvalidOperationException();
                     }
-                    operations.Add(new RegisterSet(line, A, IExpression.make(op, r.GetExpression(B, line), ConstantExpression.createint(immediate))));
+                    operations.Add(new RegisterSet(line, A, IExpression.Make(op, r.GetExpression(B, line), ConstantExpression.createint(immediate))));
                     break;
                 }
                 case Op.OpT.SHLI:
                 {
-                    operations.Add(new RegisterSet(line, A, IExpression.make(IExpression.BinaryOperation.SHL, ConstantExpression.createint(code.sCField(line)), r.GetExpression(B, line))));
+                    operations.Add(new RegisterSet(line, A, IExpression.Make(IExpression.BinaryOperation.SHL, ConstantExpression.createint(code.sCField(line)), r.GetExpression(B, line))));
                     break;
                 }
                 case Op.OpT.MMBIN:
@@ -792,7 +792,7 @@ namespace LuaDec.Decompile
                     //Remember that CONCAT is right associative.
                     while (C-- > B)
                     {
-                        value = IExpression.make(IExpression.BinaryOperation.CONCAT, r.GetExpression(C, line), value);
+                        value = IExpression.Make(IExpression.BinaryOperation.CONCAT, r.GetExpression(C, line), value);
                     }
                     operations.Add(new RegisterSet(line, A, value));
                     break;
@@ -804,7 +804,7 @@ namespace LuaDec.Decompile
                     IExpression value = r.GetExpression(A + B, line);
                     while (B-- > 0)
                     {
-                        value = IExpression.make(IExpression.BinaryOperation.CONCAT, r.GetExpression(A + B, line), value);
+                        value = IExpression.Make(IExpression.BinaryOperation.CONCAT, r.GetExpression(A + B, line), value);
                     }
                     operations.Add(new RegisterSet(line, A, value));
                     break;
@@ -833,7 +833,7 @@ namespace LuaDec.Decompile
                 {
                     if (GetNoDebug() && A != B)
                     {
-                        operations.Add(new RegisterSet(line, A, IExpression.make(IExpression.BinaryOperation.OR, r.GetExpression(B, line), InitialExpression(state, A, line))));
+                        operations.Add(new RegisterSet(line, A, IExpression.Make(IExpression.BinaryOperation.OR, r.GetExpression(B, line), InitialExpression(state, A, line))));
                     }
                     break;
                 }
@@ -842,7 +842,7 @@ namespace LuaDec.Decompile
                 {
                     if (GetNoDebug())
                     {
-                        operations.Add(new RegisterSet(line, A, IExpression.make(IExpression.BinaryOperation.OR, r.GetExpression(B, line), InitialExpression(state, A, line))));
+                        operations.Add(new RegisterSet(line, A, IExpression.Make(IExpression.BinaryOperation.OR, r.GetExpression(B, line), InitialExpression(state, A, line))));
                     }
                     break;
                 }

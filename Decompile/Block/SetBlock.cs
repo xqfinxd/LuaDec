@@ -140,7 +140,7 @@ namespace LuaDec.Decompile.Block
             if (ControlFlowHandler.Verbose)
             {
                 Console.WriteLine("set expression: ");
-                cond.asExpression(r).print(d, new Output());
+                cond.asExpression(r).Write(d, new Output());
                 Console.WriteLine();
             }
             if (assign != null)

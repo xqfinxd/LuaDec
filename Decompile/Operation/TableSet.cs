@@ -26,9 +26,9 @@ namespace LuaDec.Decompile.Operation
 
         public override List<IStatement> Process(Registers r, IBlock block)
         {
-            if (!r.IsNoDebug && table.isTableLiteral() && (value.isMultiple() || table.isNewEntryAllowed()))
+            if (!r.IsNoDebug && table.IsTableLiteral() && (value.IsMultiple() || table.IsNewEntryAllowed()))
             {
-                table.addEntry(new TableLiteral.Entry(index, value, !isTable, timestamp));
+                table.AddEntry(new TableLiteral.Entry(index, value, !isTable, timestamp));
                 return new List<IStatement>();
             }
             else

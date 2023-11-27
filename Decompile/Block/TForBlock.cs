@@ -134,7 +134,7 @@ namespace LuaDec.Decompile.Block
             {
                 IExpression value = r.GetValue(register, begin - 1);
                 values.Add(value);
-                if (value.isMultiple()) break;
+                if (value.IsMultiple()) break;
             }
 
             this.targets = new ITarget[targets.Count];
@@ -146,7 +146,7 @@ namespace LuaDec.Decompile.Block
             w.VisitStatement(this);
             foreach (IExpression expression in values)
             {
-                expression.walk(w);
+                expression.Walk(w);
             }
             foreach (IStatement statement in statements)
             {
@@ -184,11 +184,11 @@ namespace LuaDec.Decompile.Block
                 targets[i].Write(d, output, false);
             }
             output.WriteString(" in ");
-            values[0].print(d, output);
+            values[0].Write(d, output);
             for (int i = 1; i < values.Length; i++)
             {
                 output.WriteString(", ");
-                values[i].print(d, output);
+                values[i].Write(d, output);
             }
             output.WriteString(" do");
             output.WriteLine();

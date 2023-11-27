@@ -15,16 +15,16 @@ namespace LuaDec.Decompile.Target
 
         public override bool BeginsWithParen()
         {
-            return table.isUngrouped() || table.beginsWithParen();
+            return table.IsUngrouped() || table.BeginsWithParen();
         }
 
         public override bool IsFunctionName()
         {
-            if (!index.isIdentifier())
+            if (!index.IsIdentifier())
             {
                 return false;
             }
-            if (!table.isDotChain())
+            if (!table.IsDotChain())
             {
                 return false;
             }
@@ -33,20 +33,20 @@ namespace LuaDec.Decompile.Target
 
         public override void Walk(Walker w)
         {
-            table.walk(w);
-            index.walk(w);
+            table.Walk(w);
+            index.Walk(w);
         }
 
         public override void Write(Decompiler d, Output output, bool declare)
         {
-            new TableReference(table, index).print(d, output);
+            new TableReference(table, index).Write(d, output);
         }
 
         public override void WriteMethod(Decompiler d, Output output)
         {
-            table.print(d, output);
+            table.Write(d, output);
             output.WriteString(":");
-            output.WriteString(index.asName());
+            output.WriteString(index.AsName());
         }
     }
 }

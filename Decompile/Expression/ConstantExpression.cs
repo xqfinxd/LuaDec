@@ -61,77 +61,77 @@ namespace LuaDec.Decompile.Expression
             this.line = line;
         }
 
-        public override void walk(Walker w)
+        public override void Walk(Walker w)
         {
             w.VisitExpression(this);
         }
 
-        public override int getConstantIndex()
+        public override int GetConstantIndex()
         {
             return index;
         }
 
-        public override int getConstantLine()
+        public override int GetConstantLine()
         {
             return line;
         }
 
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
             constant.Print(d, output, false);
         }
 
-        public override void printBraced(Decompiler d, Output output)
+        public override void WriteBraced(Decompiler d, Output output)
         {
             constant.Print(d, output, true);
         }
 
-        public override bool isConstant()
+        public override bool IsConstant()
         {
             return true;
         }
 
-        public override bool isUngrouped()
+        public override bool IsUngrouped()
         {
             return true;
         }
 
-        public override bool isNil()
+        public override bool IsNil()
         {
             return constant.IsNil();
         }
 
-        public override bool isbool()
+        public override bool IsBool()
         {
             return constant.IsBool();
         }
 
-        public override bool isInteger()
+        public override bool IsInteger()
         {
             return constant.IsInt();
         }
 
-        public override int asInteger()
+        public override int AsInteger()
         {
             return constant.AsInt();
         }
 
-        public override bool isString()
+        public override bool IsString()
         {
             return constant.IsString();
         }
 
-        public override bool isIdentifier()
+        public override bool IsIdentifier()
         {
             return identifier;
         }
 
-        public override string asName()
+        public override string AsName()
         {
             return constant.AsName();
         }
 
-        public override bool isBrief()
+        public override bool IsBrief()
         {
             return !constant.IsString() || constant.AsName().Length <= 10;
         }

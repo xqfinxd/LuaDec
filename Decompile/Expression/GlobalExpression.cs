@@ -19,28 +19,28 @@ namespace LuaDec.Decompile.Expression
             this.index = index;
         }
 
-        public override void walk(Walker w)
+        public override void Walk(Walker w)
         {
             w.VisitExpression(this);
-            name.walk(w);
+            name.Walk(w);
         }
 
-        public override int getConstantIndex()
+        public override int GetConstantIndex()
         {
             return index;
         }
 
-        public override bool isDotChain()
+        public override bool IsDotChain()
         {
             return true;
         }
 
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
-            output.WriteString(name.asName());
+            output.WriteString(name.AsName());
         }
 
-        public override bool isBrief()
+        public override bool IsBrief()
         {
             return true;
         }

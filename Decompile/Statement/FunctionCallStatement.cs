@@ -13,18 +13,18 @@ namespace LuaDec.Decompile.Statement
 
         public override bool BeginsWithParen()
         {
-            return call.beginsWithParen();
+            return call.BeginsWithParen();
         }
 
         public override void Walk(Walker w)
         {
             w.VisitStatement(this);
-            call.walk(w);
+            call.Walk(w);
         }
 
         public override void Write(Decompiler d, Output output)
         {
-            call.print(d, output);
+            call.Write(d, output);
         }
     }
 }

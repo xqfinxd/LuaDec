@@ -18,28 +18,28 @@ namespace LuaDec.Decompile.Expression
             this.multiple = multiple;
         }
 
-        public override void walk(Walker w)
+        public override void Walk(Walker w)
         {
             w.VisitExpression(this);
         }
 
-        public override int getConstantIndex()
+        public override int GetConstantIndex()
         {
             return -1;
         }
 
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
             //output.print("...");
             output.WriteString(multiple ? "..." : "(...)");
         }
 
-        public override void printMultiple(Decompiler d, Output output)
+        public override void WriteMultiple(Decompiler d, Output output)
         {
             output.WriteString(multiple ? "..." : "(...)");
         }
 
-        public override bool isMultiple()
+        public override bool IsMultiple()
         {
             return multiple;
         }

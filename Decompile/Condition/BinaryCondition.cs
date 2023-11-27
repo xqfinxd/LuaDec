@@ -106,8 +106,8 @@ namespace LuaDec.Decompile.Condition
                 }
                 else
                 {
-                    int rightIndex = rightExpression.getConstantIndex();
-                    int leftIndex = leftExpression.getConstantIndex();
+                    int rightIndex = rightExpression.GetConstantIndex();
+                    int leftIndex = leftExpression.GetConstantIndex();
                     if (rightIndex != -1 && leftIndex != -1)
                     {
                         if (left.type == OperandType.K && rightIndex == leftIndex)

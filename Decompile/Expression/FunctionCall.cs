@@ -21,38 +21,38 @@ namespace LuaDec.Decompile.Expression
             this.multiple = multiple;
         }
 
-        public override void walk(Walker w)
+        public override void Walk(Walker w)
         {
             w.VisitExpression(this);
-            function.walk(w);
+            function.Walk(w);
             foreach (IExpression expression in arguments)
             {
-                expression.walk(w);
+                expression.Walk(w);
             }
         }
 
-        public override int getConstantIndex()
+        public override int GetConstantIndex()
         {
-            int index = function.getConstantIndex();
+            int index = function.GetConstantIndex();
             foreach (IExpression argument in arguments)
             {
-                index = Math.Max(argument.getConstantIndex(), index);
+                index = Math.Max(argument.GetConstantIndex(), index);
             }
             return index;
         }
 
-        public override bool isMultiple()
+        public override bool IsMultiple()
         {
             return multiple;
         }
 
-        public override void printMultiple(Decompiler d, Output output)
+        public override void WriteMultiple(Decompiler d, Output output)
         {
             if (!multiple)
             {
                 output.WriteString("(");
             }
-            print(d, output);
+            Write(d, output);
             if (!multiple)
             {
                 output.WriteString(")");
@@ -61,40 +61,40 @@ namespace LuaDec.Decompile.Expression
 
         private bool isMethodCall()
         {
-            return function.isMemberAccess() && arguments.Length > 0 && function.getTable() == arguments[0];
+            return function.IsMemberAccess() && arguments.Length > 0 && function.GetTable() == arguments[0];
         }
 
-        public override bool beginsWithParen()
+        public override bool BeginsWithParen()
         {
             if (isMethodCall())
             {
-                IExpression obj = function.getTable();
-                return obj.isUngrouped() || obj.beginsWithParen();
+                IExpression obj = function.GetTable();
+                return obj.IsUngrouped() || obj.BeginsWithParen();
             }
             else
             {
-                return function.isUngrouped() || function.beginsWithParen();
+                return function.IsUngrouped() || function.BeginsWithParen();
             }
         }
 
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
             List<IExpression> args = new List<IExpression>(arguments.Length);
             if (isMethodCall())
             {
-                IExpression obj = function.getTable();
-                if (obj.isUngrouped())
+                IExpression obj = function.GetTable();
+                if (obj.IsUngrouped())
                 {
                     output.WriteString("(");
-                    obj.print(d, output);
+                    obj.Write(d, output);
                     output.WriteString(")");
                 }
                 else
                 {
-                    obj.print(d, output);
+                    obj.Write(d, output);
                 }
                 output.WriteString(":");
-                output.WriteString(function.getField());
+                output.WriteString(function.GetField());
                 for (int i = 1; i < arguments.Length; i++)
                 {
                     args.Add(arguments[i]);
@@ -102,15 +102,15 @@ namespace LuaDec.Decompile.Expression
             }
             else
             {
-                if (function.isUngrouped())
+                if (function.IsUngrouped())
                 {
                     output.WriteString("(");
-                    function.print(d, output);
+                    function.Write(d, output);
                     output.WriteString(")");
                 }
                 else
                 {
-                    function.print(d, output);
+                    function.Write(d, output);
                 }
                 for (int i = 0; i < arguments.Length; i++)
                 {
@@ -118,7 +118,7 @@ namespace LuaDec.Decompile.Expression
                 }
             }
             output.WriteString("(");
-            IExpression.printSequence(d, output, args, false, true);
+            IExpression.WriteSequence(d, output, args, false, true);
             output.WriteString(")");
         }
 

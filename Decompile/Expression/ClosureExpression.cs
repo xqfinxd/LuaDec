@@ -21,27 +21,27 @@ namespace LuaDec.Decompile.Expression
             this.upvalueLine = upvalueLine;
         }
 
-        public override void walk(Walker w)
+        public override void Walk(Walker w)
         {
             w.VisitExpression(this);
         }
 
-        public override int getConstantIndex()
+        public override int GetConstantIndex()
         {
             return -1;
         }
 
-        public override bool isClosure()
+        public override bool IsClosure()
         {
             return true;
         }
 
-        public override bool isUngrouped()
+        public override bool IsUngrouped()
         {
             return true;
         }
 
-        public override bool isUpvalueOf(int register)
+        public override bool IsUpvalueOf(int register)
         {
             /*
             if(function.header.version == 0x51) {
@@ -59,19 +59,19 @@ namespace LuaDec.Decompile.Expression
             return false;
         }
 
-        public override int closureUpvalueLine()
+        public override int ClosureUpvalueLine()
         {
             return upvalueLine;
         }
 
-        public override void print(Decompiler outer, Output output)
+        public override void Write(Decompiler outer, Output output)
         {
             Decompiler d = new Decompiler(function, outer.declarations, upvalueLine);
             output.WriteString("function");
             printMain(output, d, true);
         }
 
-        public override void printClosure(Decompiler outer, Output output, ITarget name)
+        public override void WriteClosure(Decompiler outer, Output output, ITarget name)
         {
             Decompiler d = new Decompiler(function, outer.declarations, upvalueLine);
             output.WriteString("function ");

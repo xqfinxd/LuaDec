@@ -34,7 +34,7 @@ namespace LuaDec.Decompile.Block
             {
                 statement.Walk(w);
             }
-            condexpr.walk(w);
+            condexpr.Walk(w);
         }
 
         public override int scopeEnd()
@@ -72,7 +72,7 @@ namespace LuaDec.Decompile.Block
             WriteSequence(d, output, statements);
             output.Dedent();
             output.WriteString("until ");
-            condexpr.print(d, output);
+            condexpr.Write(d, output);
         }
 
     }

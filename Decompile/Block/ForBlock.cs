@@ -33,9 +33,9 @@ namespace LuaDec.Decompile.Block
         public override void Walk(Walker w)
         {
             w.VisitStatement(this);
-            start.walk(w);
-            stop.walk(w);
-            step.walk(w);
+            start.Walk(w);
+            stop.Walk(w);
+            step.Walk(w);
             foreach (IStatement statement in statements)
             {
                 statement.Walk(w);
@@ -70,13 +70,13 @@ namespace LuaDec.Decompile.Block
             output.WriteString("for ");
             target.Write(d, output, false);
             output.WriteString(" = ");
-            start.print(d, output);
+            start.Write(d, output);
             output.WriteString(", ");
-            stop.print(d, output);
-            if (!step.isInteger() || step.asInteger() != 1)
+            stop.Write(d, output);
+            if (!step.IsInteger() || step.AsInteger() != 1)
             {
                 output.WriteString(", ");
-                step.print(d, output);
+                step.Write(d, output);
             }
             output.WriteString(" do");
             output.WriteLine();

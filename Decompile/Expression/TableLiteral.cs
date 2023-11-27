@@ -49,18 +49,18 @@ namespace LuaDec.Decompile.Expression
             hashCount = 0;
         }
 
-        public override void walk(Walker w)
+        public override void Walk(Walker w)
         {
             entries.Sort();
             w.VisitExpression(this);
             bool lastEntry = false;
             foreach (Entry entry in entries)
             {
-                entry.key.walk(w);
+                entry.key.Walk(w);
                 if (!lastEntry)
                 {
-                    entry.value.walk(w);
-                    if (entry.value.isMultiple())
+                    entry.value.Walk(w);
+                    if (entry.value.IsMultiple())
                     {
                         lastEntry = true;
                     }
@@ -68,18 +68,18 @@ namespace LuaDec.Decompile.Expression
             }
         }
 
-        public override int getConstantIndex()
+        public override int GetConstantIndex()
         {
             int index = -1;
             foreach (Entry entry in entries)
             {
-                index = Math.Max(entry.key.getConstantIndex(), index);
-                index = Math.Max(entry.value.getConstantIndex(), index);
+                index = Math.Max(entry.key.GetConstantIndex(), index);
+                index = Math.Max(entry.value.GetConstantIndex(), index);
             }
             return index;
         }
 
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
             listLength = 1;
             if (entries.Count == 0)
@@ -94,7 +94,7 @@ namespace LuaDec.Decompile.Expression
                     foreach (Entry entry in entries)
                     {
                         IExpression value = entry.value;
-                        if (!(value.isBrief()))
+                        if (!(value.IsBrief()))
                         {
                             lineBreak = true;
                             break;
@@ -108,7 +108,7 @@ namespace LuaDec.Decompile.Expression
                     output.Indent();
                 }
                 printEntry(d, 0, output);
-                if (!entries[0].value.isMultiple())
+                if (!entries[0].value.IsMultiple())
                 {
                     for (int index = 1; index < entries.Count; index++)
                     {
@@ -122,7 +122,7 @@ namespace LuaDec.Decompile.Expression
                             output.WriteString(" ");
                         }
                         printEntry(d, index, output);
-                        if (entries[index].value.isMultiple())
+                        if (entries[index].value.IsMultiple())
                         {
                             break;
                         }
@@ -143,62 +143,62 @@ namespace LuaDec.Decompile.Expression
             IExpression key = entry.key;
             IExpression value = entry.value;
             bool isList = entry.isList;
-            bool multiple = index + 1 >= entries.Count || value.isMultiple();
-            if (isList && key.isInteger() && listLength == key.asInteger())
+            bool multiple = index + 1 >= entries.Count || value.IsMultiple();
+            if (isList && key.IsInteger() && listLength == key.AsInteger())
             {
                 if (multiple)
                 {
-                    value.printMultiple(d, output);
+                    value.WriteMultiple(d, output);
                 }
                 else
                 {
-                    value.print(d, output);
+                    value.Write(d, output);
                 }
                 listLength++;
             }
             else if (entry.hash)
             {
-                output.WriteString(key.asName());
+                output.WriteString(key.AsName());
                 output.WriteString(" = ");
-                value.print(d, output);
+                value.Write(d, output);
             }
             else
             {
                 output.WriteString("[");
-                key.printBraced(d, output);
+                key.WriteBraced(d, output);
                 output.WriteString("] = ");
-                value.print(d, output);
+                value.Write(d, output);
             }
         }
 
-        public override bool isTableLiteral()
+        public override bool IsTableLiteral()
         {
             return true;
         }
 
-        public override bool isUngrouped()
+        public override bool IsUngrouped()
         {
             return true;
         }
 
-        public override bool isNewEntryAllowed()
+        public override bool IsNewEntryAllowed()
         {
             return true;
         }
 
-        public override void addEntry(Entry entry)
+        public override void AddEntry(Entry entry)
         {
-            if (hashCount < hashSize && entry.key.isIdentifier())
+            if (hashCount < hashSize && entry.key.IsIdentifier())
             {
                 entry.hash = true;
                 hashCount++;
             }
             entries.Add(entry);
-            isObject = isObject && (entry.isList || entry.key.isIdentifier());
+            isObject = isObject && (entry.isList || entry.key.IsIdentifier());
             isList = isList && entry.isList;
         }
 
-        public override bool isBrief()
+        public override bool IsBrief()
         {
             return false;
         }

@@ -13,27 +13,27 @@
             this.expression = expression;
         }
 
-        public override void walk(Walker w)
+        public override void Walk(Walker w)
         {
             w.VisitExpression(this);
-            expression.walk(w);
+            expression.Walk(w);
         }
 
-        public override bool isUngrouped()
+        public override bool IsUngrouped()
         {
             return true;
         }
 
-        public override int getConstantIndex()
+        public override int GetConstantIndex()
         {
-            return expression.getConstantIndex();
+            return expression.GetConstantIndex();
         }
 
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
             output.WriteString(op);
             if (precedence > expression.precedence) output.WriteString("(");
-            expression.print(d, output);
+            expression.Write(d, output);
             if (precedence > expression.precedence) output.WriteString(")");
         }
 

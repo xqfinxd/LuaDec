@@ -17,31 +17,31 @@ namespace LuaDec.Decompile.Expression
             this.name = name;
         }
 
-        public override void walk(Walker w)
+        public override void Walk(Walker w)
         {
             w.VisitExpression(this);
         }
 
-        public override int getConstantIndex()
+        public override int GetConstantIndex()
         {
             return -1;
         }
 
-        public override bool isDotChain()
+        public override bool IsDotChain()
         {
             return true;
         }
 
-        public override void print(Decompiler d, Output output) {
+        public override void Write(Decompiler d, Output output) {
             output.WriteString(name);
         }
 
-        public override bool isBrief()
+        public override bool IsBrief()
         {
             return true;
         }
 
-        public override bool isEnvironmentTable(Decompiler d)
+        public override bool IsEnvironmentTable(Decompiler d)
         {
             return d.GetVersion().IsEnvTable(name);
         }

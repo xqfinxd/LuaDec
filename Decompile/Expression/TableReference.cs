@@ -19,73 +19,73 @@ namespace LuaDec.Decompile.Expression
             this.index = index;
         }
 
-        public override void walk(Walker w)
+        public override void Walk(Walker w)
         {
             w.VisitExpression(this);
-            table.walk(w);
-            index.walk(w);
+            table.Walk(w);
+            index.Walk(w);
         }
 
-        public override int getConstantIndex()
+        public override int GetConstantIndex()
         {
-            return Math.Max(table.getConstantIndex(), index.getConstantIndex());
+            return Math.Max(table.GetConstantIndex(), index.GetConstantIndex());
         }
 
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
-            bool isGlobal = table.isEnvironmentTable(d) && index.isIdentifier();
+            bool isGlobal = table.IsEnvironmentTable(d) && index.IsIdentifier();
             if (!isGlobal)
             {
-                if (table.isUngrouped())
+                if (table.IsUngrouped())
                 {
                     output.WriteString("(");
-                    table.print(d, output);
+                    table.Write(d, output);
                     output.WriteString(")");
                 }
                 else
                 {
-                    table.print(d, output);
+                    table.Write(d, output);
                 }
             }
-            if (index.isIdentifier())
+            if (index.IsIdentifier())
             {
                 if (!isGlobal)
                 {
                     output.WriteString(".");
                 }
-                output.WriteString(index.asName());
+                output.WriteString(index.AsName());
             }
             else
             {
                 output.WriteString("[");
-                index.printBraced(d, output);
+                index.WriteBraced(d, output);
                 output.WriteString("]");
             }
         }
 
-        public override bool isDotChain()
+        public override bool IsDotChain()
         {
-            return index.isIdentifier() && table.isDotChain();
+            return index.IsIdentifier() && table.IsDotChain();
         }
 
-        public override bool isMemberAccess()
+        public override bool IsMemberAccess()
         {
-            return index.isIdentifier();
+            return index.IsIdentifier();
         }
 
-        public override bool beginsWithParen()
+        public override bool BeginsWithParen()
         {
-            return table.isUngrouped() || table.beginsWithParen();
+            return table.IsUngrouped() || table.BeginsWithParen();
         }
 
-        public override IExpression getTable()
+        public override IExpression GetTable()
         {
             return table;
         }
 
-        public override string getField()
+        public override string GetField()
         {
-            return index.asName();
+            return index.AsName();
         }
 
 

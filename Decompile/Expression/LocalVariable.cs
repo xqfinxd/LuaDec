@@ -17,27 +17,27 @@ namespace LuaDec.Decompile.Expression
             this.decl = decl;
         }
 
-        public override void walk(Walker w)
+        public override void Walk(Walker w)
         {
             w.VisitExpression(this);
         }
 
-        public override int getConstantIndex()
+        public override int GetConstantIndex()
         {
             return -1;
         }
 
-        public override bool isDotChain()
+        public override bool IsDotChain()
         {
             return true;
         }
 
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
             output.WriteString(decl.name);
         }
 
-        public override bool isBrief()
+        public override bool IsBrief()
         {
             return true;
         }

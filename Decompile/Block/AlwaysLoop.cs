@@ -68,7 +68,7 @@ namespace LuaDec.Decompile.Block
                 }
                 else
                 {
-                    condition.print(d, output);
+                    condition.Write(d, output);
                 }
                 output.WriteLine(" do");
             }

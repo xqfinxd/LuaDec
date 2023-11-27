@@ -28,7 +28,7 @@ namespace LuaDec.Decompile.Statement
             w.VisitStatement(this);
             foreach (IExpression expression in values)
             {
-                expression.walk(w);
+                expression.Walk(w);
             }
         }
 
@@ -50,7 +50,7 @@ namespace LuaDec.Decompile.Statement
                 {
                     rtns.Add(value);
                 }
-                IExpression.printSequence(d, output, rtns, false, true);
+                IExpression.WriteSequence(d, output, rtns, false, true);
             }
         }
     }

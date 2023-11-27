@@ -22,7 +22,7 @@ namespace LuaDec.Decompile.Statement
             targets.Add(target);
             values.Add(value);
             lines.Add(line);
-            allnil = allnil && value.isNil();
+            allnil = allnil && value.IsNil();
         }
 
         public void AddFirst(ITarget target, IExpression value, int line)
@@ -30,7 +30,7 @@ namespace LuaDec.Decompile.Statement
             targets.Insert(0, target);
             values.Insert(0, value);
             lines.Insert(0, line);
-            allnil = allnil && value.isNil();
+            allnil = allnil && value.IsNil();
         }
 
         public void AddLast(ITarget target, IExpression value, int line)
@@ -46,7 +46,7 @@ namespace LuaDec.Decompile.Statement
             targets.Add(target);
             values.Add(value);
             lines.Add(line);
-            allnil = allnil && value.isNil();
+            allnil = allnil && value.IsNil();
         }
 
         public bool AssignListEquals(List<Declaration> decls)
@@ -196,7 +196,7 @@ namespace LuaDec.Decompile.Statement
             }
             foreach (IExpression expression in values)
             {
-                expression.walk(w);
+                expression.Walk(w);
             }
         }
 
@@ -210,15 +210,15 @@ namespace LuaDec.Decompile.Statement
                 }
 
                 bool functionSugar = false;
-                if (targets.Count == 1 && values.Count == 1 && values[0].isClosure() && targets[0].IsFunctionName())
+                if (targets.Count == 1 && values.Count == 1 && values[0].IsClosure() && targets[0].IsFunctionName())
                 {
                     IExpression closure = values[0];
 
-                    if (!declare || declareStart >= closure.closureUpvalueLine())
+                    if (!declare || declareStart >= closure.ClosureUpvalueLine())
                     {
                         functionSugar = true;
                     }
-                    if (targets[0].IsLocal() && closure.isUpvalueOf(targets[0].GetIndex()))
+                    if (targets[0].IsLocal() && closure.IsUpvalueOf(targets[0].GetIndex()))
                     {
                         functionSugar = true;
                     }
@@ -238,7 +238,7 @@ namespace LuaDec.Decompile.Statement
                         List<IExpression> expressions = new List<IExpression>();
 
                         int size = values.Count;
-                        if (size >= 2 && values[size - 1].isNil() && (lines[size - 1] == values[size - 1].getConstantLine() || values[size - 1].getConstantLine() == -1))
+                        if (size >= 2 && values[size - 1].IsNil() && (lines[size - 1] == values[size - 1].GetConstantLine() || values[size - 1].GetConstantLine() == -1))
                         {
                             foreach (var item in values)
                             {
@@ -251,7 +251,7 @@ namespace LuaDec.Decompile.Statement
                             for (int i = size - 1; i >= 0; i--)
                             {
                                 IExpression value = values[i];
-                                if (include || !value.isNil() || value.getConstantIndex() != -1)
+                                if (include || !value.IsNil() || value.GetConstantIndex() != -1)
                                 {
                                     include = true;
                                 }
@@ -270,12 +270,12 @@ namespace LuaDec.Decompile.Statement
                             }
                         }
 
-                        IExpression.printSequence(d, output, expressions, false, targets.Count > expressions.Count);
+                        IExpression.WriteSequence(d, output, expressions, false, targets.Count > expressions.Count);
                     }
                 }
                 else
                 {
-                    values[0].printClosure(d, output, targets[0]);
+                    values[0].WriteClosure(d, output, targets[0]);
                 }
                 if (Comment != null)
                 {

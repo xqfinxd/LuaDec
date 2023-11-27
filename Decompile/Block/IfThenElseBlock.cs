@@ -29,7 +29,7 @@ namespace LuaDec.Decompile.Block
         public override void Walk(Walker w)
         {
             w.VisitStatement(this);
-            condexpr.walk(w);
+            condexpr.Walk(w);
             foreach (IStatement statement in statements)
             {
                 statement.Walk(w);
@@ -86,7 +86,7 @@ namespace LuaDec.Decompile.Block
         public override void Write(Decompiler d, Output output)
         {
             output.WriteString("if ");
-            condexpr.print(d, output);
+            condexpr.Write(d, output);
             output.WriteString(" then");
             output.WriteLine();
             output.Indent();

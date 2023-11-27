@@ -28,40 +28,40 @@ namespace LuaDec.Decompile.Expression
             this.associativity = associativity;
         }
 
-        public override void walk(Walker w)
+        public override void Walk(Walker w)
         {
             w.VisitExpression(this);
-            left.walk(w);
-            right.walk(w);
+            left.Walk(w);
+            right.Walk(w);
         }
 
-        public override bool isUngrouped()
+        public override bool IsUngrouped()
         {
-            return !beginsWithParen();
+            return !BeginsWithParen();
         }
 
-        public override int getConstantIndex()
+        public override int GetConstantIndex()
         {
-            return Math.Max(left.getConstantIndex(), right.getConstantIndex());
+            return Math.Max(left.GetConstantIndex(), right.GetConstantIndex());
         }
 
-        public override bool beginsWithParen()
+        public override bool BeginsWithParen()
         {
-            return LeftGroup() || left.beginsWithParen();
+            return LeftGroup() || left.BeginsWithParen();
         }
 
-        public override void print(Decompiler d, Output output)
+        public override void Write(Decompiler d, Output output)
         {
             bool leftGroup = LeftGroup();
             bool rightGroup = RightGroup();
             if (leftGroup) output.WriteString("(");
-            left.print(d, output);
+            left.Write(d, output);
             if (leftGroup) output.WriteString(")");
             output.WriteString(" ");
             output.WriteString(op);
             output.WriteString(" ");
             if (rightGroup) output.WriteString("(");
-            right.print(d, output);
+            right.Write(d, output);
             if (rightGroup) output.WriteString(")");
         }
 
