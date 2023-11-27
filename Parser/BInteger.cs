@@ -6,12 +6,10 @@ namespace LuaDec.Parser
 {
     public class BInteger : BObject
     {
-
-        private readonly BigInteger big;
-        private readonly int n;
-
         private static BigInteger MAX_INT = int.MaxValue;
         private static BigInteger MIN_INT = int.MinValue;
+        private readonly BigInteger big;
+        private readonly int n;
 
         public BInteger(BInteger b)
         {
@@ -36,7 +34,7 @@ namespace LuaDec.Parser
             }
         }
 
-        public int asInt()
+        public int AsInt()
         {
             if (big == null)
             {
@@ -52,7 +50,54 @@ namespace LuaDec.Parser
             }
         }
 
-        public byte[] littleEndianBytes(int size)
+        public byte[] CompressedBytes()
+        {
+            BigInteger value = big;
+            if (value == null)
+            {
+                value = n;
+            }
+            if (value.CompareTo(BigInteger.Zero) == 0)
+            {
+                return new byte[] { 0 };
+            }
+            List<byte> bytes = new List<byte>(value.ToByteArray());
+            BigInteger limit = 0x7F;
+            while (value.CompareTo(BigInteger.Zero) > 0)
+            {
+                bytes.Add((byte)(value & limit));
+                value = value >> 7;
+            }
+            byte[] array = new byte[bytes.Count];
+            for (int i = 0; i < bytes.Count; i++)
+            {
+                array[i] = bytes[i];
+            }
+            return array;
+        }
+
+        public void Iterate(Action thunk)
+        {
+            if (big == null)
+            {
+                int i = n;
+                while (i-- != 0)
+                {
+                    thunk.Invoke();
+                }
+            }
+            else
+            {
+                BigInteger i = big;
+                while (i.Sign > 0)
+                {
+                    thunk.Invoke();
+                    i = i - BigInteger.One;
+                }
+            }
+        }
+
+        public byte[] LittleEndianBytes(int size)
         {
             List<byte> bytes = new List<byte>();
             if (big == null)
@@ -61,10 +106,6 @@ namespace LuaDec.Parser
                 {
                     if (size > i) bytes.Add((byte)((int)((uint)n >> (i * 8)) & 0xFF));
                 }
-                //if (size >= 1) bytes.Add((byte)(n & 0xFF));
-                //if (size >= 2) bytes.Add((byte)((n >>> 8) & 0xFF));
-                //if (size >= 3) bytes.Add((byte)((n >>> 16) & 0xFF));
-                //if (size >= 4) bytes.Add((byte)((n >>> 24) & 0xFF));
             }
             else
             {
@@ -98,54 +139,5 @@ namespace LuaDec.Parser
             }
             return array;
         }
-
-        public byte[] compressedBytes()
-        {
-            BigInteger value = big;
-            if (value == null)
-            {
-                value = n;
-            }
-            if (value.CompareTo(BigInteger.Zero) == 0)
-            {
-                return new byte[] { 0 };
-            }
-            List<byte> bytes = new List<byte>(value.ToByteArray());
-            BigInteger limit = 0x7F;
-            while (value.CompareTo(BigInteger.Zero) > 0)
-            {
-                bytes.Add((byte)(value & limit));
-                value = value >> 7;
-            }
-            byte[] array = new byte[bytes.Count];
-            for (int i = 0; i < bytes.Count; i++)
-            {
-                array[i] = bytes[i];
-            }
-            return array;
-        }
-
-        public void iterate(Action thunk)
-        {
-            if (big == null)
-            {
-                int i = n;
-                while (i-- != 0)
-                {
-                    thunk.Invoke();
-                }
-            }
-            else
-            {
-                BigInteger i = big;
-                while (i.Sign > 0)
-                {
-                    thunk.Invoke();
-                    i = i - BigInteger.One;
-                }
-            }
-        }
-
     }
-
 }

@@ -12,32 +12,29 @@ namespace LuaDec.Parser
             0x1B, 0x4C, 0x75, 0x61,
         };
 
-        public readonly bool debug = false;
-  
+        public readonly LAbsLineInfoType absLineInfo;
+        public readonly LBooleanType booleanType;
         public readonly Configuration config;
-        public readonly Version version;
-        public readonly LHeader lheader;
+        public readonly LConstantType constantType;
+        public readonly bool debug = false;
+        public readonly LNumberType doubleType;
+        public readonly CodeExtract extractor;
+        public readonly LFunctionType functionType;
         public readonly LHeaderType headerType;
         public readonly BIntegerType integerType;
-        public readonly BIntegerType sizeType;
-        public readonly LBooleanType booleanType;
-        public readonly LNumberType numberType;
-        public readonly LNumberType longType;
-        public readonly LNumberType doubleType;
-        public readonly LStringType stringType;
-        public readonly LConstantType constantType;
-        public readonly LAbsLineInfoType absLineInfo;
+        public readonly LHeader lheader;
         public readonly LLocalType localType;
-        public readonly LUpvalueType upvalueType;
-        public readonly LFunctionType functionType;
-        public readonly CodeExtract extractor;
-        public readonly OpCodeMap opmap;
-  
+        public readonly LNumberType longType;
         public readonly LFunction main;
-  
+        public readonly LNumberType numberType;
+        public readonly OpCodeMap opmap;
+        public readonly BIntegerType sizeType;
+        public readonly LStringType stringType;
+        public readonly LUpvalueType upvalueType;
+        public readonly Version version;
+
         public BHeader(Version version, LHeader lheader) : this(version, lheader, null)
         {
-            
         }
 
         public BHeader(Version version, LHeader lheader, LFunction main)
@@ -86,7 +83,7 @@ namespace LuaDec.Parser
             }
 
             headerType = version.LHeaderType;
-            lheader = headerType.parse(buffer, this);
+            lheader = headerType.Parse(buffer, this);
             integerType = lheader.intT;
             sizeType = lheader.sizeT;
             booleanType = lheader.boolT;
@@ -156,7 +153,7 @@ namespace LuaDec.Parser
                 }
                 // TODO: check this value
             }
-            main = functionType.parse(buffer, this);
+            main = functionType.Parse(buffer, this);
             if (upvalues >= 0)
             {
                 if (main.numUpvalues != upvalues)
@@ -171,18 +168,19 @@ namespace LuaDec.Parser
             main.SetLevel(1);
         }
 
-        public void write(BinaryWriter output)
+        public void Write(BinaryWriter output)
         {
             output.Write(Signature, 0, Signature.Length);
             int major = version.VersionMajor;
             int minor = version.VersionMinor;
             int versionNumber = (major << 4) | minor;
             output.Write((byte)versionNumber);
-                version.LHeaderType.write(output, this, lheader);
-            if(version.useUpvalueCountInHeader.Value) {
+            version.LHeaderType.Write(output, this, lheader);
+            if (version.useUpvalueCountInHeader.Value)
+            {
                 output.Write((byte)main.numUpvalues);
             }
-            functionType.write(output, this, main);
+            functionType.Write(output, this, main);
         }
     }
 }

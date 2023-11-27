@@ -2,9 +2,8 @@
 {
     public class LAbsLineInfo : LObject
     {
-
-        public readonly int pc;
         public readonly int line;
+        public readonly int pc;
 
         public LAbsLineInfo(int pc, int line)
         {
@@ -12,7 +11,7 @@
             this.line = line;
         }
 
-        public override bool EqualTo(object o)
+        public override bool Equals(object o)
         {
             if (o is LAbsLineInfo)
             {
@@ -25,6 +24,9 @@
             }
         }
 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
-
 }

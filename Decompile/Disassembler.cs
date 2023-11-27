@@ -30,7 +30,7 @@ namespace LuaDec.Decompile
                 output.WriteLine(".version\t" + function.header.version.Name);
                 output.WriteLine();
 
-                foreach (Directive directive in function.header.headerType.get_directives())
+                foreach (Directive directive in function.header.headerType.GetDirectives())
                 {
                     directive.Disassemble(output, function.header, function.header.lheader);
                 }
@@ -63,7 +63,7 @@ namespace LuaDec.Decompile
             output.WriteLine(".function\t" + fullname);
             output.WriteLine();
 
-            foreach (Directive directive in function.header.functionType.get_directives())
+            foreach (Directive directive in function.header.functionType.GetDirectives())
             {
                 directive.Disassemble(output, function.header, function);
             }

@@ -2,15 +2,13 @@
 {
     public class LUpvalue : BObject
     {
-
-        public bool instack;
-        public int idx;
-
-        public string name;
         public LString bname;
+        public int idx;
+        public bool instack;
         public int kind;
+        public string name;
 
-        public bool equals(object obj)
+        public bool Equals(object obj)
         {
             if (obj is LUpvalue)
             {
@@ -31,5 +29,9 @@
             }
         }
 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
     }
 }

@@ -1,100 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LuaDec.Parser
 {
-    public abstract class LNumber : LObject
+    internal class LDoubleNumber : LNumber
     {
-
-        public static LNumber makeint(int number)
-        {
-            return new LIntNumber(number);
-        }
-
-        public static LNumber makeDouble(double x)
-        {
-            return new LDoubleNumber(x, LNumberType.NumberMode.MODE_FLOAT);
-        }
-
-        public override abstract string ToPrintable();
-
-        //TODO: problem solution for this issue
-        public abstract double value();
-
-        public abstract bool integralType();
-
-        public abstract long bits();
-    }
-
-    class LFloatNumber : LNumber
-    {
-
-        public readonly float number;
         public readonly LNumberType.NumberMode mode;
-
-        public LFloatNumber(float number, LNumberType.NumberMode mode)
-        {
-            this.number = number;
-            this.mode = mode;
-        }
-
-        public override string ToPrintable()
-        {
-            if (mode == LNumberType.NumberMode.MODE_NUMBER && number == (float)Math.Round(number))
-            {
-                if (BitConverter.DoubleToInt64Bits(number) == BitConverter.DoubleToInt64Bits(-0.0f))
-                {
-                    return "-0";
-                }
-                else
-                {
-                    return ((int)number).ToString();
-                }
-            }
-            else
-            {
-                return number.ToString();
-            }
-        }
-
-        public override bool EqualTo(object o)
-        {
-            if (o is LFloatNumber)
-            {
-                return BitConverter.DoubleToInt64Bits(number) == BitConverter.DoubleToInt64Bits(((LFloatNumber)o).number);
-            }
-            else if (o is LNumber)
-            {
-                return value() == ((LNumber)o).value();
-            }
-            return false;
-        }
-
-        public override double value()
-        {
-            return number;
-        }
-
-        public override bool integralType()
-        {
-            return false;
-        }
-
-        public override long bits()
-        {
-            return BitConverter.DoubleToInt64Bits(number);
-        }
-
-    }
-
-    class LDoubleNumber : LNumber
-    {
-
         public readonly double number;
-        public readonly LNumberType.NumberMode mode;
 
         public LDoubleNumber(double number, LNumberType.NumberMode mode)
         {
@@ -102,9 +13,42 @@ namespace LuaDec.Parser
             this.mode = mode;
         }
 
+        public override long Bits()
+        {
+            return BitConverter.DoubleToInt64Bits(number);
+        }
+
+        public override bool Equals(object o)
+        {
+            if (o is LDoubleNumber)
+            {
+                return BitConverter.DoubleToInt64Bits(number) == BitConverter.DoubleToInt64Bits(((LDoubleNumber)o).number);
+            }
+            else if (o is LNumber)
+            {
+                return GetValue() == ((LNumber)o).GetValue();
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override double GetValue()
+        {
+            return number;
+        }
+
+        public override bool IntegralType()
+        {
+            return false;
+        }
+
         public override string ToPrintable()
         {
-            if (mode == LNumberType.NumberMode.MODE_NUMBER && number == (double)Math.Round(number))
+            if (mode == LNumberType.NumberMode.Number && number == (double)Math.Round(number))
             {
                 if (BitConverter.DoubleToInt64Bits(number) == BitConverter.DoubleToInt64Bits(-0.0))
                 {
@@ -120,40 +64,74 @@ namespace LuaDec.Parser
                 return number.ToString();
             }
         }
+    }
 
-        public override bool EqualTo(object o)
+    internal class LFloatNumber : LNumber
+    {
+        public readonly LNumberType.NumberMode mode;
+        public readonly float number;
+
+        public LFloatNumber(float number, LNumberType.NumberMode mode)
         {
-            if (o is LDoubleNumber)
-            {
-                return BitConverter.DoubleToInt64Bits(number) == BitConverter.DoubleToInt64Bits(((LDoubleNumber)o).number);
-            }
-            else if (o is LNumber)
-            {
-                return value() == ((LNumber)o).value();
-            }
-            return false;
+            this.number = number;
+            this.mode = mode;
         }
 
-        public override double value()
-        {
-            return number;
-        }
-
-        public override bool integralType()
-        {
-            return false;
-        }
-
-        public override long bits()
+        public override long Bits()
         {
             return BitConverter.DoubleToInt64Bits(number);
         }
 
+        public override bool Equals(object o)
+        {
+            if (o is LFloatNumber)
+            {
+                return BitConverter.DoubleToInt64Bits(number) == BitConverter.DoubleToInt64Bits(((LFloatNumber)o).number);
+            }
+            else if (o is LNumber)
+            {
+                return GetValue() == ((LNumber)o).GetValue();
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override double GetValue()
+        {
+            return number;
+        }
+
+        public override bool IntegralType()
+        {
+            return false;
+        }
+
+        public override string ToPrintable()
+        {
+            if (mode == LNumberType.NumberMode.Number && number == (float)Math.Round(number))
+            {
+                if (BitConverter.DoubleToInt64Bits(number) == BitConverter.DoubleToInt64Bits(-0.0f))
+                {
+                    return "-0";
+                }
+                else
+                {
+                    return ((int)number).ToString();
+                }
+            }
+            else
+            {
+                return number.ToString();
+            }
+        }
     }
 
-    class LIntNumber : LNumber
+    internal class LIntNumber : LNumber
     {
-
         public readonly int number;
 
         public LIntNumber(int number)
@@ -161,12 +139,12 @@ namespace LuaDec.Parser
             this.number = number;
         }
 
-        public override string ToPrintable()
+        public override long Bits()
         {
-            return number.ToString();
+            return number;
         }
 
-        public override bool EqualTo(Object o)
+        public override bool Equals(Object o)
         {
             if (o is LIntNumber)
             {
@@ -174,31 +152,34 @@ namespace LuaDec.Parser
             }
             else if (o is LNumber)
             {
-                return value() == ((LNumber)o).value();
+                return GetValue() == ((LNumber)o).GetValue();
             }
             return false;
         }
 
-        public override double value()
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override double GetValue()
         {
             return number;
         }
 
-        public override bool integralType()
+        public override bool IntegralType()
         {
             return true;
         }
 
-        public override long bits()
+        public override string ToPrintable()
         {
-            return number;
+            return number.ToString();
         }
-
     }
 
-    class LLongNumber : LNumber
+    internal class LLongNumber : LNumber
     {
-
         public readonly long number;
 
         public LLongNumber(long number)
@@ -206,12 +187,12 @@ namespace LuaDec.Parser
             this.number = number;
         }
 
-        public override string ToPrintable()
+        public override long Bits()
         {
-            return number.ToString();
+            return number;
         }
 
-        public override bool EqualTo(object o)
+        public override bool Equals(object o)
         {
             if (o is LLongNumber)
             {
@@ -219,25 +200,50 @@ namespace LuaDec.Parser
             }
             else if (o is LNumber)
             {
-                return value() == ((LNumber)o).value();
+                return GetValue() == ((LNumber)o).GetValue();
             }
             return false;
         }
 
-        public override double value()
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override double GetValue()
         {
             return number;
         }
 
-        public override bool integralType()
+        public override bool IntegralType()
         {
             return true;
         }
 
-        public override long bits()
+        public override string ToPrintable()
         {
-            return number;
+            return number.ToString();
+        }
+    }
+
+    public abstract class LNumber : LObject
+    {
+        public static LNumber MakeDouble(double x)
+        {
+            return new LDoubleNumber(x, LNumberType.NumberMode.Float);
         }
 
+        public static LNumber MakeInt(int number)
+        {
+            return new LIntNumber(number);
+        }
+
+        public abstract long Bits();
+
+        public abstract double GetValue();
+
+        public abstract bool IntegralType();
+
+        public abstract override string ToPrintable();
     }
 }

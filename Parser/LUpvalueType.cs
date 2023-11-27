@@ -2,25 +2,9 @@
 
 namespace LuaDec.Parser
 {
-    public abstract class LUpvalueType : BObjectType<LUpvalue>
+    internal class LUpvalueType50 : LUpvalueType
     {
-
-        public static LUpvalueType get(Version.UpvalueType type)
-        {
-            switch (type)
-            {
-                case Version.UpvalueType.Lua50: return new LUpvalueType50();
-                case Version.UpvalueType.Lua54: return new LUpvalueType54();
-                default: throw new System.InvalidOperationException();
-            }
-        }
-
-    }
-
-    class LUpvalueType50 : LUpvalueType
-    {
-
-        public override LUpvalue parse(BinaryReader buffer, BHeader header)
+        public override LUpvalue Parse(BinaryReader buffer, BHeader header)
         {
             LUpvalue upvalue = new LUpvalue();
             upvalue.instack = buffer.ReadByte() != 0;
@@ -29,17 +13,16 @@ namespace LuaDec.Parser
             return upvalue;
         }
 
-        public override void write(BinaryWriter output, BHeader header, LUpvalue o)
+        public override void Write(BinaryWriter output, BHeader header, LUpvalue o)
         {
             output.Write((byte)(o.instack ? 1 : 0));
             output.Write((byte)o.idx);
         }
     }
 
-    class LUpvalueType54 : LUpvalueType
+    internal class LUpvalueType54 : LUpvalueType
     {
-
-        public override LUpvalue parse(BinaryReader buffer, BHeader header)
+        public override LUpvalue Parse(BinaryReader buffer, BHeader header)
         {
             LUpvalue upvalue = new LUpvalue();
             upvalue.instack = buffer.ReadByte() != 0;
@@ -48,7 +31,7 @@ namespace LuaDec.Parser
             return upvalue;
         }
 
-        public override void write(BinaryWriter output, BHeader header, LUpvalue o)
+        public override void Write(BinaryWriter output, BHeader header, LUpvalue o)
         {
             output.Write((byte)(o.instack ? 1 : 0));
             output.Write((byte)o.idx);
@@ -56,4 +39,16 @@ namespace LuaDec.Parser
         }
     }
 
+    public abstract class LUpvalueType : BObjectType<LUpvalue>
+    {
+        public static LUpvalueType Get(Version.UpvalueType type)
+        {
+            switch (type)
+            {
+                case Version.UpvalueType.Lua50: return new LUpvalueType50();
+                case Version.UpvalueType.Lua54: return new LUpvalueType54();
+                default: throw new System.InvalidOperationException();
+            }
+        }
+    }
 }

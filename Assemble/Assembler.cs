@@ -92,15 +92,15 @@ namespace LuaDec.Assemble
                         break;
 
                     case AssemblerConstant.Type.NUMBER:
-                        o = header.numberType.create(constant.numberValue);
+                        o = header.numberType.Create(constant.numberValue);
                         break;
 
                     case AssemblerConstant.Type.INT:
-                        o = header.longType.create(constant.intValue);
+                        o = header.longType.Create(constant.intValue);
                         break;
 
                     case AssemblerConstant.Type.FLOAT:
-                        o = header.doubleType.create(constant.numberValue);
+                        o = header.doubleType.Create(constant.numberValue);
                         break;
 
                     case AssemblerConstant.Type.STRING:
@@ -210,11 +210,11 @@ namespace LuaDec.Assemble
                     switch (endiannessName)
                     {
                         case "LITTLE":
-                            endianness = LHeader.LEndianness.LITTLE;
+                            endianness = LHeader.LEndianness.Little;
                             break;
 
                         case "BIG":
-                            endianness = LHeader.LEndianness.BIG;
+                            endianness = LHeader.LEndianness.Big;
                             break;
 
                         default:
@@ -224,12 +224,12 @@ namespace LuaDec.Assemble
                 }
                 case DirectiveT.INT_SIZE:
                     int_size = a.GetInteger();
-                    intT = BIntegerType.create50Type(int_size);
+                    intT = BIntegerType.Create50Type(int_size);
                     break;
 
                 case DirectiveT.SIZE_T_SIZE:
                     size_t_size = a.GetInteger();
-                    sizeT = BIntegerType.create50Type(size_t_size);
+                    sizeT = BIntegerType.Create50Type(size_t_size);
                     break;
 
                 case DirectiveT.INSTRUCTION_SIZE:
@@ -262,15 +262,15 @@ namespace LuaDec.Assemble
                         default: throw new AssemblerException("Unknown number_format \"" + numberTypeName + "\"");
                     }
                     number_size = a.GetInteger();
-                    number = new LNumberType(number_size, number_integral, LNumberType.NumberMode.MODE_NUMBER);
+                    number = new LNumberType(number_size, number_integral, LNumberType.NumberMode.Number);
                     break;
                 }
                 case DirectiveT.INT_FORMAT:
-                    lint = new LNumberType(a.GetInteger(), true, LNumberType.NumberMode.MODE_int);
+                    lint = new LNumberType(a.GetInteger(), true, LNumberType.NumberMode.Integer);
                     break;
 
                 case DirectiveT.FLOAT_FORMAT:
-                    lfloat = new LNumberType(a.GetInteger(), false, LNumberType.NumberMode.MODE_FLOAT);
+                    lfloat = new LNumberType(a.GetInteger(), false, LNumberType.NumberMode.Float);
                     break;
 
                 case DirectiveT.OP:
@@ -334,7 +334,7 @@ namespace LuaDec.Assemble
 
             if (intT == null)
             {
-                intT = BIntegerType.create54();
+                intT = BIntegerType.Create54();
                 sizeT = intT;
             }
 
@@ -343,7 +343,7 @@ namespace LuaDec.Assemble
             LFunction main = ConvertFunction(header, this.main);
             header = new BHeader(version, lheader, main);
 
-            header.write(output);
+            header.Write(output);
         }
     }
 

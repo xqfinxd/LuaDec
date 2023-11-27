@@ -22,7 +22,7 @@ namespace LuaDec.Decompile
         {
             type = Type.NUMBER;
             boolValue = false;
-            numberValue = LNumber.makeint(constant);
+            numberValue = LNumber.MakeInt(constant);
             stringValue = null;
         }
 
@@ -30,7 +30,7 @@ namespace LuaDec.Decompile
         {
             type = Type.NUMBER;
             boolValue = false;
-            numberValue = LNumber.makeDouble(x);
+            numberValue = LNumber.MakeDouble(x);
             stringValue = null;
         }
 
@@ -76,7 +76,7 @@ namespace LuaDec.Decompile
             {
                 throw new System.InvalidOperationException();
             }
-            return (int)numberValue.value();
+            return (int)numberValue.GetValue();
         }
 
         public string AsName()
@@ -144,13 +144,13 @@ namespace LuaDec.Decompile
 
         public bool IsInt()
         {
-            return numberValue.value() == Math.Round(numberValue.value());
+            return numberValue.GetValue() == Math.Round(numberValue.GetValue());
         }
 
         public bool IsNegative()
         {
             // Tricky to catch -0.0 here
-            return numberValue.value().ToString().StartsWith("-");
+            return numberValue.GetValue().ToString().StartsWith("-");
         }
 
         public bool IsNil()

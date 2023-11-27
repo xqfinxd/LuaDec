@@ -4,28 +4,27 @@ namespace LuaDec.Parser
 {
     public class LHeader : BObject
     {
-
         public enum LEndianness
         {
-            BIG,
-            LITTLE,
+            Big,
+            Little,
         }
 
-        public readonly int format;
-        public readonly LEndianness endianness;
-        public readonly BIntegerType intT;
-        public readonly BIntegerType sizeT;
-        public readonly LBooleanType boolT;
-        public readonly LNumberType numberT;
-        public readonly LNumberType longT;
-        public readonly LNumberType doubleT;
-        public readonly LStringType stringT;
-        public readonly LConstantType constant;
         public readonly LAbsLineInfoType abslineinfo;
-        public readonly LLocalType local;
-        public readonly LUpvalueType upvalue;
-        public readonly LFunctionType function;
+        public readonly LBooleanType boolT;
+        public readonly LConstantType constant;
+        public readonly LNumberType doubleT;
+        public readonly LEndianness endianness;
         public readonly CodeExtract extractor;
+        public readonly int format;
+        public readonly LFunctionType function;
+        public readonly BIntegerType intT;
+        public readonly LLocalType local;
+        public readonly LNumberType longT;
+        public readonly LNumberType numberT;
+        public readonly BIntegerType sizeT;
+        public readonly LStringType stringT;
+        public readonly LUpvalueType upvalue;
 
         public LHeader(int format, LEndianness endianness, BIntegerType intT, BIntegerType sizeT, LBooleanType boolT, LNumberType numberT, LNumberType longT, LNumberType doubleT, LStringType stringT, LConstantType constant, LAbsLineInfoType abslineinfo, LLocalType local, LUpvalueType upvalue, LFunctionType function, CodeExtract extractor)
         {
@@ -45,7 +44,5 @@ namespace LuaDec.Parser
             this.function = function;
             this.extractor = extractor;
         }
-
     }
-
 }

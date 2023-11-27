@@ -2,7 +2,6 @@
 {
     public class LString : LObject
     {
-
         public static readonly LString EmptyString = new LString("");
 
         public readonly string value;
@@ -16,12 +15,30 @@
 
         public LString(string value) : this(value, false)
         {
-            
         }
 
         public override string Deref()
         {
             return value;
+        }
+
+        public override bool Equals(object o)
+        {
+            if (this == EmptyString || o == EmptyString)
+            {
+                return this == o;
+            }
+            else if (o is LString)
+            {
+                LString os = (LString)o;
+                return os.value.Equals(value) && os.islong == islong;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
 
         public override string ToPrintable()
@@ -36,19 +53,6 @@
                 if (islong) prefix = "L";
                 return prefix;
             }
-        }
-
-        public override bool EqualTo(object o)
-        {
-            if (this == EmptyString || o == EmptyString)
-            {
-                return this == o;
-            }
-            else if (o is LString) {
-                LString os = (LString)o;
-                return os.value.Equals(value) && os.islong == islong;
-            }
-            return false;
         }
     }
 }

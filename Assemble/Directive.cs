@@ -99,8 +99,8 @@ namespace LuaDec.Assemble
             {
                 case DirectiveT.FORMAT: output.WriteLine(header.format.ToString()); break;
                 case DirectiveT.ENDIANNESS: output.WriteLine(header.endianness.ToString()); break;
-                case DirectiveT.INT_SIZE: output.WriteLine(header.intT.getSize().ToString()); break;
-                case DirectiveT.SIZE_T_SIZE: output.WriteLine(header.sizeT.getSize().ToString()); break;
+                case DirectiveT.INT_SIZE: output.WriteLine(header.intT.GetSize().ToString()); break;
+                case DirectiveT.SIZE_T_SIZE: output.WriteLine(header.sizeT.GetSize().ToString()); break;
                 case DirectiveT.INSTRUCTION_SIZE: output.WriteLine("4"); break;
                 case DirectiveT.SIZE_OP: output.WriteLine(header.extractor.op.Size.ToString()); break;
                 case DirectiveT.SIZE_A: output.WriteLine(header.extractor.A.Size.ToString()); break;

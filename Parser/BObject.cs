@@ -1,5 +1,4 @@
-﻿
-namespace LuaDec.Parser
+﻿namespace LuaDec.Parser
 {
     public abstract class BObject
     {

@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace LuaDec.Parser
 {
     public class BList<T> : BObject where T : BObject
     {
-
-        public readonly BInteger blength;
         private readonly List<T> values;
+        public readonly BInteger blength;
 
         public BList(BInteger length, List<T> values)
         {
@@ -18,28 +13,25 @@ namespace LuaDec.Parser
             this.values = values;
         }
 
-        public T get(int index)
-        {
-            return values[index];
-        }
-
-        public IEnumerator<T> iterator()
-        {
-            return values.GetEnumerator();
-        }
-
-        public T[] asArray(T[] array)
+        public T[] AsArray(T[] array)
         {
             int i = 0;
-            blength.iterate(() =>
+            blength.Iterate(() =>
             {
-
                 array[i] = values[i];
                 i++;
             });
             return array;
         }
 
-    }
+        public T Get(int index)
+        {
+            return values[index];
+        }
 
+        public IEnumerator<T> Iterator()
+        {
+            return values.GetEnumerator();
+        }
+    }
 }

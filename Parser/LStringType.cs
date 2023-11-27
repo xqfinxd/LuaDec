@@ -5,33 +5,14 @@ using System.Threading;
 
 namespace LuaDec.Parser
 {
-    public abstract class LStringType : BObjectType<LString>
+    internal class LStringType50 : LStringType
     {
-
-        public static LStringType get(Version.StringType type)
+        public override LString Parse(BinaryReader buffer, BHeader header)
         {
-            switch (type)
-            {
-                case Version.StringType.Lua50: return new LStringType50();
-                case Version.StringType.Lua53: return new LStringType53();
-                case Version.StringType.Lua54: return new LStringType54();
-                default: throw new System.InvalidOperationException();
-            }
-        }
-
-        protected ThreadLocal<StringBuilder> b = new ThreadLocal<StringBuilder>(() => new StringBuilder());
-
-    }
-
-    class LStringType50 : LStringType
-    {
-
-        public override LString parse(BinaryReader buffer, BHeader header)
-        {
-            BInteger sizeT = header.sizeType.parse(buffer, header);
+            BInteger sizeT = header.sizeType.Parse(buffer, header);
             StringBuilder b = this.b.Value;
             b.Length = 0;
-            sizeT.iterate(() => b.Append((char)(0xFF & buffer.ReadByte())));
+            sizeT.Iterate(() => b.Append((char)(0xFF & buffer.ReadByte())));
             if (b.Length == 0)
             {
                 return LString.EmptyString;
@@ -53,16 +34,16 @@ namespace LuaDec.Parser
             }
         }
 
-        public override void write(BinaryWriter output, BHeader header, LString s)
+        public override void Write(BinaryWriter output, BHeader header, LString s)
         {
             int len = s.value.Length;
             if (s == LString.EmptyString)
             {
-                header.sizeType.write(output, header, header.sizeType.create(0));
+                header.sizeType.Write(output, header, header.sizeType.Create(0));
             }
             else
             {
-                header.sizeType.write(output, header, header.sizeType.create(len + 1));
+                header.sizeType.Write(output, header, header.sizeType.Create(len + 1));
                 for (int i = 0; i < len; i++)
                 {
                     output.Write((byte)s.value[i]);
@@ -72,16 +53,15 @@ namespace LuaDec.Parser
         }
     }
 
-    class LStringType53 : LStringType
+    internal class LStringType53 : LStringType
     {
-
-        public override LString parse(BinaryReader buffer, BHeader header)
+        public override LString Parse(BinaryReader buffer, BHeader header)
         {
             BInteger sizeT;
             int size = 0xFF & buffer.ReadByte();
             if (size == 0xFF)
             {
-                sizeT = header.sizeType.parse(buffer, header);
+                sizeT = header.sizeType.Parse(buffer, header);
             }
             else
             {
@@ -90,7 +70,7 @@ namespace LuaDec.Parser
             StringBuilder b = this.b.Value;
             b.Length = 0;
             bool first = true;
-            sizeT.iterate(() =>
+            sizeT.Iterate(() =>
             {
                 if (!first)
                 {
@@ -109,7 +89,7 @@ namespace LuaDec.Parser
             return new LString(s);
         }
 
-        public override void write(BinaryWriter output, BHeader header, LString s)
+        public override void Write(BinaryWriter output, BHeader header, LString s)
         {
             int len = s.value.Length + 1;
             if (len < 0xFF)
@@ -119,7 +99,7 @@ namespace LuaDec.Parser
             else
             {
                 output.Write(0xFF);
-                header.sizeType.write(output, header, header.sizeType.create(len));
+                header.sizeType.Write(output, header, header.sizeType.Create(len));
             }
             for (int i = 0; i < s.value.Length; i++)
             {
@@ -128,16 +108,15 @@ namespace LuaDec.Parser
         }
     }
 
-    class LStringType54 : LStringType
+    internal class LStringType54 : LStringType
     {
-
-        public override LString parse(BinaryReader buffer, BHeader header)
+        public override LString Parse(BinaryReader buffer, BHeader header)
         {
-            BInteger sizeT = header.sizeType.parse(buffer, header);
+            BInteger sizeT = header.sizeType.Parse(buffer, header);
             StringBuilder b = this.b.Value;
             b.Length = 0;
             bool first = true;
-            sizeT.iterate(() =>
+            sizeT.Iterate(() =>
             {
                 if (!first)
                 {
@@ -156,12 +135,28 @@ namespace LuaDec.Parser
             return new LString(s);
         }
 
-        public override void write(BinaryWriter output, BHeader header, LString s)
+        public override void Write(BinaryWriter output, BHeader header, LString s)
         {
-            header.sizeType.write(output, header, header.sizeType.create(s.value.Length + 1));
+            header.sizeType.Write(output, header, header.sizeType.Create(s.value.Length + 1));
             for (int i = 0; i < s.value.Length; i++)
             {
                 output.Write((byte)s.value[i]);
+            }
+        }
+    }
+
+    public abstract class LStringType : BObjectType<LString>
+    {
+        protected ThreadLocal<StringBuilder> b = new ThreadLocal<StringBuilder>(() => new StringBuilder());
+
+        public static LStringType Get(Version.StringType type)
+        {
+            switch (type)
+            {
+                case Version.StringType.Lua50: return new LStringType50();
+                case Version.StringType.Lua53: return new LStringType53();
+                case Version.StringType.Lua54: return new LStringType54();
+                default: throw new System.InvalidOperationException();
             }
         }
     }

@@ -325,11 +325,11 @@ namespace LuaDec
                 reservedWords.Add("goto");
             }
 
-            lheaderType = LHeaderType.get(headerType);
-            lstringType = LStringType.get(stringType);
-            lconstantType = LConstantType.get(constantType);
-            lupvalueType = LUpvalueType.get(upvalueType);
-            lfunctionType = LFunctionType.get(functionType);
+            lheaderType = LHeaderType.Get(headerType);
+            lstringType = LStringType.Get(stringType);
+            lconstantType = LConstantType.Get(constantType);
+            lupvalueType = LUpvalueType.Get(upvalueType);
+            lfunctionType = LFunctionType.Get(functionType);
             lopCodeMap = new OpCodeMap(opcodeMap);
         }
 

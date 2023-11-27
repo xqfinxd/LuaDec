@@ -13,7 +13,5 @@ namespace LuaDec.Parser
         {
             throw new NotImplementedException();
         }
-
-        public abstract bool EqualTo(object o);
     }
 }

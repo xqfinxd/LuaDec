@@ -5,8 +5,7 @@ namespace LuaDec.Parser
 {
     public class LBooleanType : BObjectType<LBoolean>
     {
-
-        public override LBoolean parse(BinaryReader buffer, BHeader header)
+        public override LBoolean Parse(BinaryReader buffer, BHeader header)
         {
             int value = buffer.ReadByte();
             if ((value & 0xFFFFFFFE) != 0)
@@ -24,13 +23,10 @@ namespace LuaDec.Parser
             }
         }
 
-        public override void write(BinaryWriter output, BHeader header, LBoolean o)
+        public override void Write(BinaryWriter output, BHeader header, LBoolean o)
         {
             int value = o.Value ? 1 : 0;
             output.Write((byte)value);
         }
-
     }
-
-
 }

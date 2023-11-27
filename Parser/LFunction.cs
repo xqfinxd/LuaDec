@@ -1,26 +1,25 @@
-﻿
-namespace LuaDec.Parser
+﻿namespace LuaDec.Parser
 {
     public class LFunction : BObject
     {
-        public BHeader header;
-        public LString name;
-        public int lineDefined;
-        public int lastLineDefined;
-        public LFunction parent;
-        public int[] code;
-        public int[] lines;
         public LAbsLineInfo[] absLineInfo;
-        public LLocal[] locals;
+        public int[] code;
         public LObject[] constants;
-        public LUpvalue[] upvalues;
         public LFunction[] functions;
-        public int maximumStackSize;
-        public int numUpvalues;
-        public int numParams;
-        public int varArg;
-        public bool stripped;
+        public BHeader header;
+        public int lastLineDefined;
         public int level;
+        public int lineDefined;
+        public int[] lines;
+        public LLocal[] locals;
+        public int maximumStackSize;
+        public LString name;
+        public int numParams;
+        public int numUpvalues;
+        public LFunction parent;
+        public bool stripped;
+        public LUpvalue[] upvalues;
+        public int varArg;
 
         public LFunction(BHeader header, LString name, int linedefined, int lastlinedefined, int[] code, int[] lines, LAbsLineInfo[] abslineinfo, LLocal[] locals, LObject[] constants, LUpvalue[] upvalues, LFunction[] functions, int maximumStackSize, int numUpValues, int numParams, int vararg)
         {
@@ -50,6 +49,5 @@ namespace LuaDec.Parser
                 f.SetLevel(level + 1);
             }
         }
-
     }
 }
