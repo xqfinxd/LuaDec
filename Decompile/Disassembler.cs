@@ -32,7 +32,7 @@ namespace LuaDec.Decompile
 
                 foreach (Directive directive in function.header.headerType.get_directives())
                 {
-                    directive.disassemble(output, function.header, function.header.lheader);
+                    directive.Disassemble(output, function.header, function.header.lheader);
                 }
                 output.WriteLine();
 
@@ -65,7 +65,7 @@ namespace LuaDec.Decompile
 
             foreach (Directive directive in function.header.functionType.get_directives())
             {
-                directive.disassemble(output, function.header, function);
+                directive.Disassemble(output, function.header, function);
             }
             output.WriteLine();
 

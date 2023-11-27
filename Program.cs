@@ -59,7 +59,7 @@ namespace LuaDec
         {
             BinaryWriter outstream = new BinaryWriter(File.OpenWrite(output));
             Assembler a = new Assembler(new StreamReader(File.OpenRead(input)), outstream);
-            a.assemble();
+            a.Assemble();
             outstream.Flush();
             outstream.Close();
         }
@@ -214,7 +214,7 @@ namespace LuaDec
                                     new StreamReader(File.OpenRead(fn)),
                                   new BinaryWriter(File.OpenWrite(config.Output))
                                 );
-                                a.assemble();
+                                a.Assemble();
                             }
                             catch (IOException e)
                             {

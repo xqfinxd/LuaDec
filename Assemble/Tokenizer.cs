@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace LuaDec.Assemble
 {
     public class Tokenizer
     {
-
         private StringBuilder b;
         private StreamReader input;
 
@@ -34,7 +29,7 @@ namespace LuaDec.Assemble
                 int code = input.Read();
                 if (code == -1) break;
                 char c = (char)code;
-                //if(c == '\n') System.out.println("line"); 
+
                 if (inString)
                 {
                     if (c == '\\' && !inEscape)
@@ -94,8 +89,6 @@ namespace LuaDec.Assemble
                 }
             }
 
-            //System.out.println("token: <" + b.toString() + ">");
-
             if (b.Length == 0)
             {
                 return null;
@@ -105,7 +98,5 @@ namespace LuaDec.Assemble
                 return b.ToString();
             }
         }
-
     }
-
 }
