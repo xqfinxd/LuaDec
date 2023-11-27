@@ -97,7 +97,7 @@
     <Compile Include="Decompile\Expression\TableReference.cs" />
     <Compile Include="Decompile\Expression\UnaryExpression.cs" />
     <Compile Include="Decompile\Expression\UpvalueExpression.cs" />
-    <Compile Include="Decompile\Expression\Vararg.cs" />
+    <Compile Include="Decompile\Expression\VarArg.cs" />
     <Compile Include="Decompile\FileOutputProvider.cs" />
     <Compile Include="Decompile\Function.cs" />
     <Compile Include="Decompile\Op.cs" />

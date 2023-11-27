@@ -1,16 +1,10 @@
 ﻿using LuaDec.Decompile.Target;
 using LuaDec.Parser;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LuaDec.Decompile.Expression
 {
     public class ClosureExpression : IExpression
     {
-
         private readonly LFunction function;
         private int upvalueLine;
 
@@ -21,73 +15,7 @@ namespace LuaDec.Decompile.Expression
             this.upvalueLine = upvalueLine;
         }
 
-        public override void Walk(Walker w)
-        {
-            w.VisitExpression(this);
-        }
-
-        public override int GetConstantIndex()
-        {
-            return -1;
-        }
-
-        public override bool IsClosure()
-        {
-            return true;
-        }
-
-        public override bool IsUngrouped()
-        {
-            return true;
-        }
-
-        public override bool IsUpvalueOf(int register)
-        {
-            /*
-            if(function.header.version == 0x51) {
-              return false; //TODO:
-            }
-            */
-            for (int i = 0; i < function.upvalues.Length; i++)
-            {
-                LUpvalue upvalue = function.upvalues[i];
-                if (upvalue.instack && upvalue.idx == register)
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        public override int ClosureUpvalueLine()
-        {
-            return upvalueLine;
-        }
-
-        public override void Write(Decompiler outer, Output output)
-        {
-            Decompiler d = new Decompiler(function, outer.declarations, upvalueLine);
-            output.WriteString("function");
-            printMain(output, d, true);
-        }
-
-        public override void WriteClosure(Decompiler outer, Output output, ITarget name)
-        {
-            Decompiler d = new Decompiler(function, outer.declarations, upvalueLine);
-            output.WriteString("function ");
-            if (function.numParams >= 1 && d.declarations[0].name == "self" && name is TableTarget)
-            {
-                name.WriteMethod(outer, output);
-                printMain(output, d, false);
-            }
-            else
-            {
-                name.Write(outer, output, false);
-                printMain(output, d, true);
-            }
-        }
-
-        private void printMain(Output output, Decompiler d, bool includeFirst)
+        private void WriteMain(Output output, Decompiler d, bool includeFirst)
         {
             output.WriteString("(");
             int start = includeFirst ? 0 : 1;
@@ -121,6 +49,65 @@ namespace LuaDec.Decompile.Expression
             //output.println(); //This is an extra space for formatting
         }
 
-    }
+        public override int ClosureUpvalueLine()
+        {
+            return upvalueLine;
+        }
 
+        public override int GetConstantIndex()
+        {
+            return -1;
+        }
+
+        public override bool IsClosure()
+        {
+            return true;
+        }
+
+        public override bool IsUngrouped()
+        {
+            return true;
+        }
+
+        public override bool IsUpvalueOf(int register)
+        {
+            for (int i = 0; i < function.upvalues.Length; i++)
+            {
+                LUpvalue upvalue = function.upvalues[i];
+                if (upvalue.instack && upvalue.idx == register)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public override void Walk(Walker w)
+        {
+            w.VisitExpression(this);
+        }
+
+        public override void Write(Decompiler outer, Output output)
+        {
+            Decompiler d = new Decompiler(function, outer.declarations, upvalueLine);
+            output.WriteString("function");
+            WriteMain(output, d, true);
+        }
+
+        public override void WriteClosure(Decompiler outer, Output output, ITarget name)
+        {
+            Decompiler d = new Decompiler(function, outer.declarations, upvalueLine);
+            output.WriteString("function ");
+            if (function.numParams >= 1 && d.declarations[0].name == "self" && name is TableTarget)
+            {
+                name.WriteMethod(outer, output);
+                WriteMain(output, d, false);
+            }
+            else
+            {
+                name.Write(outer, output, false);
+                WriteMain(output, d, true);
+            }
+        }
+    }
 }

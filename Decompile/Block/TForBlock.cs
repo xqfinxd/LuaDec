@@ -1,88 +1,24 @@
 ﻿using LuaDec.Decompile.Expression;
 using LuaDec.Decompile.Statement;
-using System;
-using System.Collections.Generic;
-using LuaDec.Parser;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LuaDec.Decompile.Target;
+using LuaDec.Parser;
+using System.Collections.Generic;
 
 namespace LuaDec.Decompile.Block
 {
     public class TForBlock : ContainerBlock
     {
-
-        protected readonly int internalRegisterFirst;
-        protected readonly int internalRegisterLast;
-
-        protected readonly int explicitRegisterFirst;
-        protected readonly int explicitRegisterLast;
-
-        protected readonly int internalScopeBegin;
-        protected readonly int internalScopeEnd;
-
-        protected readonly int explicitScopeBegin;
-        protected readonly int explicitScopeEnd;
-
-        protected readonly int innerScopeEnd;
-
         private ITarget[] targets;
         private IExpression[] values;
-
-        public static TForBlock make50(LFunction function, int begin, int end, int register, int length, bool innerClose)
-        {
-            int innerScopeEnd = end - 3;
-            if (innerClose)
-            {
-                innerScopeEnd--;
-            }
-            return new TForBlock(
-              function, begin, end,
-              register, register + 1, register + 2, register + 1 + length,
-              begin - 1, end - 1,
-              begin - 1, end - 1,
-              innerScopeEnd
-            );
-        }
-
-        public static TForBlock make51(LFunction function, int begin, int end, int register, int length, bool forvarClose, bool innerClose)
-        {
-            int explicitScopeEnd = end - 3;
-            int innerScopeEnd = end - 3;
-            if (forvarClose)
-            {
-                explicitScopeEnd--;
-                innerScopeEnd--;
-            }
-            if (innerClose)
-            {
-                innerScopeEnd--;
-            }
-            return new TForBlock(
-              function, begin, end,
-              register, register + 2, register + 3, register + 2 + length,
-              begin - 2, end - 1,
-              begin - 1, explicitScopeEnd,
-              innerScopeEnd
-            );
-        }
-
-        public static TForBlock make54(LFunction function, int begin, int end, int register, int length, bool forvarClose)
-        {
-            int innerScopeEnd = end - 3;
-            if (forvarClose)
-            {
-                innerScopeEnd--;
-            }
-            return new TForBlock(
-              function, begin, end,
-              register, register + 3, register + 4, register + 3 + length,
-              begin - 2, end,
-              begin - 1, end - 3,
-              innerScopeEnd
-            );
-        }
+        protected readonly int explicitRegisterFirst;
+        protected readonly int explicitRegisterLast;
+        protected readonly int explicitScopeBegin;
+        protected readonly int explicitScopeEnd;
+        protected readonly int innerScopeEnd;
+        protected readonly int internalRegisterFirst;
+        protected readonly int internalRegisterLast;
+        protected readonly int internalScopeBegin;
+        protected readonly int internalScopeEnd;
 
         public TForBlock(LFunction function, int begin, int end,
           int internalRegisterFirst, int internalRegisterLast,
@@ -104,7 +40,71 @@ namespace LuaDec.Decompile.Block
             this.innerScopeEnd = innerScopeEnd;
         }
 
-        public List<ITarget> getTargets(Registers r)
+        public static TForBlock Make50(LFunction function, int begin, int end, int register, int length, bool innerClose)
+        {
+            int innerScopeEnd = end - 3;
+            if (innerClose)
+            {
+                innerScopeEnd--;
+            }
+            return new TForBlock(
+              function, begin, end,
+              register, register + 1, register + 2, register + 1 + length,
+              begin - 1, end - 1,
+              begin - 1, end - 1,
+              innerScopeEnd
+            );
+        }
+
+        public static TForBlock Make51(LFunction function, int begin, int end, int register, int length, bool forvarClose, bool innerClose)
+        {
+            int explicitScopeEnd = end - 3;
+            int innerScopeEnd = end - 3;
+            if (forvarClose)
+            {
+                explicitScopeEnd--;
+                innerScopeEnd--;
+            }
+            if (innerClose)
+            {
+                innerScopeEnd--;
+            }
+            return new TForBlock(
+              function, begin, end,
+              register, register + 2, register + 3, register + 2 + length,
+              begin - 2, end - 1,
+              begin - 1, explicitScopeEnd,
+              innerScopeEnd
+            );
+        }
+
+        public static TForBlock Make54(LFunction function, int begin, int end, int register, int length, bool forvarClose)
+        {
+            int innerScopeEnd = end - 3;
+            if (forvarClose)
+            {
+                innerScopeEnd--;
+            }
+            return new TForBlock(
+              function, begin, end,
+              register, register + 3, register + 4, register + 3 + length,
+              begin - 2, end,
+              begin - 1, end - 3,
+              innerScopeEnd
+            );
+        }
+
+        public override bool Breakable()
+        {
+            return true;
+        }
+
+        public override int GetLoopback()
+        {
+            throw new System.InvalidOperationException();
+        }
+
+        public List<ITarget> GetTargets(Registers r)
         {
             List<ITarget> targets = new List<ITarget>(explicitRegisterLast - explicitRegisterFirst + 1);
             for (int register = explicitRegisterFirst; register <= explicitRegisterLast; register++)
@@ -114,7 +114,7 @@ namespace LuaDec.Decompile.Block
             return targets;
         }
 
-        public void handleVariableDeclarations(Registers r)
+        public void HandleVariableDeclarations(Registers r)
         {
             for (int register = internalRegisterFirst; register <= internalRegisterLast; register++)
             {
@@ -126,9 +126,14 @@ namespace LuaDec.Decompile.Block
             }
         }
 
-        public override void resolve(Registers r)
+        public override bool IsUnprotected()
         {
-            List<ITarget> targets = getTargets(r);
+            return false;
+        }
+
+        public override void Resolve(Registers r)
+        {
+            List<ITarget> targets = GetTargets(r);
             List<IExpression> values = new List<IExpression>(3);
             for (int register = internalRegisterFirst; register <= internalRegisterLast; register++)
             {
@@ -139,6 +144,11 @@ namespace LuaDec.Decompile.Block
 
             this.targets = new ITarget[targets.Count];
             this.values = new IExpression[values.Count];
+        }
+
+        public override int ScopeEnd()
+        {
+            return innerScopeEnd;
         }
 
         public override void Walk(Walker w)
@@ -152,26 +162,6 @@ namespace LuaDec.Decompile.Block
             {
                 statement.Walk(w);
             }
-        }
-
-        public override int scopeEnd()
-        {
-            return innerScopeEnd;
-        }
-
-        public override bool breakable()
-        {
-            return true;
-        }
-
-        public override bool isUnprotected()
-        {
-            return false;
-        }
-
-        public override int getLoopback()
-        {
-            throw new System.InvalidOperationException();
         }
 
         public override void Write(Decompiler d, Output output)
@@ -193,11 +183,9 @@ namespace LuaDec.Decompile.Block
             output.WriteString(" do");
             output.WriteLine();
             output.Indent();
-            IStatement.WriteSequence(d, output, statements);
+            WriteSequence(d, output, statements);
             output.Dedent();
             output.WriteString("end");
         }
-
     }
-
 }

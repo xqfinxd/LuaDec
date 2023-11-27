@@ -1,15 +1,9 @@
 ﻿using LuaDec.Decompile.Expression;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LuaDec.Decompile.Condition
 {
     public class TestCondition : ICondition
     {
-
         private int line;
         private int reg;
 
@@ -17,6 +11,11 @@ namespace LuaDec.Decompile.Condition
         {
             this.line = line;
             this.reg = reg;
+        }
+
+        public override IExpression AsExpression(Registers r)
+        {
+            return r.GetExpression(Register(), line);
         }
 
         public override ICondition Inverse()
@@ -29,9 +28,9 @@ namespace LuaDec.Decompile.Condition
             return false;
         }
 
-        public override int Register()
+        public override bool IsOrCondition()
         {
-            return reg;
+            return false;
         }
 
         public override bool IsRegisterTest()
@@ -39,14 +38,14 @@ namespace LuaDec.Decompile.Condition
             return true;
         }
 
-        public override bool IsOrCondition()
+        public override bool IsSplitable()
         {
             return false;
         }
 
-        public override bool IsSplitable()
+        public override int Register()
         {
-            return false;
+            return reg;
         }
 
         public override ICondition[] Split()
@@ -54,16 +53,9 @@ namespace LuaDec.Decompile.Condition
             throw new System.InvalidOperationException();
         }
 
-        public override IExpression AsExpression(Registers r)
-        {
-            return r.GetExpression(Register(), line);
-        }
-
         public override string ToString()
         {
             return "(" + reg + ")";
         }
-
     }
-
 }

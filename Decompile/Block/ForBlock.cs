@@ -2,33 +2,49 @@
 using LuaDec.Decompile.Statement;
 using LuaDec.Decompile.Target;
 using LuaDec.Parser;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LuaDec.Decompile.Block
 {
     public abstract class ForBlock : ContainerBlock
     {
-
-        protected readonly int register;
         protected readonly bool forvarClose;
-
-        protected ITarget target;
+        protected readonly int register;
         protected IExpression start;
-        protected IExpression stop;
         protected IExpression step;
+        protected IExpression stop;
+        protected ITarget target;
 
         public ForBlock(LFunction function, int begin, int end, int register, CloseType closeType, int closeLine, bool forvarClose)
             : base(function, begin, end, closeType, closeLine, -1)
         {
-          this.register = register;
+            this.register = register;
             this.forvarClose = forvarClose;
         }
 
-        abstract public void handleVariableDeclarations(Registers r);
+        public override bool Breakable()
+        {
+            return true;
+        }
+
+        public override int GetLoopback()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public abstract void HandleVariableDeclarations(Registers r);
+
+        public override bool IsUnprotected()
+        {
+            return false;
+        }
+
+        public override int ScopeEnd()
+        {
+            int scopeEnd = end - 2;
+            if (forvarClose) scopeEnd--;
+            if (usingClose && (closeType == CloseType.Close || closeType == CloseType.Jmp)) scopeEnd--;
+            return scopeEnd;
+        }
 
         public override void Walk(Walker w)
         {
@@ -40,29 +56,6 @@ namespace LuaDec.Decompile.Block
             {
                 statement.Walk(w);
             }
-        }
-
-        public override int scopeEnd()
-        {
-            int scopeEnd = end - 2;
-            if (forvarClose) scopeEnd--;
-            if (usingClose && (closeType == CloseType.Close || closeType == CloseType.Jmp)) scopeEnd--;
-            return scopeEnd;
-        }
-
-        public override bool breakable()
-        {
-            return true;
-        }
-
-        public override bool isUnprotected()
-        {
-            return false;
-        }
-
-        public override int getLoopback()
-        {
-            throw new System.InvalidOperationException();
         }
 
         public override void Write(Decompiler d, Output output)
@@ -85,7 +78,5 @@ namespace LuaDec.Decompile.Block
             output.Dedent();
             output.WriteString("end");
         }
-
     }
-
 }

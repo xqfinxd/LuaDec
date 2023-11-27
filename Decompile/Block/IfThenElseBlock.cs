@@ -7,12 +7,10 @@ namespace LuaDec.Decompile.Block
 {
     public class IfThenElseBlock : ContainerBlock
     {
-
         private readonly ICondition cond;
         private readonly int elseTarget;
-        public ElseEndBlock partner;
-
         private IExpression condexpr;
+        public ElseEndBlock partner;
 
         public IfThenElseBlock(LFunction function, ICondition cond, int begin, int end, int elseTarget, CloseType closeType, int closeLine)
             : base(function, begin, end, closeType, closeLine, -1)
@@ -21,24 +19,9 @@ namespace LuaDec.Decompile.Block
             this.elseTarget = elseTarget;
         }
 
-        public override void resolve(Registers r)
+        public override bool Breakable()
         {
-            condexpr = cond.AsExpression(r);
-        }
-
-        public override void Walk(Walker w)
-        {
-            w.VisitStatement(this);
-            condexpr.Walk(w);
-            foreach (IStatement statement in statements)
-            {
-                statement.Walk(w);
-            }
-        }
-
-        public override bool SuppressNewline()
-        {
-            return true;
+            return false;
         }
 
         public override int CompareTo(IBlock block)
@@ -53,34 +36,49 @@ namespace LuaDec.Decompile.Block
             }
         }
 
-        public override bool breakable()
+        public override int GetLoopback()
         {
-            return false;
+            throw new System.InvalidOperationException();
         }
 
-        public override int scopeEnd()
-        {
-            return usingClose && closeType == CloseType.Close ? closeLine - 1 : end - 2;
-        }
-
-        public override bool isUnprotected()
-        {
-            return true;
-        }
-
-        public override int getUnprotectedLine()
+        public override int GetUnprotectedLine()
         {
             return end - 1;
         }
 
-        public override int getUnprotectedTarget()
+        public override int GetUnprotectedTarget()
         {
             return elseTarget;
         }
 
-        public override int getLoopback()
+        public override bool IsUnprotected()
         {
-            throw new System.InvalidOperationException();
+            return true;
+        }
+
+        public override void Resolve(Registers r)
+        {
+            condexpr = cond.AsExpression(r);
+        }
+
+        public override int ScopeEnd()
+        {
+            return usingClose && closeType == CloseType.Close ? closeLine - 1 : end - 2;
+        }
+
+        public override bool SuppressNewline()
+        {
+            return true;
+        }
+
+        public override void Walk(Walker w)
+        {
+            w.VisitStatement(this);
+            condexpr.Walk(w);
+            foreach (IStatement statement in statements)
+            {
+                statement.Walk(w);
+            }
         }
 
         public override void Write(Decompiler d, Output output)
@@ -101,9 +99,6 @@ namespace LuaDec.Decompile.Block
                 output.WriteLine("else");
                 output.WriteLine("end");
             }
-
         }
-
     }
-
 }

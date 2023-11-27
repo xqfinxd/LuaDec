@@ -1,15 +1,9 @@
 ﻿using LuaDec.Decompile.Expression;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LuaDec.Decompile.Condition
 {
     public class OrCondition : ICondition
     {
-
         private ICondition left;
         private ICondition right;
 
@@ -17,6 +11,11 @@ namespace LuaDec.Decompile.Condition
         {
             this.left = left;
             this.right = right;
+        }
+
+        public override IExpression AsExpression(Registers r)
+        {
+            return new BinaryExpression("or", left.AsExpression(r), right.AsExpression(r), IExpression.PRECEDENCE_OR, IExpression.ASSOCIATIVITY_NONE);
         }
 
         public override ICondition Inverse()
@@ -36,9 +35,9 @@ namespace LuaDec.Decompile.Condition
             return right.Invertible();
         }
 
-        public override int Register()
+        public override bool IsOrCondition()
         {
-            return right.Register();
+            return true;
         }
 
         public override bool IsRegisterTest()
@@ -46,14 +45,14 @@ namespace LuaDec.Decompile.Condition
             return false;
         }
 
-        public override bool IsOrCondition()
-        {
-            return true;
-        }
-
         public override bool IsSplitable()
         {
             return false;
+        }
+
+        public override int Register()
+        {
+            return right.Register();
         }
 
         public override ICondition[] Split()
@@ -61,16 +60,9 @@ namespace LuaDec.Decompile.Condition
             throw new System.InvalidOperationException();
         }
 
-        public override IExpression AsExpression(Registers r)
-        {
-            return new BinaryExpression("or", left.AsExpression(r), right.AsExpression(r), IExpression.PRECEDENCE_OR, IExpression.ASSOCIATIVITY_NONE);
-        }
-
         public override string ToString()
         {
             return "(" + left + " or " + right + ")";
         }
-
     }
-
 }

@@ -7,7 +7,6 @@ namespace LuaDec.Decompile.Block
 {
     public class RepeatBlock : ContainerBlock
     {
-
         private readonly ICondition cond;
         private readonly bool extendedRepeatScope;
         private readonly int repeatScopeEnd;
@@ -22,9 +21,36 @@ namespace LuaDec.Decompile.Block
             this.repeatScopeEnd = repeatScopeEnd;
         }
 
-        public override void resolve(Registers r)
+        public override bool Breakable()
+        {
+            return true;
+        }
+
+        public override int GetLoopback()
+        {
+            throw new System.InvalidOperationException();
+        }
+
+        public override bool IsUnprotected()
+        {
+            return false;
+        }
+
+        public override void Resolve(Registers r)
         {
             condexpr = cond.AsExpression(r);
+        }
+
+        public override int ScopeEnd()
+        {
+            if (extendedRepeatScope)
+            {
+                return usingClose && closeType != CloseType.None ? closeLine - 1 : repeatScopeEnd;
+            }
+            else
+            {
+                return usingClose && closeType != CloseType.None ? closeLine : base.ScopeEnd();
+            }
         }
 
         public override void Walk(Walker w)
@@ -37,33 +63,6 @@ namespace LuaDec.Decompile.Block
             condexpr.Walk(w);
         }
 
-        public override int scopeEnd()
-        {
-            if (extendedRepeatScope)
-            {
-                return usingClose && closeType != CloseType.None ? closeLine - 1 : repeatScopeEnd;
-            }
-            else
-            {
-                return usingClose && closeType != CloseType.None ? closeLine : base.scopeEnd();
-            }
-        }
-
-        public override bool breakable()
-        {
-            return true;
-        }
-
-        public override bool isUnprotected()
-        {
-            return false;
-        }
-
-        public override int getLoopback()
-        {
-            throw new System.InvalidOperationException();
-        }
-
         public override void Write(Decompiler d, Output output)
         {
             output.WriteString("repeat");
@@ -74,7 +73,5 @@ namespace LuaDec.Decompile.Block
             output.WriteString("until ");
             condexpr.Write(d, output);
         }
-
     }
-
 }

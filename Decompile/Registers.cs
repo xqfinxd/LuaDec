@@ -37,7 +37,7 @@ namespace LuaDec.Decompile
                 }
             }
             values = new IExpression[registers, length + 1];
-            IExpression nil = ConstantExpression.createNil(0);
+            IExpression nil = ConstantExpression.CreateNil(0);
             for (int register = 0; register < registers; register++)
             {
                 values[register, 0] = nil;

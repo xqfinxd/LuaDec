@@ -1,16 +1,19 @@
-﻿using LuaDec.Decompile.Statement;
-using LuaDec.Parser;
+﻿using LuaDec.Parser;
 
 namespace LuaDec.Decompile.Block
 {
     public class ElseEndBlock : ContainerBlock
     {
-
         public IfThenElseBlock partner;
 
         public ElseEndBlock(LFunction function, int begin, int end, CloseType closeType, int closeLine)
              : base(function, begin, end, closeType, closeLine, -1)
         {
+        }
+
+        public override bool Breakable()
+        {
+            return false;
         }
 
         public override int CompareTo(IBlock block)
@@ -26,36 +29,35 @@ namespace LuaDec.Decompile.Block
             }
         }
 
-        public override bool breakable()
-        {
-            return false;
-        }
-
-        public override int scopeEnd()
-        {
-            return usingClose && closeType == CloseType.Close ? closeLine - 1 : base.scopeEnd();
-        }
-
-        public override bool isUnprotected()
-        {
-            return false;
-        }
-
-        public override int getLoopback()
+        public override int GetLoopback()
         {
             throw new System.InvalidOperationException();
         }
 
+        public override bool IsUnprotected()
+        {
+            return false;
+        }
+
+        public override int ScopeEnd()
+        {
+            return usingClose && closeType == CloseType.Close ? closeLine - 1 : base.ScopeEnd();
+        }
+
         public override void Write(Decompiler d, Output output)
         {
-            if (statements.Count == 1 && statements[0] is IfThenEndBlock) {
+            if (statements.Count == 1 && statements[0] is IfThenEndBlock)
+            {
                 output.WriteString("else");
                 statements[0].Write(d, output);
-            } else if (statements.Count == 2 && statements[0] is IfThenElseBlock && statements[1] is ElseEndBlock) {
+            }
+            else if (statements.Count == 2 && statements[0] is IfThenElseBlock && statements[1] is ElseEndBlock)
+            {
                 output.WriteString("else");
                 statements[0].Write(d, output);
                 statements[1].Write(d, output);
-            } else
+            }
+            else
             {
                 output.WriteString("else");
                 output.WriteLine();
@@ -65,7 +67,5 @@ namespace LuaDec.Decompile.Block
                 output.WriteString("end");
             }
         }
-
     }
-
 }

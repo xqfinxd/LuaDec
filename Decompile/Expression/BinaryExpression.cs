@@ -1,23 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LuaDec.Decompile.Expression
 {
     public class BinaryExpression : IExpression
     {
-
-        private readonly string op;
-        private readonly IExpression left;
-        private readonly IExpression right;
         private readonly int associativity;
-
-        public static BinaryExpression replaceRight(BinaryExpression template, IExpression replacement)
-        {
-            return new BinaryExpression(template.op, template.left, replacement, template.precedence, template.associativity);
-        }
+        private readonly IExpression left;
+        private readonly string op;
+        private readonly IExpression right;
+        public string Op => op;
 
         public BinaryExpression(string op, IExpression left, IExpression right, int precedence, int associativity)
             : base(precedence)
@@ -28,16 +19,24 @@ namespace LuaDec.Decompile.Expression
             this.associativity = associativity;
         }
 
-        public override void Walk(Walker w)
+        private bool LeftGroup()
         {
-            w.VisitExpression(this);
-            left.Walk(w);
-            right.Walk(w);
+            return precedence > left.precedence || (precedence == left.precedence && associativity == ASSOCIATIVITY_RIGHT);
         }
 
-        public override bool IsUngrouped()
+        private bool RightGroup()
         {
-            return !BeginsWithParen();
+            return precedence > right.precedence || (precedence == right.precedence && associativity == ASSOCIATIVITY_LEFT);
+        }
+
+        public static BinaryExpression ReplaceRight(BinaryExpression template, IExpression replacement)
+        {
+            return new BinaryExpression(template.op, template.left, replacement, template.precedence, template.associativity);
+        }
+
+        public override bool BeginsWithParen()
+        {
+            return LeftGroup() || left.BeginsWithParen();
         }
 
         public override int GetConstantIndex()
@@ -45,9 +44,16 @@ namespace LuaDec.Decompile.Expression
             return Math.Max(left.GetConstantIndex(), right.GetConstantIndex());
         }
 
-        public override bool BeginsWithParen()
+        public override bool IsUngrouped()
         {
-            return LeftGroup() || left.BeginsWithParen();
+            return !BeginsWithParen();
+        }
+
+        public override void Walk(Walker w)
+        {
+            w.VisitExpression(this);
+            left.Walk(w);
+            right.Walk(w);
         }
 
         public override void Write(Decompiler d, Output output)
@@ -64,22 +70,5 @@ namespace LuaDec.Decompile.Expression
             right.Write(d, output);
             if (rightGroup) output.WriteString(")");
         }
-
-        public string getOp()
-        {
-            return op;
-        }
-
-        private bool LeftGroup()
-        {
-            return precedence > left.precedence || (precedence == left.precedence && associativity == ASSOCIATIVITY_RIGHT);
-        }
-
-        private bool RightGroup()
-        {
-            return precedence > right.precedence || (precedence == right.precedence && associativity == ASSOCIATIVITY_LEFT);
-        }
-
     }
-
 }

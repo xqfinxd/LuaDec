@@ -212,7 +212,7 @@ namespace LuaDec.Decompile
                     return new TableTarget(r.GetExpression(code.AField(line), previous), r.GetExpression(code.BField(line), previous));
 
                 case Op.OpT.SETI:
-                    return new TableTarget(r.GetExpression(code.AField(line), previous), ConstantExpression.createint(code.BField(line)));
+                    return new TableTarget(r.GetExpression(code.AField(line), previous), ConstantExpression.CreateInt(code.BField(line)));
 
                 case Op.OpT.SETFIELD:
                     return new TableTarget(r.GetExpression(code.AField(line), previous), f.GetConstantExpression(code.BField(line)));
@@ -338,7 +338,7 @@ namespace LuaDec.Decompile
             IExpression table = state.r.GetValue(stack, line);
             for (int i = 1; i <= count; i++)
             {
-                operations.Add(new TableSet(line, table, ConstantExpression.createint(offset + i), state.r.GetExpression(stack + i, line), false, state.r.GetUpdated(stack + i, line)));
+                operations.Add(new TableSet(line, table, ConstantExpression.CreateInt(offset + i), state.r.GetExpression(stack + i, line), false, state.r.GetUpdated(stack + i, line)));
             }
         }
 
@@ -359,7 +359,7 @@ namespace LuaDec.Decompile
             if (line == 1)
             {
                 if (register < function.numParams) throw new System.InvalidOperationException();
-                return ConstantExpression.createNil(line);
+                return ConstantExpression.CreateNil(line);
             }
             else
             {
@@ -427,11 +427,11 @@ namespace LuaDec.Decompile
                     break;
 
                 case Op.OpT.LOADI:
-                    operations.Add(new RegisterSet(line, A, ConstantExpression.createint(code.sBxField(line))));
+                    operations.Add(new RegisterSet(line, A, ConstantExpression.CreateInt(code.sBxField(line))));
                     break;
 
                 case Op.OpT.LOADF:
-                    operations.Add(new RegisterSet(line, A, ConstantExpression.createDouble((double)code.sBxField(line))));
+                    operations.Add(new RegisterSet(line, A, ConstantExpression.CreateDouble((double)code.sBxField(line))));
                     break;
 
                 case Op.OpT.LOADK:
@@ -444,16 +444,16 @@ namespace LuaDec.Decompile
                     break;
 
                 case Op.OpT.LOADBOOL:
-                    operations.Add(new RegisterSet(line, A, ConstantExpression.createbool(B != 0)));
+                    operations.Add(new RegisterSet(line, A, ConstantExpression.CreateBool(B != 0)));
                     break;
 
                 case Op.OpT.LOADFALSE:
                 case Op.OpT.LFALSESKIP:
-                    operations.Add(new RegisterSet(line, A, ConstantExpression.createbool(false)));
+                    operations.Add(new RegisterSet(line, A, ConstantExpression.CreateBool(false)));
                     break;
 
                 case Op.OpT.LOADTRUE:
-                    operations.Add(new RegisterSet(line, A, ConstantExpression.createbool(true)));
+                    operations.Add(new RegisterSet(line, A, ConstantExpression.CreateBool(true)));
                     break;
 
                 case Op.OpT.LOADNIL:
@@ -497,7 +497,7 @@ namespace LuaDec.Decompile
                     break;
 
                 case Op.OpT.GETI:
-                    operations.Add(new RegisterSet(line, A, new TableReference(r.GetExpression(B, line), ConstantExpression.createint(C))));
+                    operations.Add(new RegisterSet(line, A, new TableReference(r.GetExpression(B, line), ConstantExpression.CreateInt(C))));
                     break;
 
                 case Op.OpT.GETFIELD:
@@ -513,7 +513,7 @@ namespace LuaDec.Decompile
                     break;
 
                 case Op.OpT.SETI:
-                    operations.Add(new TableSet(line, r.GetExpression(A, line), ConstantExpression.createint(B), r.GetKExpression54(C, code.kField(line), line), true, line));
+                    operations.Add(new TableSet(line, r.GetExpression(A, line), ConstantExpression.CreateInt(B), r.GetKExpression54(C, code.kField(line), line), true, line));
                     break;
 
                 case Op.OpT.SETFIELD:
@@ -689,7 +689,7 @@ namespace LuaDec.Decompile
                         }
                     }
                     IExpression left = r.GetExpression(B, line);
-                    IExpression right = ConstantExpression.createint(immediate);
+                    IExpression right = ConstantExpression.CreateInt(immediate);
                     if (swap)
                     {
                         IExpression temp = left;
@@ -756,12 +756,12 @@ namespace LuaDec.Decompile
                     {
                         throw new System.InvalidOperationException();
                     }
-                    operations.Add(new RegisterSet(line, A, IExpression.Make(op, r.GetExpression(B, line), ConstantExpression.createint(immediate))));
+                    operations.Add(new RegisterSet(line, A, IExpression.Make(op, r.GetExpression(B, line), ConstantExpression.CreateInt(immediate))));
                     break;
                 }
                 case Op.OpT.SHLI:
                 {
-                    operations.Add(new RegisterSet(line, A, IExpression.Make(IExpression.BinaryOperation.SHL, ConstantExpression.createint(code.sCField(line)), r.GetExpression(B, line))));
+                    operations.Add(new RegisterSet(line, A, IExpression.Make(IExpression.BinaryOperation.SHL, ConstantExpression.CreateInt(code.sCField(line)), r.GetExpression(B, line))));
                     break;
                 }
                 case Op.OpT.MMBIN:
@@ -1023,7 +1023,7 @@ namespace LuaDec.Decompile
                     bool multiple = (B != 2);
                     if (B == 1) throw new System.InvalidOperationException();
                     if (B == 0) B = registers - A + 1;
-                    IExpression value = new Vararg(B - 1, multiple);
+                    IExpression value = new VarArg(B - 1, multiple);
                     operations.Add(new MultipleRegisterSet(line, A, A + B - 2, value));
                     break;
                 }
@@ -1032,7 +1032,7 @@ namespace LuaDec.Decompile
                     bool multiple = (C != 2);
                     if (C == 1) throw new System.InvalidOperationException();
                     if (C == 0) C = registers - A + 1;
-                    IExpression value = new Vararg(C - 1, multiple);
+                    IExpression value = new VarArg(C - 1, multiple);
                     operations.Add(new MultipleRegisterSet(line, A, A + C - 2, value));
                     break;
                 }
@@ -1100,7 +1100,7 @@ namespace LuaDec.Decompile
             }
             foreach (IStatement stmt in stmts)
             {
-                block.addStatement(stmt);
+                block.AddStatement(stmt);
             }
             return assign;
         }
@@ -1114,7 +1114,7 @@ namespace LuaDec.Decompile
             List<IBlock> blockStatements = new List<IBlock>(blocks.Count);
             foreach (IBlock block in blocks)
             {
-                if (block.isContainer())
+                if (block.IsContainer())
                 {
                     blockContainers.Add(block);
                 }
@@ -1142,7 +1142,7 @@ namespace LuaDec.Decompile
                 if (blockStack.Peek().end <= line)
                 {
                     IBlock endingBlock = blockStack.Pop();
-                    IOperation operation = endingBlock.process(this);
+                    IOperation operation = endingBlock.Process(this);
                     if (blockStack.Count == 0) return;
                     if (operation == null) throw new System.InvalidOperationException();
                     operations = new List<IOperation> { operation };
@@ -1152,7 +1152,7 @@ namespace LuaDec.Decompile
                 {
                     if (!labels_handled[line] && state.labels[line])
                     {
-                        blockStack.Peek().addStatement(new Label(line));
+                        blockStack.Peek().AddStatement(new Label(line));
                         labels_handled[line] = true;
                     }
 
@@ -1160,8 +1160,8 @@ namespace LuaDec.Decompile
                     while (blockContainerIndex < blockContainers.Count && blockContainers[blockContainerIndex].begin <= line)
                     {
                         IBlock next = blockContainers[blockContainerIndex++];
-                        if (rLocals.Count != 0 && next.allowsPreDeclare() &&
-                          (rLocals[0].end > next.scopeEnd() || rLocals[0].register < next.closeRegister)
+                        if (rLocals.Count != 0 && next.AllowsPreDeclare() &&
+                          (rLocals[0].end > next.ScopeEnd() || rLocals[0].register < next.closeRegister)
                         )
                         {
                             Assignment declaration = new Assignment();
@@ -1170,10 +1170,10 @@ namespace LuaDec.Decompile
                             while (rLocals.Count != 0 && rLocals[0].end == declareEnd && (next.closeRegister == -1 || rLocals[0].register < next.closeRegister))
                             {
                                 Declaration decl = rLocals[0];
-                                declaration.AddLast(new VariableTarget(decl), ConstantExpression.createNil(line), line);
+                                declaration.AddLast(new VariableTarget(decl), ConstantExpression.CreateNil(line), line);
                                 rLocals.RemoveAt(0);
                             }
-                            blockStack.Peek().addStatement(declaration);
+                            blockStack.Peek().AddStatement(declaration);
                         }
                         blockStack.Push(next);
                     }
@@ -1189,7 +1189,7 @@ namespace LuaDec.Decompile
                     if (blockStatementIndex < blockStatements.Count && blockStatements[blockStatementIndex].begin <= line)
                     {
                         IBlock blockStatement = blockStatements[blockStatementIndex++];
-                        IOperation operation = blockStatement.process(this);
+                        IOperation operation = blockStatement.Process(this);
                         operations = new List<IOperation> { operation };
                     }
                     else
@@ -1237,7 +1237,7 @@ namespace LuaDec.Decompile
                     {
                         // Create a new Assignment to hold the declarations
                         assignment = new Assignment();
-                        block.addStatement(assignment);
+                        block.AddStatement(assignment);
                     }
                     else
                     {
@@ -1276,7 +1276,7 @@ namespace LuaDec.Decompile
             ProcessSequence(state, blocks, 1, code.Length);
             foreach (IBlock block in blocks)
             {
-                block.resolve(state.r);
+                block.Resolve(state.r);
             }
             HandleUnusedConstants(state.outer);
             return state;
@@ -1309,7 +1309,7 @@ namespace LuaDec.Decompile
                 state.labels = new bool[code.Length + 1];
                 List<IBlock> blocks = new List<IBlock> { state.outer, scoped };
                 ProcessSequence(state, blocks, 1, code.Length);
-                return !scoped.isEmpty();
+                return !scoped.IsEmpty();
             }
             else
             {

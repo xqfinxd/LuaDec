@@ -1,16 +1,10 @@
 ﻿using LuaDec.Decompile.Statement;
 using LuaDec.Parser;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LuaDec.Decompile.Block
 {
     public class Goto : IBlock
     {
-
         public readonly int target;
 
         public Goto(LFunction function, int line, int target)
@@ -19,47 +13,45 @@ namespace LuaDec.Decompile.Block
             this.target = target;
         }
 
-        public override void Walk(Walker w)
+        public override void AddStatement(IStatement statement)
         {
-            w.VisitStatement(this);
+            throw new System.NotImplementedException();
         }
 
-        public override void addStatement(IStatement statement)
-        {
-            throw new System.InvalidOperationException();
-        }
-
-        public override bool isContainer()
+        public override bool Breakable()
         {
             return false;
         }
 
-        public override bool isEmpty()
+        public override int GetLoopback()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override bool IsContainer()
+        {
+            return false;
+        }
+
+        public override bool IsEmpty()
         {
             return true;
         }
 
-        public override bool breakable()
-        {
-            return false;
-        }
-
-        public override bool isUnprotected()
+        public override bool IsUnprotected()
         {
             //Actually, it is unprotected, but not really a block
             return false;
         }
 
-        public override int getLoopback()
+        public override void Walk(Walker w)
         {
-            throw new System.InvalidOperationException();
+            w.VisitStatement(this);
         }
 
         public override void Write(Decompiler d, Output output)
         {
             output.WriteString("goto lbl_" + target);
         }
-
     }
-
 }

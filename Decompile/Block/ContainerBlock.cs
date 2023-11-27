@@ -1,17 +1,15 @@
-﻿using System;
-using LuaDec.Decompile.Statement;
-using System.Collections.Generic;
+﻿using LuaDec.Decompile.Statement;
 using LuaDec.Parser;
+using System;
+using System.Collections.Generic;
 
 namespace LuaDec.Decompile.Block
 {
-
     public abstract class ContainerBlock : IBlock
     {
-
-        protected readonly List<IStatement> statements;
-        protected readonly CloseType closeType;
         protected readonly int closeLine;
+        protected readonly CloseType closeType;
+        protected readonly List<IStatement> statements;
         protected bool usingClose;
 
         public ContainerBlock(LFunction function, int begin, int end, CloseType closeType, int closeLine, int priority)
@@ -23,36 +21,12 @@ namespace LuaDec.Decompile.Block
             statements = new List<IStatement>(Math.Max(4, end - begin + 1));
         }
 
-        public override void Walk(Walker w)
-        {
-            w.VisitStatement(this);
-            foreach (IStatement statement in statements)
-            {
-                statement.Walk(w);
-            }
-        }
-
-        public override bool isContainer()
-        {
-            return begin < end;
-        }
-
-        public override bool isEmpty()
-        {
-            return statements.Count == 0;
-        }
-
-        public override void addStatement(IStatement statement)
+        public override void AddStatement(IStatement statement)
         {
             statements.Add(statement);
         }
 
-        public override bool hasCloseLine()
-        {
-            return closeType != CloseType.None;
-        }
-
-        public override int getCloseLine()
+        public override int GetCloseLine()
         {
             if (closeType == CloseType.None)
             {
@@ -61,12 +35,33 @@ namespace LuaDec.Decompile.Block
             return closeLine;
         }
 
-        public override void useClose()
+        public override bool HasCloseLine()
+        {
+            return closeType != CloseType.None;
+        }
+
+        public override bool IsContainer()
+        {
+            return begin < end;
+        }
+
+        public override bool IsEmpty()
+        {
+            return statements.Count == 0;
+        }
+
+        public override void UseClose()
         {
             usingClose = true;
         }
 
+        public override void Walk(Walker w)
+        {
+            w.VisitStatement(this);
+            foreach (IStatement statement in statements)
+            {
+                statement.Walk(w);
+            }
+        }
     }
-
-
 }

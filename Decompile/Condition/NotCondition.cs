@@ -1,20 +1,19 @@
 ﻿using LuaDec.Decompile.Expression;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LuaDec.Decompile.Condition
 {
     public class NotCondition : ICondition
     {
-
         private ICondition cond;
 
         public NotCondition(ICondition cond)
         {
             this.cond = cond;
+        }
+
+        public override IExpression AsExpression(Registers r)
+        {
+            return new UnaryExpression("not ", cond.AsExpression(r), IExpression.PRECEDENCE_UNARY);
         }
 
         public override ICondition Inverse()
@@ -27,9 +26,9 @@ namespace LuaDec.Decompile.Condition
             return true;
         }
 
-        public override int Register()
+        public override bool IsOrCondition()
         {
-            return cond.Register();
+            return false;
         }
 
         public override bool IsRegisterTest()
@@ -37,14 +36,14 @@ namespace LuaDec.Decompile.Condition
             return cond.IsRegisterTest();
         }
 
-        public override bool IsOrCondition()
+        public override bool IsSplitable()
         {
             return false;
         }
 
-        public override bool IsSplitable()
+        public override int Register()
         {
-            return false;
+            return cond.Register();
         }
 
         public override ICondition[] Split()
@@ -52,16 +51,9 @@ namespace LuaDec.Decompile.Condition
             throw new System.InvalidOperationException();
         }
 
-        public override IExpression AsExpression(Registers r)
-        {
-            return new UnaryExpression("not ", cond.AsExpression(r), IExpression.PRECEDENCE_UNARY);
-        }
-
         public override string ToString()
         {
             return "not (" + cond + ")";
         }
-
     }
-
 }

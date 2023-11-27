@@ -5,7 +5,6 @@ namespace LuaDec.Decompile.Block
 {
     public class WhileBlock51 : WhileBlock
     {
-
         private readonly int unprotectedTarget;
 
         public WhileBlock51(LFunction function, ICondition cond, int begin, int end, int unprotectedTarget, CloseType closeType, int closeLine)
@@ -14,32 +13,32 @@ namespace LuaDec.Decompile.Block
             this.unprotectedTarget = unprotectedTarget;
         }
 
-        public override int scopeEnd()
-        {
-            return usingClose && closeType == CloseType.Close ? end - 3 : end - 2;
-        }
-
-        public override bool isUnprotected()
-        {
-            return true;
-        }
-
-        public override int getUnprotectedLine()
+        public override int GetUnprotectedLine()
         {
             return end - 1;
         }
 
-        public override int getUnprotectedTarget()
+        public override int GetUnprotectedTarget()
         {
             return unprotectedTarget;
         }
 
-        public override bool isSplitable()
+        public override bool IsSplitable()
         {
             return cond.IsSplitable();
         }
 
-        public override IBlock[] split(int line, CloseType closeType)
+        public override bool IsUnprotected()
+        {
+            return true;
+        }
+
+        public override int ScopeEnd()
+        {
+            return usingClose && closeType == CloseType.Close ? end - 3 : end - 2;
+        }
+
+        public override IBlock[] Split(int line, CloseType closeType)
         {
             ICondition[] conds = cond.Split();
             cond = conds[0];
@@ -48,7 +47,5 @@ namespace LuaDec.Decompile.Block
               new ElseEndBlock(function, line + 1, end - 1, CloseType.None, -1),
             };
         }
-
     }
-
 }

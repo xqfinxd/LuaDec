@@ -1,16 +1,14 @@
 ﻿using LuaDec.Decompile.Condition;
 using LuaDec.Decompile.Expression;
-using LuaDec.Parser;
 using LuaDec.Decompile.Statement;
+using LuaDec.Parser;
 
 namespace LuaDec.Decompile.Block
 {
     public abstract class WhileBlock : ContainerBlock
     {
-
-        protected ICondition cond;
-
         private IExpression condexpr;
+        protected ICondition cond;
 
         public WhileBlock(LFunction function, ICondition cond, int begin, int end, CloseType closeType, int closeLine)
             : base(function, begin, end, closeType, closeLine, -1)
@@ -18,7 +16,17 @@ namespace LuaDec.Decompile.Block
             this.cond = cond;
         }
 
-        public override void resolve(Registers r)
+        public override bool Breakable()
+        {
+            return true;
+        }
+
+        public override int GetLoopback()
+        {
+            throw new System.InvalidOperationException();
+        }
+
+        public override void Resolve(Registers r)
         {
             condexpr = cond.AsExpression(r);
         }
@@ -33,16 +41,6 @@ namespace LuaDec.Decompile.Block
             }
         }
 
-        public override bool breakable()
-        {
-            return true;
-        }
-
-        public override int getLoopback()
-        {
-            throw new System.InvalidOperationException();
-        }
-
         public override void Write(Decompiler d, Output output)
         {
             output.WriteString("while ");
@@ -50,11 +48,9 @@ namespace LuaDec.Decompile.Block
             output.WriteString(" do");
             output.WriteLine();
             output.Indent();
-            IStatement.WriteSequence(d, output, statements);
+            WriteSequence(d, output, statements);
             output.Dedent();
             output.WriteString("end");
         }
-
     }
-
 }

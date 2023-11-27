@@ -2,22 +2,61 @@
 using LuaDec.Decompile.Expression;
 using LuaDec.Decompile.Operation;
 using LuaDec.Decompile.Statement;
+using LuaDec.Parser;
 using System;
 using System.Collections.Generic;
-using LuaDec.Parser;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LuaDec.Decompile.Block
 {
     public class SetBlock : IBlock
     {
-        public readonly int target;
+        private class AssignOperation : IOperation
+        {
+            private Assignment assign;
+
+            public AssignOperation(Assignment assign, int line)
+                : base(line)
+            {
+                this.assign = assign;
+            }
+
+            public override List<IStatement> Process(Registers r, IBlock block)
+            {
+                return new List<IStatement> { assign };
+            }
+        }
+
+        private class NoAssignOperation : IOperation
+        {
+            private ICondition cond;
+            private int target;
+
+            public NoAssignOperation(int target, ICondition cond, int line)
+                : base(line)
+            {
+                this.target = target;
+                this.cond = cond;
+            }
+
+            public override List<IStatement> Process(Registers r, IBlock block)
+            {
+                if (r.IsLocal(target, line))
+                {
+                    return new List<IStatement>{
+                        new Assignment(r.GetTarget(target, line), cond
+                        .AsExpression(r), line)
+                    };
+                }
+                r.SetValue(target, line, cond.AsExpression(r));
+                return new List<IStatement>();
+            }
+        }
+
         private Assignment assign;
-        public readonly ICondition cond;
         private Registers r;
         private bool readonlyize = false;
+        public readonly ICondition cond;
+        public readonly int target;
 
         public SetBlock(LFunction function, ICondition cond, int target, int line, int begin, int end, Registers r)
              : base(function, begin, end, 2)
@@ -33,27 +72,70 @@ namespace LuaDec.Decompile.Block
             // System.output.println("-- set block " + begin + " .. " + end);
         }
 
-        public override void Walk(Walker w)
-        {
-            throw new System.InvalidOperationException();
-        }
-
-        public override void addStatement(IStatement statement)
+        public override void AddStatement(IStatement statement)
         {
             if (!readonlyize && statement is Assignment)
             {
                 this.assign = (Assignment)statement;
-            }/* else if(statement is boolIndicator) {
-      readonlyize = true;
-    }*/
+            }
         }
 
-        public override bool isUnprotected()
+        public override bool Breakable()
         {
             return false;
         }
 
-        public override int getLoopback()
+        public override int GetLoopback()
+        {
+            throw new System.InvalidOperationException();
+        }
+
+        public IExpression getValue()
+        {
+            return cond.AsExpression(r);
+        }
+
+        public override bool IsContainer()
+        {
+            return true;
+        }
+
+        public override bool IsEmpty()
+        {
+            return true;
+        }
+
+        public override bool IsUnprotected()
+        {
+            return false;
+        }
+
+        public override IOperation Process(Decompiler d)
+        {
+            if (ControlFlowHandler.Verbose)
+            {
+                Console.WriteLine("set expression: ");
+                cond.AsExpression(r).Write(d, new Output());
+                Console.WriteLine();
+            }
+            if (assign != null)
+            {
+                assign.ReplaceValue(target, getValue());
+                return new AssignOperation(assign, end - 1);
+            }
+            else
+            {
+                return new NoAssignOperation(target, cond, end - 1);
+            }
+        }
+
+        public void useAssignment(Assignment assign)
+        {
+            this.assign = assign;
+            // branch.useExpression(assign.getFirstValue());
+        }
+
+        public override void Walk(Walker w)
         {
             throw new System.InvalidOperationException();
         }
@@ -68,89 +150,6 @@ namespace LuaDec.Decompile.Block
             else
             {
                 throw new System.InvalidOperationException();
-            }
-        }
-
-        public override bool breakable()
-        {
-            return false;
-        }
-
-        public override bool isContainer()
-        {
-            return true;
-        }
-
-        public override bool isEmpty()
-        {
-            return true;
-        }
-
-        public void useAssignment(Assignment assign)
-        {
-            this.assign = assign;
-            // branch.useExpression(assign.getFirstValue());
-        }
-
-        public IExpression getValue()
-        {
-            return cond.AsExpression(r);
-        }
-
-        private class SetBlockOperation_1 : IOperation
-        {
-            Assignment assign;
-
-            public SetBlockOperation_1(Assignment assign, int line)
-                : base(line)
-            {
-                this.assign = assign;
-            }
-            public override List<IStatement> Process(Registers r, IBlock block)
-            {
-                return new List<IStatement> { assign };
-            }
-        }
-        private class SetBlockOperation_2 : IOperation
-        {
-            int target;
-            ICondition cond;
-
-            public SetBlockOperation_2(int target, ICondition cond, int line)
-                : base(line)
-            {
-                this.target = target;
-                this.cond = cond;
-            }
-            public override List<IStatement> Process(Registers r, IBlock block)
-            {
-                if (r.IsLocal(target, line))
-                {
-                    return new List<IStatement>{
-                        new Assignment(r.GetTarget(target, line), cond
-                        .AsExpression(r), line)
-                    };
-                }
-                r.SetValue(target, line, cond.AsExpression(r));
-                return new List<IStatement>();
-            }
-        }
-        public override IOperation process(Decompiler d)
-        {
-            if (ControlFlowHandler.Verbose)
-            {
-                Console.WriteLine("set expression: ");
-                cond.AsExpression(r).Write(d, new Output());
-                Console.WriteLine();
-            }
-            if (assign != null)
-            {
-                assign.ReplaceValue(target, getValue());
-                return new SetBlockOperation_1(assign, end - 1);
-            }
-            else
-            {
-                return new SetBlockOperation_2(target, cond, end - 1);
             }
         }
     }

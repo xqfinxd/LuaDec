@@ -1,15 +1,9 @@
 ﻿using LuaDec.Decompile.Expression;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LuaDec.Decompile.Condition
 {
     public class AndCondition : ICondition
     {
-
         private ICondition left;
         private ICondition right;
 
@@ -17,6 +11,11 @@ namespace LuaDec.Decompile.Condition
         {
             this.left = left;
             this.right = right;
+        }
+
+        public override IExpression AsExpression(Registers r)
+        {
+            return new BinaryExpression("and", left.AsExpression(r), right.AsExpression(r), IExpression.PRECEDENCE_AND, IExpression.ASSOCIATIVITY_NONE);
         }
 
         public override ICondition Inverse()
@@ -36,17 +35,12 @@ namespace LuaDec.Decompile.Condition
             return right.Invertible();
         }
 
-        public override int Register()
-        {
-            return right.Register();
-        }
-
-        public override bool IsRegisterTest()
+        public override bool IsOrCondition()
         {
             return false;
         }
 
-        public override bool IsOrCondition()
+        public override bool IsRegisterTest()
         {
             return false;
         }
@@ -56,21 +50,19 @@ namespace LuaDec.Decompile.Condition
             return true;
         }
 
+        public override int Register()
+        {
+            return right.Register();
+        }
+
         public override ICondition[] Split()
         {
             return new ICondition[] { left, right };
-        }
-
-        public override IExpression AsExpression(Registers r)
-        {
-            return new BinaryExpression("and", left.AsExpression(r), right.AsExpression(r), IExpression.PRECEDENCE_AND, IExpression.ASSOCIATIVITY_NONE);
         }
 
         public override string ToString()
         {
             return left + " and " + right;
         }
-
     }
-
 }

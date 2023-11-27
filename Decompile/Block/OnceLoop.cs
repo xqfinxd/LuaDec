@@ -1,34 +1,32 @@
-﻿using LuaDec.Decompile.Statement;
-using LuaDec.Parser;
+﻿using LuaDec.Parser;
 
 namespace LuaDec.Decompile.Block
 {
     public class OnceLoop : ContainerBlock
     {
-
         public OnceLoop(LFunction function, int begin, int end)
              : base(function, begin, end, CloseType.None, -1, 0)
         {
         }
 
-        public override int scopeEnd()
-        {
-            return end - 1;
-        }
-
-        public override bool breakable()
+        public override bool Breakable()
         {
             return true;
         }
 
-        public override bool isUnprotected()
+        public override int GetLoopback()
+        {
+            return begin;
+        }
+
+        public override bool IsUnprotected()
         {
             return false;
         }
 
-        public override int getLoopback()
+        public override int ScopeEnd()
         {
-            return begin;
+            return end - 1;
         }
 
         public override void Write(Decompiler d, Output output)
@@ -39,7 +37,5 @@ namespace LuaDec.Decompile.Block
             output.Dedent();
             output.WriteString("until true");
         }
-
     }
-
 }

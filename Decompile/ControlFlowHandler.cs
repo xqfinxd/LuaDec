@@ -342,9 +342,9 @@ namespace LuaDec.Decompile
             IBlock enclosing = null;
             foreach (IBlock block in state.blocks)
             {
-                if (block.contains(line))
+                if (block.Contains(line))
                 {
-                    if (enclosing == null || enclosing.contains(block))
+                    if (enclosing == null || enclosing.Contains(block))
                     {
                         enclosing = block;
                     }
@@ -358,9 +358,9 @@ namespace LuaDec.Decompile
             IBlock enclosing = null;
             foreach (IBlock block in state.blocks)
             {
-                if (block.contains(line) && block.breakable())
+                if (block.Contains(line) && block.Breakable())
                 {
-                    if (enclosing == null || enclosing.contains(block))
+                    if (enclosing == null || enclosing.Contains(block))
                     {
                         enclosing = block;
                     }
@@ -374,9 +374,9 @@ namespace LuaDec.Decompile
             IBlock enclosing = null;
             foreach (IBlock block in state.blocks)
             {
-                if (block.contains(line) && block.isUnprotected())
+                if (block.Contains(line) && block.IsUnprotected())
                 {
-                    if (enclosing == null || enclosing.contains(block))
+                    if (enclosing == null || enclosing.Contains(block))
                     {
                         enclosing = block;
                     }
@@ -543,18 +543,18 @@ namespace LuaDec.Decompile
             List<IBlock> newBlocks = new List<IBlock>();
             foreach (IBlock block in state.blocks)
             {
-                if (block.hasCloseLine() && block.getCloseLine() >= 1)
+                if (block.HasCloseLine() && block.GetCloseLine() >= 1)
                 {
-                    int closeLine = block.getCloseLine();
+                    int closeLine = block.GetCloseLine();
                     IBlock enclosing = EnclosingBlock(state, closeLine);
-                    if ((enclosing == block || enclosing.contains(block)) && IsClose(state, closeLine))
+                    if ((enclosing == block || enclosing.Contains(block)) && IsClose(state, closeLine))
                     {
                         int register = GetCloseValue(state, closeLine);
                         bool close = true;
                         Declaration closeDecl = null;
                         foreach (Declaration decl in declList)
                         {
-                            if (!decl.forLoop && !decl.forLoopExplicit && block.contains(decl.begin))
+                            if (!decl.forLoop && !decl.forLoopExplicit && block.Contains(decl.begin))
                             {
                                 if (decl.register < register)
                                 {
@@ -568,7 +568,7 @@ namespace LuaDec.Decompile
                         }
                         if (close)
                         {
-                            block.useClose();
+                            block.UseClose();
                         }
                         else if (closeDecl != null)
                         {
@@ -590,15 +590,15 @@ namespace LuaDec.Decompile
                     bool needsDoEnd = true;
                     foreach (IBlock block in state.blocks)
                     {
-                        if (block.contains(decl.begin))
+                        if (block.Contains(decl.begin))
                         {
-                            if (block.scopeEnd() == decl.end)
+                            if (block.ScopeEnd() == decl.end)
                             {
-                                block.useScope();
+                                block.UseScope();
                                 needsDoEnd = false;
                                 break;
                             }
-                            else if (block.scopeEnd() < decl.end)
+                            else if (block.ScopeEnd() < decl.end)
                             {
                                 begin = Math.Min(begin, block.begin);
                             }
@@ -659,8 +659,8 @@ namespace LuaDec.Decompile
                             innerClose = true;
                         }
 
-                        TForBlock block = TForBlock.make51(state.function, line + 1, target + 2, A, C, forvarClose, innerClose);
-                        block.handleVariableDeclarations(r);
+                        TForBlock block = TForBlock.Make51(state.function, line + 1, target + 2, A, C, forvarClose, innerClose);
+                        block.HandleVariableDeclarations(r);
                         blocks.Add(block);
                     }
                     else if (code.GetOp(target) == forTarget && !loop[target])
@@ -673,7 +673,7 @@ namespace LuaDec.Decompile
                           GetCloseType(state, target - 1), target - 1
                         );
 
-                        block.handleVariableDeclarations(r);
+                        block.HandleVariableDeclarations(r);
 
                         blocks.Add(block);
                         RemoveBranch(state, b);
@@ -705,7 +705,7 @@ namespace LuaDec.Decompile
                           GetCloseType(state, closeLine), closeLine, forvarClose
                         );
 
-                        block.handleVariableDeclarations(r);
+                        block.HandleVariableDeclarations(r);
                         blocks.Add(block);
                         break;
                     }
@@ -722,8 +722,8 @@ namespace LuaDec.Decompile
                             innerClose = true;
                         }
 
-                        TForBlock block = TForBlock.make50(state.function, line + 1, target + 2, A, C + 1, innerClose);
-                        block.handleVariableDeclarations(r);
+                        TForBlock block = TForBlock.Make50(state.function, line + 1, target + 2, A, C + 1, innerClose);
+                        block.HandleVariableDeclarations(r);
                         blocks.Add(block);
                         RemoveBranch(state, state.branches[target + 1]);
                         break;
@@ -742,8 +742,8 @@ namespace LuaDec.Decompile
                             close--;
                         }
 
-                        TForBlock block = TForBlock.make54(state.function, line + 1, target + 2, A, C, forvarClose);
-                        block.handleVariableDeclarations(r);
+                        TForBlock block = TForBlock.Make54(state.function, line + 1, target + 2, A, C, forvarClose);
+                        block.HandleVariableDeclarations(r);
                         blocks.Add(block);
                         break;
                     }
@@ -770,7 +770,7 @@ namespace LuaDec.Decompile
                     elseStack.Pop();
                 }
 
-                while (hangingResolver.Count != 0 && !EnclosingBlock(state, hangingResolver.Peek().line).contains(b.line))
+                while (hangingResolver.Count != 0 && !EnclosingBlock(state, hangingResolver.Peek().line).Contains(b.line))
                 {
                     ResolveHangers(state, declList, stack, hanging, hangingResolver.Pop());
                 }
@@ -779,17 +779,17 @@ namespace LuaDec.Decompile
                 {
                     IBlock unprotected = EnclosingUnprotectedBlock(state, b.line);
                     if (b.targetFirst > b.targetSecond) throw new System.InvalidOperationException();
-                    if (unprotected != null && !unprotected.contains(b.targetSecond))
+                    if (unprotected != null && !unprotected.Contains(b.targetSecond))
                     {
-                        if (b.targetSecond == unprotected.getUnprotectedTarget())
+                        if (b.targetSecond == unprotected.GetUnprotectedTarget())
                         {
-                            b.targetSecond = unprotected.getUnprotectedLine();
+                            b.targetSecond = unprotected.GetUnprotectedLine();
                         }
                     }
 
                     IBlock breakable = EnclosingBreakableBlock(state, b.line);
                     if (stack.Count != 0 && stack.Peek().targetSecond < b.targetSecond
-                      || breakable != null && !breakable.contains(b.targetSecond)
+                      || breakable != null && !breakable.Contains(b.targetSecond)
                     )
                     {
                         hanging.Push(b);
@@ -807,11 +807,11 @@ namespace LuaDec.Decompile
 
                     int tailTargetSecond = b.targetSecond;
                     IBlock unprotected = EnclosingUnprotectedBlock(state, b.line);
-                    if (unprotected != null && !unprotected.contains(b.targetSecond))
+                    if (unprotected != null && !unprotected.Contains(b.targetSecond))
                     {
-                        if (tailTargetSecond == state.resolved[unprotected.getUnprotectedTarget()])
+                        if (tailTargetSecond == state.resolved[unprotected.GetUnprotectedTarget()])
                         {
-                            tailTargetSecond = unprotected.getUnprotectedLine();
+                            tailTargetSecond = unprotected.GetUnprotectedLine();
                         }
                     }
 
@@ -836,7 +836,7 @@ namespace LuaDec.Decompile
                         handled = true;
                     }
 
-                    if (!handled && state.function.header.version.useGoto.Value && breakable != null && !breakable.contains(b.targetFirst) && state.resolved[b.targetFirst] != state.resolved[breakable.end])
+                    if (!handled && state.function.header.version.useGoto.Value && breakable != null && !breakable.Contains(b.targetFirst) && state.resolved[b.targetFirst] != state.resolved[breakable.end])
                     {
                         Goto block = new Goto(state.function, b.line, b.targetFirst);
                         if (hanging.Count != 0 && hanging.Peek().targetSecond == b.targetFirst
@@ -934,14 +934,14 @@ namespace LuaDec.Decompile
 
                     if (
                       !handled
-                      && breakable != null && breakable.isSplitable()
-                      && state.resolved[b.targetFirst] == breakable.getUnprotectedTarget()
+                      && breakable != null && breakable.IsSplitable()
+                      && state.resolved[b.targetFirst] == breakable.GetUnprotectedTarget()
                       && line + 1 < state.branches.Length && state.branches[line + 1] != null
                       && state.branches[line + 1].type == Branch.Type.Jump
                       && state.resolved[state.branches[line + 1].targetFirst] == state.resolved[breakable.end]
                     )
                     {
-                        IBlock[] split = breakable.split(b.line, GetCloseType(state, b.line - 1));
+                        IBlock[] split = breakable.Split(b.line, GetCloseType(state, b.line - 1));
                         foreach (IBlock block in split)
                         {
                             state.blocks.Add(block);
@@ -1031,7 +1031,7 @@ namespace LuaDec.Decompile
                     if (state.function.header.version.useIfBreakRewrite.Value || state.r.IsNoDebug)
                     {
                         IBlock block = new IfThenEndBlock(state.function, state.r, top.condition.Inverse(), top.targetFirst - 1, top.targetFirst - 1);
-                        block.addStatement(new Break(state.function, top.targetFirst - 1, top.targetSecond));
+                        block.AddStatement(new Break(state.function, top.targetFirst - 1, top.targetSecond));
                         state.blocks.Add(block);
                     }
                     else
@@ -1044,7 +1044,7 @@ namespace LuaDec.Decompile
                     if (state.function.header.version.useIfBreakRewrite.Value || state.r.IsNoDebug)
                     {
                         IBlock block = new IfThenEndBlock(state.function, state.r, top.condition.Inverse(), top.targetFirst - 1, top.targetFirst - 1);
-                        block.addStatement(new Goto(state.function, top.targetFirst - 1, top.targetSecond));
+                        block.AddStatement(new Goto(state.function, top.targetFirst - 1, top.targetSecond));
                         state.blocks.Add(block);
                         state.labels[top.targetSecond] = true;
                     }
@@ -1100,9 +1100,9 @@ namespace LuaDec.Decompile
                     IBlock smallestEnclosing = null;
                     foreach (IBlock block in state.blocks)
                     {
-                        if (block.contains(b.line) && block.contains(end - 1))
+                        if (block.Contains(b.line) && block.Contains(end - 1))
                         {
-                            if (smallestEnclosing == null || smallestEnclosing.contains(block))
+                            if (smallestEnclosing == null || smallestEnclosing.Contains(block))
                             {
                                 smallestEnclosing = block;
                             }
@@ -1113,9 +1113,9 @@ namespace LuaDec.Decompile
                         IBlock wrapping = null;
                         foreach (IBlock block in state.blocks)
                         {
-                            if (block != smallestEnclosing && smallestEnclosing.contains(block) && block.contains(b.line))
+                            if (block != smallestEnclosing && smallestEnclosing.Contains(block) && block.Contains(b.line))
                             {
-                                if (wrapping == null || block.contains(wrapping))
+                                if (wrapping == null || block.Contains(wrapping))
                                 {
                                     wrapping = block;
                                 }
@@ -1159,7 +1159,7 @@ namespace LuaDec.Decompile
                         OnceLoop loop = new OnceLoop(state.function, begin, end);
                         foreach (IBlock block in state.blocks)
                         {
-                            if (loop.contains(block) && block is Break)
+                            if (loop.Contains(block) && block is Break)
                             {
                                 containsBreak = true;
                                 break;

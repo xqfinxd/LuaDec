@@ -1,17 +1,11 @@
 ﻿using LuaDec.Decompile.Expression;
 using LuaDec.Decompile.Statement;
 using LuaDec.Parser;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LuaDec.Decompile.Block
 {
     public class AlwaysLoop : ContainerBlock
     {
-
         private readonly bool repeat;
 
         private ConstantExpression condition;
@@ -19,38 +13,51 @@ namespace LuaDec.Decompile.Block
         public AlwaysLoop(LFunction function, int begin, int end, CloseType closeType, int closeLine, bool repeat)
              : base(function, begin, end, closeType, closeLine, 0)
         {
-          this.repeat = repeat;
+            this.repeat = repeat;
             condition = null;
         }
 
-        public override int scopeEnd()
-        {
-            return usingClose && closeType == CloseType.Close ? closeLine - 1 : end - 2;
-        }
-
-        public override bool breakable()
+        public override bool Breakable()
         {
             return true;
         }
 
-        public override bool isUnprotected()
-        {
-            return true;
-        }
-
-        public override int getUnprotectedTarget()
+        public override int GetLoopback()
         {
             return begin;
         }
 
-        public override int getUnprotectedLine()
+        public override int GetUnprotectedLine()
         {
             return end - 1;
         }
 
-        public override int getLoopback()
+        public override int GetUnprotectedTarget()
         {
             return begin;
+        }
+
+        public override bool IsUnprotected()
+        {
+            return true;
+        }
+
+        public override int ScopeEnd()
+        {
+            return usingClose && closeType == CloseType.Close ? closeLine - 1 : end - 2;
+        }
+
+        public override bool UseConstant(Function f, int index)
+        {
+            if (!repeat && condition == null)
+            {
+                condition = f.GetConstantExpression(index);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public override void Write(Decompiler d, Output output)
@@ -82,19 +89,6 @@ namespace LuaDec.Decompile.Block
             else
             {
                 output.WriteString("end");
-            }
-        }
-
-        public override bool UseConstant(Function f, int index)
-        {
-            if (!repeat && condition == null)
-            {
-                condition = f.GetConstantExpression(index);
-                return true;
-            }
-            else
-            {
-                return false;
             }
         }
     }

@@ -20,7 +20,7 @@ namespace LuaDec.Decompile.Operation
         public override List<IStatement> Process(Registers r, IBlock block)
         {
             List<IStatement> assignments = new List<IStatement>(registerLast - registerFirst + 1);
-            IExpression nil = ConstantExpression.createNil(line);
+            IExpression nil = ConstantExpression.CreateNil(line);
             Assignment declare = null;
             int scopeEnd = -1;
             for (int register = registerFirst; register <= registerLast; register++)

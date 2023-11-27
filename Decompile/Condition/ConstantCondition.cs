@@ -1,15 +1,9 @@
 ﻿using LuaDec.Decompile.Expression;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LuaDec.Decompile.Condition
 {
     public class ConstantCondition : ICondition
     {
-
         private int reg;
         private bool value;
 
@@ -17,6 +11,11 @@ namespace LuaDec.Decompile.Condition
         {
             this.reg = reg;
             this.value = value;
+        }
+
+        public override IExpression AsExpression(Registers r)
+        {
+            return ConstantExpression.CreateBool(value);
         }
 
         public override ICondition Inverse()
@@ -29,17 +28,12 @@ namespace LuaDec.Decompile.Condition
             return true;
         }
 
-        public override int Register()
-        {
-            return reg;
-        }
-
-        public override bool IsRegisterTest()
+        public override bool IsOrCondition()
         {
             return false;
         }
 
-        public override bool IsOrCondition()
+        public override bool IsRegisterTest()
         {
             return false;
         }
@@ -49,16 +43,14 @@ namespace LuaDec.Decompile.Condition
             return false;
         }
 
+        public override int Register()
+        {
+            return reg;
+        }
+
         public override ICondition[] Split()
         {
             throw new System.InvalidOperationException();
         }
-
-        public override IExpression AsExpression(Registers r)
-        {
-            return ConstantExpression.createbool(value);
-        }
-
     }
-
 }

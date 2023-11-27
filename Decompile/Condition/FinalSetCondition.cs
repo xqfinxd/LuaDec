@@ -1,15 +1,9 @@
 ﻿using LuaDec.Decompile.Expression;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LuaDec.Decompile.Condition
 {
     public class FinalSetCondition : ICondition
     {
-
         public enum Type
         {
             NONE,
@@ -17,8 +11,8 @@ namespace LuaDec.Decompile.Condition
             VALUE,
         }
 
-        public int line;
         private int reg;
+        public int line;
         public Type type;
 
         public FinalSetCondition(int line, int reg)
@@ -32,6 +26,31 @@ namespace LuaDec.Decompile.Condition
             }
         }
 
+        public override IExpression AsExpression(Registers r)
+        {
+            IExpression expr;
+            switch (type)
+            {
+                case Type.REGISTER:
+                    expr = r.GetExpression(Register(), line + 1);
+                    break;
+
+                case Type.VALUE:
+                    expr = r.GetValue(Register(), line + 1);
+                    break;
+
+                case Type.NONE:
+                default:
+                    expr = ConstantExpression.CreateDouble(reg + (line) / 100.0);
+                    break;
+            }
+            if (expr == null)
+            {
+                throw new System.InvalidOperationException();
+            }
+            return expr;
+        }
+
         public override ICondition Inverse()
         {
             return new NotCondition(this);
@@ -42,17 +61,12 @@ namespace LuaDec.Decompile.Condition
             return false;
         }
 
-        public override int Register()
-        {
-            return reg;
-        }
-
-        public override bool IsRegisterTest()
+        public override bool IsOrCondition()
         {
             return false;
         }
 
-        public override bool IsOrCondition()
+        public override bool IsRegisterTest()
         {
             return false;
         }
@@ -62,38 +76,19 @@ namespace LuaDec.Decompile.Condition
             return false;
         }
 
+        public override int Register()
+        {
+            return reg;
+        }
+
         public override ICondition[] Split()
         {
             throw new System.InvalidOperationException();
-        }
-
-        public override IExpression AsExpression(Registers r)
-        {
-            IExpression expr;
-            switch (type)
-            {
-                case Type.REGISTER:
-                    expr = r.GetExpression(Register(), line + 1);
-                    break;
-                case Type.VALUE:
-                    expr = r.GetValue(Register(), line + 1);
-                    break;
-                case Type.NONE:
-                default:
-                    expr = ConstantExpression.createDouble(reg + (line) / 100.0);
-                    break;
-            }
-            if (expr == null)
-            {
-                throw new System.InvalidOperationException();
-            }
-            return expr;
         }
 
         public override string ToString()
         {
             return "(" + reg + ")";
         }
-
     }
 }

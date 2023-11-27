@@ -2,9 +2,8 @@
 {
     public class UnaryExpression : IExpression
     {
-
-        private readonly string op;
         private readonly IExpression expression;
+        private readonly string op;
 
         public UnaryExpression(string op, IExpression expression, int precedence)
             : base(precedence)
@@ -13,10 +12,9 @@
             this.expression = expression;
         }
 
-        public override void Walk(Walker w)
+        public override int GetConstantIndex()
         {
-            w.VisitExpression(this);
-            expression.Walk(w);
+            return expression.GetConstantIndex();
         }
 
         public override bool IsUngrouped()
@@ -24,18 +22,20 @@
             return true;
         }
 
-        public override int GetConstantIndex()
+        public override void Walk(Walker w)
         {
-            return expression.GetConstantIndex();
+            w.VisitExpression(this);
+            expression.Walk(w);
         }
 
         public override void Write(Decompiler d, Output output)
         {
             output.WriteString(op);
-            if (precedence > expression.precedence) output.WriteString("(");
+            if (precedence > expression.precedence)
+                output.WriteString("(");
             expression.Write(d, output);
-            if (precedence > expression.precedence) output.WriteString(")");
+            if (precedence > expression.precedence)
+                output.WriteString(")");
         }
-
     }
 }

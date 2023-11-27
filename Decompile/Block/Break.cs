@@ -1,59 +1,53 @@
 ﻿using LuaDec.Decompile.Statement;
 using LuaDec.Parser;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LuaDec.Decompile.Block
 {
     public class Break : IBlock
     {
-
         public readonly int target;
         public string breakComment;
 
         public Break(LFunction function, int line, int target)
             : base(function, line, line, 2)
         {
-          this.target = target;
+            this.target = target;
         }
 
-        public override void Walk(Walker w)
-        {
-            w.VisitStatement(this);
-        }
-
-        public override void addStatement(IStatement statement)
+        public override void AddStatement(IStatement statement)
         {
             throw new System.InvalidOperationException();
         }
 
-        public override bool isContainer()
+        public override bool Breakable()
         {
             return false;
         }
 
-        public override bool isEmpty()
+        public override int GetLoopback()
+        {
+            throw new System.InvalidOperationException();
+        }
+
+        public override bool IsContainer()
+        {
+            return false;
+        }
+
+        public override bool IsEmpty()
         {
             return true;
         }
 
-        public override bool breakable()
-        {
-            return false;
-        }
-
-        public override bool isUnprotected()
+        public override bool IsUnprotected()
         {
             //Actually, it is unprotected, but not really a block
             return false;
         }
 
-        public override int getLoopback()
+        public override void Walk(Walker w)
         {
-            throw new System.InvalidOperationException();
+            w.VisitStatement(this);
         }
 
         public override void Write(Decompiler d, Output output)
@@ -67,7 +61,5 @@ namespace LuaDec.Decompile.Block
             output.WriteString("break");
             if (breakComment != null) output.WriteString(" -- " + breakComment);
         }
-
     }
-
 }

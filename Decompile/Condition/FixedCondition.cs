@@ -5,7 +5,7 @@ namespace LuaDec.Decompile.Condition
     public class FixedCondition : ICondition
     {
 
-        public static FixedCondition TRUE = new FixedCondition(ConstantExpression.createbool(true));
+        public static FixedCondition TRUE = new FixedCondition(ConstantExpression.CreateBool(true));
 
         private IExpression expression;
 

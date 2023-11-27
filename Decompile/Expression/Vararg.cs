@@ -1,26 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LuaDec.Decompile.Expression
+﻿namespace LuaDec.Decompile.Expression
 {
-
-    public class Vararg : IExpression
+    public class VarArg : IExpression
     {
-
         private readonly bool multiple;
 
-        public Vararg(int length, bool multiple)
+        public VarArg(int length, bool multiple)
             : base(PRECEDENCE_ATOMIC)
         {
             this.multiple = multiple;
-        }
-
-        public override void Walk(Walker w)
-        {
-            w.VisitExpression(this);
         }
 
         public override int GetConstantIndex()
@@ -28,9 +15,18 @@ namespace LuaDec.Decompile.Expression
             return -1;
         }
 
+        public override bool IsMultiple()
+        {
+            return multiple;
+        }
+
+        public override void Walk(Walker w)
+        {
+            w.VisitExpression(this);
+        }
+
         public override void Write(Decompiler d, Output output)
         {
-            //output.print("...");
             output.WriteString(multiple ? "..." : "(...)");
         }
 
@@ -38,12 +34,5 @@ namespace LuaDec.Decompile.Expression
         {
             output.WriteString(multiple ? "..." : "(...)");
         }
-
-        public override bool IsMultiple()
-        {
-            return multiple;
-        }
-
     }
-
 }

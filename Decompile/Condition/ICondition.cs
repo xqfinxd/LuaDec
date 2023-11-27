@@ -32,8 +32,8 @@ namespace LuaDec.Decompile.Condition
                     case OperandType.R: return r.GetExpression(value, line);
                     case OperandType.RK: return r.GetKExpression(value, line);
                     case OperandType.K: return r.GetFunction().GetConstantExpression(value);
-                    case OperandType.I: return ConstantExpression.createint(value);
-                    case OperandType.F: return ConstantExpression.createDouble(value);
+                    case OperandType.I: return ConstantExpression.CreateInt(value);
+                    case OperandType.F: return ConstantExpression.CreateDouble(value);
                     default: throw new System.InvalidOperationException();
                 }
             }
@@ -44,6 +44,7 @@ namespace LuaDec.Decompile.Condition
                 {
                     case OperandType.R:
                         return r.GetUpdated(value, line);
+
                     case OperandType.RK:
                         if (r.IsKConstant(value))
                             throw new System.InvalidOperationException();

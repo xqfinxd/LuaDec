@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LuaDec.Decompile.Expression
 {
     public class FunctionCall : IExpression
     {
-
-        private readonly IExpression function;
         private readonly IExpression[] arguments;
+        private readonly IExpression function;
         private readonly bool multiple;
 
         public FunctionCall(IExpression function, IExpression[] arguments, bool multiple)
@@ -21,13 +17,21 @@ namespace LuaDec.Decompile.Expression
             this.multiple = multiple;
         }
 
-        public override void Walk(Walker w)
+        private bool isMethodCall()
         {
-            w.VisitExpression(this);
-            function.Walk(w);
-            foreach (IExpression expression in arguments)
+            return function.IsMemberAccess() && arguments.Length > 0 && function.GetTable() == arguments[0];
+        }
+
+        public override bool BeginsWithParen()
+        {
+            if (isMethodCall())
             {
-                expression.Walk(w);
+                IExpression obj = function.GetTable();
+                return obj.IsUngrouped() || obj.BeginsWithParen();
+            }
+            else
+            {
+                return function.IsUngrouped() || function.BeginsWithParen();
             }
         }
 
@@ -46,34 +50,13 @@ namespace LuaDec.Decompile.Expression
             return multiple;
         }
 
-        public override void WriteMultiple(Decompiler d, Output output)
+        public override void Walk(Walker w)
         {
-            if (!multiple)
+            w.VisitExpression(this);
+            function.Walk(w);
+            foreach (IExpression expression in arguments)
             {
-                output.WriteString("(");
-            }
-            Write(d, output);
-            if (!multiple)
-            {
-                output.WriteString(")");
-            }
-        }
-
-        private bool isMethodCall()
-        {
-            return function.IsMemberAccess() && arguments.Length > 0 && function.GetTable() == arguments[0];
-        }
-
-        public override bool BeginsWithParen()
-        {
-            if (isMethodCall())
-            {
-                IExpression obj = function.GetTable();
-                return obj.IsUngrouped() || obj.BeginsWithParen();
-            }
-            else
-            {
-                return function.IsUngrouped() || function.BeginsWithParen();
+                expression.Walk(w);
             }
         }
 
@@ -122,6 +105,17 @@ namespace LuaDec.Decompile.Expression
             output.WriteString(")");
         }
 
+        public override void WriteMultiple(Decompiler d, Output output)
+        {
+            if (!multiple)
+            {
+                output.WriteString("(");
+            }
+            Write(d, output);
+            if (!multiple)
+            {
+                output.WriteString(")");
+            }
+        }
     }
-
 }
