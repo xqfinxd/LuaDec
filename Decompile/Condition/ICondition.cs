@@ -1,15 +1,9 @@
 ﻿using LuaDec.Decompile.Expression;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LuaDec.Decompile.Condition
 {
     public abstract class ICondition
     {
-
         public enum OperandType
         {
             R,
@@ -21,6 +15,9 @@ namespace LuaDec.Decompile.Condition
 
         public class Operand
         {
+            public readonly OperandType type;
+
+            public readonly int value;
 
             public Operand(OperandType type, int value)
             {
@@ -28,7 +25,7 @@ namespace LuaDec.Decompile.Condition
                 this.value = value;
             }
 
-            public IExpression asExpression(Registers r, int line)
+            public IExpression AsExpression(Registers r, int line)
             {
                 switch (type)
                 {
@@ -41,7 +38,22 @@ namespace LuaDec.Decompile.Condition
                 }
             }
 
-            public bool isRegister(Registers r)
+            public int GetUpdated(Registers r, int line)
+            {
+                switch (type)
+                {
+                    case OperandType.R:
+                        return r.GetUpdated(value, line);
+                    case OperandType.RK:
+                        if (r.IsKConstant(value))
+                            throw new System.InvalidOperationException();
+                        return r.GetUpdated(value, line);
+
+                    default: throw new System.InvalidOperationException();
+                }
+            }
+
+            public bool IsRegister(Registers r)
             {
                 switch (type)
                 {
@@ -53,42 +65,22 @@ namespace LuaDec.Decompile.Condition
                     default: throw new System.InvalidOperationException();
                 }
             }
-
-            public int getUpdated(Registers r, int line)
-            {
-                switch (type)
-                {
-                    case OperandType.R: return r.GetUpdated(value, line);
-                    case OperandType.RK:
-                        if (r.IsKConstant(value)) throw new System.InvalidOperationException();
-                        return r.GetUpdated(value, line);
-                    default: throw new System.InvalidOperationException();
-                }
-            }
-
-            public readonly OperandType type;
-            public readonly int value;
-
         }
 
-        public abstract ICondition inverse();
+        public abstract IExpression AsExpression(Registers r);
 
-        public abstract bool invertible();
+        public abstract ICondition Inverse();
 
-        public abstract int register();
+        public abstract bool Invertible();
 
-        public abstract bool isRegisterTest();
+        public abstract bool IsOrCondition();
 
-        public abstract bool isOrCondition();
+        public abstract bool IsRegisterTest();
 
-        public abstract bool isSplitable();
+        public abstract bool IsSplitable();
 
-        public abstract ICondition[] split();
+        public abstract int Register();
 
-        public abstract IExpression asExpression(Registers r);
-
-        // public override string ToString();
-
+        public abstract ICondition[] Split();
     }
-
 }

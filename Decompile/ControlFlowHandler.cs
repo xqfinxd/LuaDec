@@ -150,7 +150,7 @@ namespace LuaDec.Decompile
                         ICondition c;
                         if (!branch1.inverseValue)
                         {
-                            c = new OrCondition(branch0.condition.inverse(), branch1.condition);
+                            c = new OrCondition(branch0.condition.Inverse(), branch1.condition);
                         }
                         else
                         {
@@ -178,7 +178,7 @@ namespace LuaDec.Decompile
                             branch0 = CombineConditional(state, branch0);
                             if (branch0.inverseValue)
                             {
-                                branch0.condition = branch0.condition.inverse();
+                                branch0.condition = branch0.condition.Inverse();
                             }
                         }
                         else
@@ -229,7 +229,7 @@ namespace LuaDec.Decompile
                             branch0 = CombineConditional(state, branch0);
                             if (branch0.inverseValue)
                             {
-                                branch0.condition = branch0.condition.inverse(); // inverse has been double handled; undo it
+                                branch0.condition = branch0.condition.Inverse(); // inverse has been double handled; undo it
                             }
                         }
                         else
@@ -300,7 +300,7 @@ namespace LuaDec.Decompile
                 if (branch0TargetSecond == branch1.targetFirst)
                 {
                     branch0 = CombineConditional(state, branch0);
-                    ICondition c = new OrCondition(branch0.condition.inverse(), branch1.condition);
+                    ICondition c = new OrCondition(branch0.condition.Inverse(), branch1.condition);
                     Branch branchn = new Branch(branch0.line, branch1.line2, Branch.Type.Comparison, c, branch1.targetFirst, branch1.targetSecond, branch1.finalSet);
                     branchn.inverseValue = branch1.inverseValue;
                     if (Verbose) Console.Error.WriteLine("conditional or " + branchn.line);
@@ -1030,7 +1030,7 @@ namespace LuaDec.Decompile
                 {
                     if (state.function.header.version.useIfBreakRewrite.Value || state.r.IsNoDebug)
                     {
-                        IBlock block = new IfThenEndBlock(state.function, state.r, top.condition.inverse(), top.targetFirst - 1, top.targetFirst - 1);
+                        IBlock block = new IfThenEndBlock(state.function, state.r, top.condition.Inverse(), top.targetFirst - 1, top.targetFirst - 1);
                         block.addStatement(new Break(state.function, top.targetFirst - 1, top.targetSecond));
                         state.blocks.Add(block);
                     }
@@ -1043,7 +1043,7 @@ namespace LuaDec.Decompile
                 {
                     if (state.function.header.version.useIfBreakRewrite.Value || state.r.IsNoDebug)
                     {
-                        IBlock block = new IfThenEndBlock(state.function, state.r, top.condition.inverse(), top.targetFirst - 1, top.targetFirst - 1);
+                        IBlock block = new IfThenEndBlock(state.function, state.r, top.condition.Inverse(), top.targetFirst - 1, top.targetFirst - 1);
                         block.addStatement(new Goto(state.function, top.targetFirst - 1, top.targetSecond));
                         state.blocks.Add(block);
                         state.labels[top.targetSecond] = true;
@@ -1223,7 +1223,7 @@ namespace LuaDec.Decompile
                                     if (headb != null)
                                     {
                                         block = new WhileBlock50(
-                                          state.function, b.condition.inverse(), head + 1, b.targetFirst, headb.targetFirst,
+                                          state.function, b.condition.Inverse(), head + 1, b.targetFirst, headb.targetFirst,
                                           GetCloseType(state, headb.targetFirst - 1), headb.targetFirst - 1
                                         );
                                         RemoveBranch(state, headb);
@@ -1525,7 +1525,7 @@ namespace LuaDec.Decompile
             if (loadboolvalue)
             {
                 inverse = true;
-                c = c.inverse();
+                c = c.Inverse();
             }
             bool constant = IsJmp(state, line);
             Branch b;
@@ -1568,19 +1568,19 @@ namespace LuaDec.Decompile
             int loadboolblock = FindLoadBoolBlock(state, target);
             if (loadboolblock >= 1)
             {
-                if (invert) c = c.inverse();
+                if (invert) c = c.Inverse();
                 HandleLoadBoolBlock(state, skip, loadboolblock, c, line, target);
             }
             else
             {
                 int ploadboolblock = target - 2 >= 1 ? FindLoadBoolBlock(state, target - 2) : -1;
-                if (ploadboolblock != -1 && ploadboolblock == target - 2 && code.AField(target - 2) == c.register() && !HasStatement(state, line + 2, target - 3))
+                if (ploadboolblock != -1 && ploadboolblock == target - 2 && code.AField(target - 2) == c.Register() && !HasStatement(state, line + 2, target - 3))
                 {
-                    HandleTestSet(state, skip, line, c, target, c.register(), invert);
+                    HandleTestSet(state, skip, line, c, target, c.Register(), invert);
                 }
                 else
                 {
-                    if (invert) c = c.inverse();
+                    if (invert) c = c.Inverse();
                     Branch b = new Branch(line, line, Branch.Type.Test, c, line + 2, target, null);
                     b.target = code.AField(line);
                     if (invert) b.inverseValue = true;
@@ -1594,7 +1594,7 @@ namespace LuaDec.Decompile
         {
             if (state.r.IsNoDebug && FindLoadBoolBlock(state, target) == -1)
             {
-                if (invert) c = c.inverse();
+                if (invert) c = c.Inverse();
                 Branch nb = new Branch(line, line, Branch.Type.Test, c, line + 2, target, null);
                 nb.target = state.code.AField(line);
                 if (invert) nb.inverseValue = true;
@@ -2073,7 +2073,7 @@ namespace LuaDec.Decompile
             int target = state.code.Target(line + 1);
             if (invert)
             {
-                c = c.inverse();
+                c = c.Inverse();
             }
             int loadboolblock = FindLoadBoolBlock(state, target);
             if (loadboolblock >= 1)

@@ -32,51 +32,51 @@ namespace LuaDec.Decompile.Condition
             }
         }
 
-        public override ICondition inverse()
+        public override ICondition Inverse()
         {
             return new NotCondition(this);
         }
 
-        public override bool invertible()
+        public override bool Invertible()
         {
             return false;
         }
 
-        public override int register()
+        public override int Register()
         {
             return reg;
         }
 
-        public override bool isRegisterTest()
+        public override bool IsRegisterTest()
         {
             return false;
         }
 
-        public override bool isOrCondition()
+        public override bool IsOrCondition()
         {
             return false;
         }
 
-        public override bool isSplitable()
+        public override bool IsSplitable()
         {
             return false;
         }
 
-        public override ICondition[] split()
+        public override ICondition[] Split()
         {
             throw new System.InvalidOperationException();
         }
 
-        public override IExpression asExpression(Registers r)
+        public override IExpression AsExpression(Registers r)
         {
             IExpression expr;
             switch (type)
             {
                 case Type.REGISTER:
-                    expr = r.GetExpression(register(), line + 1);
+                    expr = r.GetExpression(Register(), line + 1);
                     break;
                 case Type.VALUE:
-                    expr = r.GetValue(register(), line + 1);
+                    expr = r.GetValue(Register(), line + 1);
                     break;
                 case Type.NONE:
                 default:

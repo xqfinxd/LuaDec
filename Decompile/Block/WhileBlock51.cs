@@ -36,12 +36,12 @@ namespace LuaDec.Decompile.Block
 
         public override bool isSplitable()
         {
-            return cond.isSplitable();
+            return cond.IsSplitable();
         }
 
         public override IBlock[] split(int line, CloseType closeType)
         {
-            ICondition[] conds = cond.split();
+            ICondition[] conds = cond.Split();
             cond = conds[0];
             return new IBlock[] {
               new IfThenElseBlock(function, conds[1], begin, line + 1, end - 1, closeType, line - 1),

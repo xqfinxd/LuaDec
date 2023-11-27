@@ -24,7 +24,7 @@ namespace LuaDec.Decompile.Block
 
         public override void resolve(Registers r)
         {
-            condexpr = cond.asExpression(r);
+            condexpr = cond.AsExpression(r);
         }
 
         public override void Walk(Walker w)

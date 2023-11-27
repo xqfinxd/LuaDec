@@ -51,7 +51,7 @@ namespace LuaDec.Decompile.Condition
             this.inverted = inverted;
         }
 
-        public override ICondition inverse()
+        public override ICondition Inverse()
         {
             if (op == Operator.EQ)
             {
@@ -63,46 +63,46 @@ namespace LuaDec.Decompile.Condition
             }
         }
 
-        public override bool invertible()
+        public override bool Invertible()
         {
             return op == Operator.EQ;
         }
 
-        public override int register()
+        public override int Register()
         {
             return -1;
         }
 
-        public override bool isRegisterTest()
+        public override bool IsRegisterTest()
         {
             return false;
         }
 
-        public override bool isOrCondition()
+        public override bool IsOrCondition()
         {
             return false;
         }
 
-        public override bool isSplitable()
+        public override bool IsSplitable()
         {
             return false;
         }
 
-        public override ICondition[] split()
+        public override ICondition[] Split()
         {
             throw new System.InvalidOperationException();
         }
 
-        public override IExpression asExpression(Registers r)
+        public override IExpression AsExpression(Registers r)
         {
             bool transpose = false;
-            IExpression leftExpression = left.asExpression(r, line);
-            IExpression rightExpression = right.asExpression(r, line);
+            IExpression leftExpression = left.AsExpression(r, line);
+            IExpression rightExpression = right.AsExpression(r, line);
             if (op != Operator.EQ || left.type == OperandType.K)
             {
-                if (left.isRegister(r) && right.isRegister(r))
+                if (left.IsRegister(r) && right.IsRegister(r))
                 {
-                    transpose = left.getUpdated(r, line) > right.getUpdated(r, line);
+                    transpose = left.GetUpdated(r, line) > right.GetUpdated(r, line);
                 }
                 else
                 {

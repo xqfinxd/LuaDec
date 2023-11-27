@@ -19,42 +19,42 @@ namespace LuaDec.Decompile.Condition
             this.value = value;
         }
 
-        public override ICondition inverse()
+        public override ICondition Inverse()
         {
             return new ConstantCondition(reg, !value);
         }
 
-        public override bool invertible()
+        public override bool Invertible()
         {
             return true;
         }
 
-        public override int register()
+        public override int Register()
         {
             return reg;
         }
 
-        public override bool isRegisterTest()
+        public override bool IsRegisterTest()
         {
             return false;
         }
 
-        public override bool isOrCondition()
+        public override bool IsOrCondition()
         {
             return false;
         }
 
-        public override bool isSplitable()
+        public override bool IsSplitable()
         {
             return false;
         }
 
-        public override ICondition[] split()
+        public override ICondition[] Split()
         {
             throw new System.InvalidOperationException();
         }
 
-        public override IExpression asExpression(Registers r)
+        public override IExpression AsExpression(Registers r)
         {
             return ConstantExpression.createbool(value);
         }

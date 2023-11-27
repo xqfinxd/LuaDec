@@ -94,7 +94,7 @@ namespace LuaDec.Decompile.Block
 
         public IExpression getValue()
         {
-            return cond.asExpression(r);
+            return cond.AsExpression(r);
         }
 
         private class SetBlockOperation_1 : IOperation
@@ -128,10 +128,10 @@ namespace LuaDec.Decompile.Block
                 {
                     return new List<IStatement>{
                         new Assignment(r.GetTarget(target, line), cond
-                        .asExpression(r), line)
+                        .AsExpression(r), line)
                     };
                 }
-                r.SetValue(target, line, cond.asExpression(r));
+                r.SetValue(target, line, cond.AsExpression(r));
                 return new List<IStatement>();
             }
         }
@@ -140,7 +140,7 @@ namespace LuaDec.Decompile.Block
             if (ControlFlowHandler.Verbose)
             {
                 Console.WriteLine("set expression: ");
-                cond.asExpression(r).Write(d, new Output());
+                cond.AsExpression(r).Write(d, new Output());
                 Console.WriteLine();
             }
             if (assign != null)

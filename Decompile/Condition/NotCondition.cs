@@ -17,44 +17,44 @@ namespace LuaDec.Decompile.Condition
             this.cond = cond;
         }
 
-        public override ICondition inverse()
+        public override ICondition Inverse()
         {
             return cond;
         }
 
-        public override bool invertible()
+        public override bool Invertible()
         {
             return true;
         }
 
-        public override int register()
+        public override int Register()
         {
-            return cond.register();
+            return cond.Register();
         }
 
-        public override bool isRegisterTest()
+        public override bool IsRegisterTest()
         {
-            return cond.isRegisterTest();
+            return cond.IsRegisterTest();
         }
 
-        public override bool isOrCondition()
-        {
-            return false;
-        }
-
-        public override bool isSplitable()
+        public override bool IsOrCondition()
         {
             return false;
         }
 
-        public override ICondition[] split()
+        public override bool IsSplitable()
+        {
+            return false;
+        }
+
+        public override ICondition[] Split()
         {
             throw new System.InvalidOperationException();
         }
 
-        public override IExpression asExpression(Registers r)
+        public override IExpression AsExpression(Registers r)
         {
-            return new UnaryExpression("not ", cond.asExpression(r), IExpression.PRECEDENCE_UNARY);
+            return new UnaryExpression("not ", cond.AsExpression(r), IExpression.PRECEDENCE_UNARY);
         }
 
         public override string ToString()

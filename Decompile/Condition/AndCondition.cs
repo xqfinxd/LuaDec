@@ -19,11 +19,11 @@ namespace LuaDec.Decompile.Condition
             this.right = right;
         }
 
-        public override ICondition inverse()
+        public override ICondition Inverse()
         {
-            if (invertible())
+            if (Invertible())
             {
-                return new OrCondition(left.inverse(), right.inverse());
+                return new OrCondition(left.Inverse(), right.Inverse());
             }
             else
             {
@@ -31,39 +31,39 @@ namespace LuaDec.Decompile.Condition
             }
         }
 
-        public override bool invertible()
+        public override bool Invertible()
         {
-            return right.invertible();
+            return right.Invertible();
         }
 
-        public override int register()
+        public override int Register()
         {
-            return right.register();
+            return right.Register();
         }
 
-        public override bool isRegisterTest()
-        {
-            return false;
-        }
-
-        public override bool isOrCondition()
+        public override bool IsRegisterTest()
         {
             return false;
         }
 
-        public override bool isSplitable()
+        public override bool IsOrCondition()
+        {
+            return false;
+        }
+
+        public override bool IsSplitable()
         {
             return true;
         }
 
-        public override ICondition[] split()
+        public override ICondition[] Split()
         {
             return new ICondition[] { left, right };
         }
 
-        public override IExpression asExpression(Registers r)
+        public override IExpression AsExpression(Registers r)
         {
-            return new BinaryExpression("and", left.asExpression(r), right.asExpression(r), IExpression.PRECEDENCE_AND, IExpression.ASSOCIATIVITY_NONE);
+            return new BinaryExpression("and", left.AsExpression(r), right.AsExpression(r), IExpression.PRECEDENCE_AND, IExpression.ASSOCIATIVITY_NONE);
         }
 
         public override string ToString()

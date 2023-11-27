@@ -19,11 +19,11 @@ namespace LuaDec.Decompile.Condition
             this.right = right;
         }
 
-        public override ICondition inverse()
+        public override ICondition Inverse()
         {
-            if (invertible())
+            if (Invertible())
             {
-                return new AndCondition(left.inverse(), right.inverse());
+                return new AndCondition(left.Inverse(), right.Inverse());
             }
             else
             {
@@ -31,39 +31,39 @@ namespace LuaDec.Decompile.Condition
             }
         }
 
-        public override bool invertible()
+        public override bool Invertible()
         {
-            return right.invertible();
+            return right.Invertible();
         }
 
-        public override int register()
+        public override int Register()
         {
-            return right.register();
+            return right.Register();
         }
 
-        public override bool isRegisterTest()
+        public override bool IsRegisterTest()
         {
             return false;
         }
 
-        public override bool isOrCondition()
+        public override bool IsOrCondition()
         {
             return true;
         }
 
-        public override bool isSplitable()
+        public override bool IsSplitable()
         {
             return false;
         }
 
-        public override ICondition[] split()
+        public override ICondition[] Split()
         {
             throw new System.InvalidOperationException();
         }
 
-        public override IExpression asExpression(Registers r)
+        public override IExpression AsExpression(Registers r)
         {
-            return new BinaryExpression("or", left.asExpression(r), right.asExpression(r), IExpression.PRECEDENCE_OR, IExpression.ASSOCIATIVITY_NONE);
+            return new BinaryExpression("or", left.AsExpression(r), right.AsExpression(r), IExpression.PRECEDENCE_OR, IExpression.ASSOCIATIVITY_NONE);
         }
 
         public override string ToString()

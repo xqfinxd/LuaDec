@@ -37,7 +37,7 @@ namespace LuaDec.Decompile.Block
 
         public override void resolve(Registers r)
         {
-            condexpr = cond.asExpression(r);
+            condexpr = cond.AsExpression(r);
         }
 
         public override void Walk(Walker w)
@@ -82,7 +82,7 @@ namespace LuaDec.Decompile.Block
             {
                 if (fassign == null)
                 {
-                    r.SetValue(test, line, fcombined.asExpression(r));
+                    r.SetValue(test, line, fcombined.AsExpression(r));
                     return new List<IStatement>();
                 }
                 else
@@ -93,7 +93,7 @@ namespace LuaDec.Decompile.Block
         }
         public override IOperation process(Decompiler d)
         {
-            int test = cond.register();
+            int test = cond.Register();
             //System.err.println(cond);
             if (!scopeUsed && !redirected && test >= 0 && r.GetUpdated(test, end - 1) >= begin && !d.GetNoDebug())
             {
@@ -115,15 +115,15 @@ namespace LuaDec.Decompile.Block
                         }
                     }
                 }
-                if (assign != null && (cond.isRegisterTest() || cond.isOrCondition() || assign.GetDeclaration()) && assign.GetLastTarget().IsLocal() && assign.GetLastTarget().GetIndex() == test || statements.Count == 0)
+                if (assign != null && (cond.IsRegisterTest() || cond.IsOrCondition() || assign.GetDeclaration()) && assign.GetLastTarget().IsLocal() && assign.GetLastTarget().GetIndex() == test || statements.Count == 0)
                 {
                     FinalSetCondition readonlyset = new FinalSetCondition(end - 1, test);
                     readonlyset.type = FinalSetCondition.Type.VALUE;
                     ICondition combined;
 
-                    if (cond.invertible())
+                    if (cond.Invertible())
                     {
-                        combined = new OrCondition(cond.inverse(), readonlyset);
+                        combined = new OrCondition(cond.Inverse(), readonlyset);
                     }
                     else
                     {
@@ -133,7 +133,7 @@ namespace LuaDec.Decompile.Block
                     if (assign != null)
                     {
                         fassign = assign;
-                        fassign.ReplaceLastValue(combined.asExpression(r));
+                        fassign.ReplaceLastValue(combined.AsExpression(r));
                     }
                     else
                     {
