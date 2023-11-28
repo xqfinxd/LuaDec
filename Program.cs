@@ -41,8 +41,8 @@ namespace LuaDec
             try
             {
                 file = File.OpenRead(fn);
-                byte[] buffer = new byte[file.Length];
-                file.Read(buffer, 0, buffer.Length);
+                //byte[] buffer = new byte[file.Length];
+                //file.Read(buffer, 0, buffer.Length);
                 BHeader header = new BHeader(new BinaryReader(file), config);
                 return header.main;
             }

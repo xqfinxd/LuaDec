@@ -7,12 +7,12 @@ namespace LuaDec.Decompile
     {
         public virtual void VisitExpression(IExpression expr)
         {
-            throw new System.NotImplementedException();
+            // nothing to do
         }
 
         public virtual void VisitStatement(IStatement stmt)
         {
-            throw new System.NotImplementedException();
+            // nothing to do
         }
     }
 }

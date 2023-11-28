@@ -59,7 +59,7 @@ namespace LuaDec
             {
                 try
                 {
-                    return new Output(new FileOutputProvider(File.Open(Output, FileMode.Open)));
+                    return new Output(new FileOutputProvider(File.Open(Output, FileMode.OpenOrCreate)));
                 }
                 catch (IOException e)
                 {

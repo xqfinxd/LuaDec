@@ -19,7 +19,7 @@ namespace LuaDec.Parser
 
         public BInteger(int n)
         {
-            this.big = -1;
+            this.big = 0;
             this.n = n;
         }
 
@@ -36,7 +36,7 @@ namespace LuaDec.Parser
 
         public int AsInt()
         {
-            if (big == null)
+            if (big == 0)
             {
                 return n;
             }
@@ -78,7 +78,7 @@ namespace LuaDec.Parser
 
         public void Iterate(Action thunk)
         {
-            if (big == null)
+            if (big == 0)
             {
                 int i = n;
                 while (i-- != 0)
@@ -92,7 +92,7 @@ namespace LuaDec.Parser
                 while (i.Sign > 0)
                 {
                     thunk.Invoke();
-                    i = i - BigInteger.One;
+                    i -= BigInteger.One;
                 }
             }
         }

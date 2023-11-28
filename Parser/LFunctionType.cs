@@ -188,7 +188,7 @@ namespace LuaDec.Parser
             s.abslineinfo = header.absLineInfo.ParseList(buffer, header);
             s.locals = header.localType.ParseList(buffer, header);
             BList<LString> upvalueNames = header.stringType.ParseList(buffer, header);
-            for (int i = 0; i < upvalueNames.blength.AsInt(); i++)
+            for (int i = 0; i < upvalueNames.length.AsInt(); i++)
             {
                 s.upvalues[i].bname = upvalueNames.Get(i);
                 s.upvalues[i].name = s.upvalues[i].bname.Deref();
@@ -348,7 +348,7 @@ namespace LuaDec.Parser
                 Console.WriteLine("-- beginning to parse upvalues list");
             }
             BList<LString> upvalueNames = header.stringType.ParseList(buffer, header);
-            for (int i = 0; i < upvalueNames.blength.AsInt(); i++)
+            for (int i = 0; i < upvalueNames.length.AsInt(); i++)
             {
                 s.upvalues[i].bname = upvalueNames.Get(i);
                 s.upvalues[i].name = s.upvalues[i].bname.Deref();
@@ -363,7 +363,7 @@ namespace LuaDec.Parser
         protected void ParseUpvalues(BinaryReader buffer, BHeader header, LFunctionParseState s)
         {
             BList<LUpvalue> upvalues = header.upvalueType.ParseList(buffer, header);
-            s.lenUpvalues = upvalues.blength.AsInt();
+            s.lenUpvalues = upvalues.length.AsInt();
             s.upvalues = upvalues.AsArray(new LUpvalue[s.lenUpvalues]);
         }
 
@@ -458,7 +458,7 @@ namespace LuaDec.Parser
             }
             LFunctionParseState s = new LFunctionParseState();
             ParseMain(buffer, header, s);
-            int[] lines = new int[s.lines.blength.AsInt()];
+            int[] lines = new int[s.lines.length.AsInt()];
             for (int i = 0; i < lines.Length; i++)
             {
                 lines[i] = s.lines.Get(i).AsInt();
@@ -466,14 +466,14 @@ namespace LuaDec.Parser
             LAbsLineInfo[] abslineinfo = null;
             if (s.abslineinfo != null)
             {
-                abslineinfo = s.abslineinfo.AsArray(new LAbsLineInfo[s.abslineinfo.blength.AsInt()]);
+                abslineinfo = s.abslineinfo.AsArray(new LAbsLineInfo[s.abslineinfo.length.AsInt()]);
             }
-            LFunction lfunc = new LFunction(header, s.name, s.lineBegin, s.lineEnd, s.code, lines, abslineinfo, s.locals.AsArray(new LLocal[s.locals.blength.AsInt()]), s.constants.AsArray(new LObject[s.constants.blength.AsInt()]), s.upvalues, s.functions.AsArray(new LFunction[s.functions.blength.AsInt()]), s.maximumStackSize, s.lenUpvalues, s.lenParameter, s.vararg);
+            LFunction lfunc = new LFunction(header, s.name, s.lineBegin, s.lineEnd, s.code, lines, abslineinfo, s.locals.AsArray(new LLocal[s.locals.length.AsInt()]), s.constants.AsArray(new LObject[s.constants.length.AsInt()]), s.upvalues, s.functions.AsArray(new LFunction[s.functions.length.AsInt()]), s.maximumStackSize, s.lenUpvalues, s.lenParameter, s.vararg);
             foreach (LFunction child in lfunc.functions)
             {
                 child.parent = lfunc;
             }
-            if (s.lines.blength.AsInt() == 0 && s.locals.blength.AsInt() == 0)
+            if (s.lines.length.AsInt() == 0 && s.locals.length.AsInt() == 0)
             {
                 lfunc.stripped = true;
             }

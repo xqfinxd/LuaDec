@@ -5,18 +5,18 @@ namespace LuaDec.Parser
     public class BList<T> : BObject where T : BObject
     {
         private readonly List<T> values;
-        public readonly BInteger blength;
+        public readonly BInteger length;
 
         public BList(BInteger length, List<T> values)
         {
-            this.blength = length;
+            this.length = length;
             this.values = values;
         }
 
         public T[] AsArray(T[] array)
         {
             int i = 0;
-            blength.Iterate(() =>
+            length.Iterate(() =>
             {
                 array[i] = values[i];
                 i++;

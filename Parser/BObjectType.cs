@@ -31,7 +31,7 @@ namespace LuaDec.Parser
 
         public void WriteList(BinaryWriter output, BHeader header, BList<T> blist)
         {
-            header.integerType.Write(output, header, blist.blength);
+            header.integerType.Write(output, header, blist.length);
             IEnumerator<T> it = blist.Iterator();
             while (it.MoveNext())
             {

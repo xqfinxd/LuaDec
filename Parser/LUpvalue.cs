@@ -8,7 +8,7 @@
         public int kind;
         public string name;
 
-        public bool Equals(object obj)
+        public override bool Equals(object obj)
         {
             if (obj is LUpvalue)
             {

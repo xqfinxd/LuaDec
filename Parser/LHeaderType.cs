@@ -150,7 +150,7 @@ namespace LuaDec.Parser
         {
             ParseFormat(buffer, header, s);
             ParseTail(buffer, header, s);
-            ParseIntSize(buffer, header, s);
+            ParseIntegerSize(buffer, header, s);
             ParseSizeTSize(buffer, header, s);
             ParseInstructionSize(buffer, header, s);
             ParseIntSize(buffer, header, s);
@@ -192,7 +192,7 @@ namespace LuaDec.Parser
             ParseFormat(buffer, header, s);
             ParseTail(buffer, header, s);
             ParseInstructionSize(buffer, header, s);
-            ParseIntSize(buffer, header, s);
+            ParseIntegerSize(buffer, header, s);
             ParseFloatSize(buffer, header, s);
             ParseNumberFormat53(buffer, header, s);
             s.intT = new BIntegerType54();
@@ -230,7 +230,7 @@ namespace LuaDec.Parser
             public LHeader.LEndianness endianness;
             public int format;
             public BIntegerType intT;
-            public int lFloatSize;
+            public int lfloatSize;
             public int lintSize;
             public bool lNumberIntegrality;
             public int lNumberSize;
@@ -299,7 +299,7 @@ namespace LuaDec.Parser
             {
                 Console.WriteLine("-- Lua float size: " + lFloatSize);
             }
-            s.lFloatSize = lFloatSize;
+            s.lfloatSize = lFloatSize;
         }
 
         protected void ParseFormat(BinaryReader buffer, BHeader header, LHeaderParseState s)
@@ -313,7 +313,7 @@ namespace LuaDec.Parser
             s.format = format;
             if (header.debug)
             {
-                Console.WriteLine("-- foreach mat in " + format);
+                Console.WriteLine("-- format: " + format);
             }
         }
 
@@ -369,23 +369,21 @@ namespace LuaDec.Parser
             if (endianness[0] == test_low && endianness[1] == test_high)
             {
                 s.endianness = LHeader.LEndianness.Little;
-                //buffer.order(ByteOrder.LITTLE_ENDIAN);
             }
             else if (endianness[s.lintSize - 1] == test_low && endianness[s.lintSize - 2] == test_high)
             {
                 s.endianness = LHeader.LEndianness.Big;
-                //buffer.order(ByteOrder.BIG_ENDIAN);
             }
             else
             {
                 throw new System.InvalidOperationException("The input chunk reports an invalid endianness: " + endianness.ToString());
             }
             s.longT = new LNumberType(s.lintSize, true, LNumberType.NumberMode.Integer);
-            s.doubleT = new LNumberType(s.lFloatSize, false, LNumberType.NumberMode.Float);
-            double floatcheck = s.longT.Parse(buffer, header).GetValue();
-            if (floatcheck != s.longT.Convert(TEST_FLOAT))
+            s.doubleT = new LNumberType(s.lfloatSize, false, LNumberType.NumberMode.Float);
+            double floatcheck = s.doubleT.Parse(buffer, header).GetValue();
+            if (floatcheck != s.doubleT.Convert(TEST_FLOAT))
             {
-                throw new System.InvalidOperationException("The input chunk is using an unrecognized floating point foreach mat in " + floatcheck);
+                throw new System.InvalidOperationException("The input chunk is using an unrecognized floating point format: " + floatcheck);
             }
         }
 
@@ -398,7 +396,7 @@ namespace LuaDec.Parser
             }
             if (lNumberIntegralityCode > 1)
             {
-                throw new System.InvalidOperationException("The input chunk reports an invalid code foreach  lua number integrality in " + lNumberIntegralityCode);
+                throw new System.InvalidOperationException("The input chunk reports an invalid code for lua number integrality: " + lNumberIntegralityCode);
             }
             s.lNumberIntegrality = (lNumberIntegralityCode == 1);
         }

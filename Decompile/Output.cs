@@ -30,6 +30,8 @@ namespace LuaDec.Decompile
 
         public int Position => position;
 
+        public int IndentWidth => 4;
+
         public Output() : this(new DefaultOutputProvide())
         {
         }
@@ -53,12 +55,12 @@ namespace LuaDec.Decompile
 
         public void Dedent()
         {
-            indentLevel -= 2;
+            indentLevel -= IndentWidth;
         }
 
         public void Indent()
         {
-            indentLevel += 2;
+            indentLevel += IndentWidth;
         }
 
         public void WriteByte(byte b)

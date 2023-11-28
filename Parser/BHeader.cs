@@ -16,7 +16,7 @@ namespace LuaDec.Parser
         public readonly LBooleanType booleanType;
         public readonly Configuration config;
         public readonly LConstantType constantType;
-        public readonly bool debug = false;
+        public readonly bool debug = true;
         public readonly LNumberType doubleType;
         public readonly CodeExtract extractor;
         public readonly LFunctionType functionType;
