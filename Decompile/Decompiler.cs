@@ -322,12 +322,12 @@ namespace LuaDec.Decompile
             }
             if (initdecls.Count > 0)
             {
-                output.WriteString("local ");
-                output.WriteString(initdecls[0].name);
+                output.Write("local ");
+                output.Write(initdecls[0].name);
                 for (int i = 1; i < initdecls.Count; i++)
                 {
-                    output.WriteString(", ");
-                    output.WriteString(initdecls[i].name);
+                    output.Write(", ");
+                    output.Write(initdecls[i].name);
                 }
                 output.WriteLine();
             }

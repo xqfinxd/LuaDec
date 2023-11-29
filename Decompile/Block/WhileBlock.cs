@@ -43,14 +43,14 @@ namespace LuaDec.Decompile.Block
 
         public override void Write(Decompiler d, Output output)
         {
-            output.WriteString("while ");
+            output.Write("while ");
             condexpr.Write(d, output);
-            output.WriteString(" do");
+            output.Write(" do");
             output.WriteLine();
             output.Indent();
             WriteSequence(d, output, statements);
             output.Dedent();
-            output.WriteString("end");
+            output.Write("end");
         }
     }
 }

@@ -47,10 +47,10 @@
 
         public override void Write(Decompiler d, Output output, bool declare)
         {
-            output.WriteString(decl.name);
+            output.Write(decl.name);
             if (declare && decl.tbc)
             {
-                output.WriteString(" <close>");
+                output.Write(" <close>");
             }
         }
 

@@ -94,7 +94,7 @@ namespace LuaDec.Assemble
 
         public void Disassemble(Output output, BHeader chunk, LHeader header)
         {
-            output.WriteString(Token + "\t");
+            output.Write(Token + "\t");
             switch (value)
             {
                 case DirectiveT.FORMAT: output.WriteLine(header.format.ToString()); break;
@@ -115,7 +115,7 @@ namespace LuaDec.Assemble
 
         public void Disassemble(Output output, BHeader chunk, LFunction function)
         {
-            output.WriteString(this.Token + "\t");
+            output.Write(this.Token + "\t");
             switch (value)
             {
                 case DirectiveT.SOURCE: output.WriteLine(function.name.ToPrintable()); break;

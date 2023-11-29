@@ -48,23 +48,23 @@ namespace LuaDec.Decompile.Block
         {
             if (statements.Count == 1 && statements[0] is IfThenEndBlock)
             {
-                output.WriteString("else");
+                output.Write("else");
                 statements[0].Write(d, output);
             }
             else if (statements.Count == 2 && statements[0] is IfThenElseBlock && statements[1] is ElseEndBlock)
             {
-                output.WriteString("else");
+                output.Write("else");
                 statements[0].Write(d, output);
                 statements[1].Write(d, output);
             }
             else
             {
-                output.WriteString("else");
+                output.Write("else");
                 output.WriteLine();
                 output.Indent();
                 WriteSequence(d, output, statements);
                 output.Dedent();
-                output.WriteString("end");
+                output.Write("end");
             }
         }
     }

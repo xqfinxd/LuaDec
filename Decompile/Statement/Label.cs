@@ -16,7 +16,7 @@
 
         public override void Write(Decompiler d, Output output)
         {
-            output.WriteString("::" + name + "::");
+            output.Write("::" + name + "::");
         }
     }
 }

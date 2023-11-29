@@ -17,7 +17,7 @@ namespace LuaDec.Decompile.Statement
                 IStatement stmt = stmts[i];
                 if (stmt.BeginsWithParen() && (i > 0 || d.GetVersion().allowPreceedingSemicolon.Value))
                 {
-                    output.WriteString(";");
+                    output.Write(";");
                 }
                 if (last)
                 {

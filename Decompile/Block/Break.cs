@@ -52,14 +52,14 @@ namespace LuaDec.Decompile.Block
 
         public override void Write(Decompiler d, Output output)
         {
-            output.WriteString("do break end");
-            if (breakComment != null) output.WriteString(" -- " + breakComment);
+            output.Write("do break end");
+            if (breakComment != null) output.Write(" -- " + breakComment);
         }
 
         public override void WriteTail(Decompiler d, Output output)
         {
-            output.WriteString("break");
-            if (breakComment != null) output.WriteString(" -- " + breakComment);
+            output.Write("break");
+            if (breakComment != null) output.Write(" -- " + breakComment);
         }
     }
 }

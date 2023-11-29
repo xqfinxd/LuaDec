@@ -68,10 +68,10 @@ namespace LuaDec.Decompile.Block
             }
             else
             {
-                output.WriteString("while ");
+                output.Write("while ");
                 if (condition == null)
                 {
-                    output.WriteString("true");
+                    output.Write("true");
                 }
                 else
                 {
@@ -84,11 +84,11 @@ namespace LuaDec.Decompile.Block
             output.Dedent();
             if (repeat)
             {
-                output.WriteString("until false");
+                output.Write("until false");
             }
             else
             {
-                output.WriteString("end");
+                output.Write("end");
             }
         }
     }

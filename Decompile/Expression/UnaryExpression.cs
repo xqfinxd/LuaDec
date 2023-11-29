@@ -30,12 +30,12 @@
 
         public override void Write(Decompiler d, Output output)
         {
-            output.WriteString(op);
+            output.Write(op);
             if (precedence > expression.precedence)
-                output.WriteString("(");
+                output.Write("(");
             expression.Write(d, output);
             if (precedence > expression.precedence)
-                output.WriteString(")");
+                output.Write(")");
         }
     }
 }

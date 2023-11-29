@@ -60,15 +60,15 @@ namespace LuaDec.Decompile.Expression
         {
             bool leftGroup = LeftGroup();
             bool rightGroup = RightGroup();
-            if (leftGroup) output.WriteString("(");
+            if (leftGroup) output.Write("(");
             left.Write(d, output);
-            if (leftGroup) output.WriteString(")");
-            output.WriteString(" ");
-            output.WriteString(op);
-            output.WriteString(" ");
-            if (rightGroup) output.WriteString("(");
+            if (leftGroup) output.Write(")");
+            output.Write(" ");
+            output.Write(op);
+            output.Write(" ");
+            if (rightGroup) output.Write("(");
             right.Write(d, output);
-            if (rightGroup) output.WriteString(")");
+            if (rightGroup) output.Write(")");
         }
     }
 }

@@ -79,17 +79,14 @@ namespace LuaDec.Decompile
 
         public void WriteLine(string s)
         {
-            WriteString(s);
+            Write(s);
             WriteLine();
         }
 
-        public void WriteString(string s)
+        public void Write(string s)
         {
             Start();
-            for (int i = 0; i < s.Length; i++)
-            {
-                output.WriteByte((byte)s[i]);
-            }
+            output.WriteString(s);
             position += s.Length;
         }
     }

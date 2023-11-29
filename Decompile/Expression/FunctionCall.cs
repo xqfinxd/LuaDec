@@ -68,16 +68,16 @@ namespace LuaDec.Decompile.Expression
                 IExpression obj = function.GetTable();
                 if (obj.IsUngrouped())
                 {
-                    output.WriteString("(");
+                    output.Write("(");
                     obj.Write(d, output);
-                    output.WriteString(")");
+                    output.Write(")");
                 }
                 else
                 {
                     obj.Write(d, output);
                 }
-                output.WriteString(":");
-                output.WriteString(function.GetField());
+                output.Write(":");
+                output.Write(function.GetField());
                 for (int i = 1; i < arguments.Length; i++)
                 {
                     args.Add(arguments[i]);
@@ -87,9 +87,9 @@ namespace LuaDec.Decompile.Expression
             {
                 if (function.IsUngrouped())
                 {
-                    output.WriteString("(");
+                    output.Write("(");
                     function.Write(d, output);
-                    output.WriteString(")");
+                    output.Write(")");
                 }
                 else
                 {
@@ -100,21 +100,21 @@ namespace LuaDec.Decompile.Expression
                     args.Add(arguments[i]);
                 }
             }
-            output.WriteString("(");
+            output.Write("(");
             IExpression.WriteSequence(d, output, args, false, true);
-            output.WriteString(")");
+            output.Write(")");
         }
 
         public override void WriteMultiple(Decompiler d, Output output)
         {
             if (!multiple)
             {
-                output.WriteString("(");
+                output.Write("(");
             }
             Write(d, output);
             if (!multiple)
             {
-                output.WriteString(")");
+                output.Write(")");
             }
         }
     }

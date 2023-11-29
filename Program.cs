@@ -69,7 +69,7 @@ namespace LuaDec
             LFunction lmain = File2Function(input, config);
             Decompiler d = new Decompiler(lmain);
             Decompiler.State result = d.Decompile();
-            StreamWriter pout = new StreamWriter(output);
+            StreamWriter pout = new StreamWriter(File.Open(output, FileMode.Create, FileAccess.Write));
             d.Write(result, new Output(new FileOutputProvider(pout)));
             pout.Flush();
             pout.Close();

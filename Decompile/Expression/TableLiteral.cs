@@ -64,15 +64,15 @@ namespace LuaDec.Decompile.Expression
             }
             else if (entry.hash)
             {
-                output.WriteString(key.AsName());
-                output.WriteString(" = ");
+                output.Write(key.AsName());
+                output.Write(" = ");
                 value.Write(d, output);
             }
             else
             {
-                output.WriteString("[");
+                output.Write("[");
                 key.WriteBraced(d, output);
-                output.WriteString("] = ");
+                output.Write("] = ");
                 value.Write(d, output);
             }
         }
@@ -144,7 +144,7 @@ namespace LuaDec.Decompile.Expression
             listLength = 1;
             if (entries.Count == 0)
             {
-                output.WriteString("{}");
+                output.Write("{}");
             }
             else
             {
@@ -161,7 +161,7 @@ namespace LuaDec.Decompile.Expression
                         }
                     }
                 }
-                output.WriteString("{");
+                output.Write("{");
                 if (lineBreak)
                 {
                     output.WriteLine();
@@ -172,14 +172,14 @@ namespace LuaDec.Decompile.Expression
                 {
                     for (int index = 1; index < entries.Count; index++)
                     {
-                        output.WriteString(",");
+                        output.Write(",");
                         if (lineBreak)
                         {
                             output.WriteLine();
                         }
                         else
                         {
-                            output.WriteString(" ");
+                            output.Write(" ");
                         }
                         WriteEntry(d, index, output);
                         if (entries[index].value.IsMultiple())
@@ -193,7 +193,7 @@ namespace LuaDec.Decompile.Expression
                     output.WriteLine();
                     output.Dedent();
                 }
-                output.WriteString("}");
+                output.Write("}");
             }
         }
     }

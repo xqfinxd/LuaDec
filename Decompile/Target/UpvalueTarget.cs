@@ -14,7 +14,7 @@
 
         public override void Write(Decompiler d, Output output, bool declare)
         {
-            output.WriteString(name);
+            output.Write(name);
         }
 
         public override void WriteMethod(Decompiler d, Output output)

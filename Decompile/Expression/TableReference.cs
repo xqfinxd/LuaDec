@@ -58,9 +58,9 @@ namespace LuaDec.Decompile.Expression
             {
                 if (table.IsUngrouped())
                 {
-                    output.WriteString("(");
+                    output.Write("(");
                     table.Write(d, output);
-                    output.WriteString(")");
+                    output.Write(")");
                 }
                 else
                 {
@@ -71,15 +71,15 @@ namespace LuaDec.Decompile.Expression
             {
                 if (!isGlobal)
                 {
-                    output.WriteString(".");
+                    output.Write(".");
                 }
-                output.WriteString(index.AsName());
+                output.Write(index.AsName());
             }
             else
             {
-                output.WriteString("[");
+                output.Write("[");
                 index.WriteBraced(d, output);
-                output.WriteString("]");
+                output.Write("]");
             }
         }
     }

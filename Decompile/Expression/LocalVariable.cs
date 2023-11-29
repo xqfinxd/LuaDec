@@ -32,7 +32,7 @@
 
         public override void Write(Decompiler d, Output output)
         {
-            output.WriteString(decl.name);
+            output.Write(decl.name);
         }
     }
 }

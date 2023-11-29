@@ -65,12 +65,12 @@ namespace LuaDec.Decompile.Block
 
         public override void Write(Decompiler d, Output output)
         {
-            output.WriteString("repeat");
+            output.Write("repeat");
             output.WriteLine();
             output.Indent();
             WriteSequence(d, output, statements);
             output.Dedent();
-            output.WriteString("until ");
+            output.Write("until ");
             condexpr.Write(d, output);
         }
     }

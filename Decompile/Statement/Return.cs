@@ -34,17 +34,17 @@ namespace LuaDec.Decompile.Statement
 
         public override void Write(Decompiler d, Output output)
         {
-            output.WriteString("do ");
+            output.Write("do ");
             WriteTail(d, output);
-            output.WriteString(" end");
+            output.Write(" end");
         }
 
         public override void WriteTail(Decompiler d, Output output)
         {
-            output.WriteString("return");
+            output.Write("return");
             if (values.Length > 0)
             {
-                output.WriteString(" ");
+                output.Write(" ");
                 List<IExpression> rtns = new List<IExpression>(values.Length);
                 foreach (IExpression value in values)
                 {

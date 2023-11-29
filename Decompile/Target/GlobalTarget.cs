@@ -18,7 +18,7 @@ namespace LuaDec.Decompile.Target
 
         public override void Write(Decompiler d, Output output, bool declare)
         {
-            output.WriteString(name.AsName());
+            output.Write(name.AsName());
         }
 
         public override void WriteMethod(Decompiler d, Output output)

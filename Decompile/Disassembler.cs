@@ -127,7 +127,7 @@ namespace LuaDec.Decompile
                 }
                 if (line <= function.lines.Length)
                 {
-                    output.WriteString(".line\t" + function.lines[line - 1] + "\t");
+                    output.Write(".line\t" + function.lines[line - 1] + "\t");
                 }
                 Op op = code.GetOp(line);
                 string cpLabel = null;

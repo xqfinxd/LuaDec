@@ -60,23 +60,23 @@ namespace LuaDec.Decompile.Block
 
         public override void Write(Decompiler d, Output output)
         {
-            output.WriteString("for ");
+            output.Write("for ");
             target.Write(d, output, false);
-            output.WriteString(" = ");
+            output.Write(" = ");
             start.Write(d, output);
-            output.WriteString(", ");
+            output.Write(", ");
             stop.Write(d, output);
             if (!step.IsInteger() || step.AsInteger() != 1)
             {
-                output.WriteString(", ");
+                output.Write(", ");
                 step.Write(d, output);
             }
-            output.WriteString(" do");
+            output.Write(" do");
             output.WriteLine();
             output.Indent();
             WriteSequence(d, output, statements);
             output.Dedent();
-            output.WriteString("end");
+            output.Write("end");
         }
     }
 }

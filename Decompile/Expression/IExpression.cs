@@ -81,15 +81,15 @@ namespace LuaDec.Decompile.Expression
         protected static void WriteBinary(Decompiler d, Output output, String op, IExpression left, IExpression right)
         {
             left.Write(d, output);
-            output.WriteString(" ");
-            output.WriteString(op);
-            output.WriteString(" ");
+            output.Write(" ");
+            output.Write(op);
+            output.Write(" ");
             right.Write(d, output);
         }
 
         protected static void WriteUnary(Decompiler d, Output output, String op, IExpression expression)
         {
-            output.WriteString(op);
+            output.Write(op);
             expression.Write(d, output);
         }
 
@@ -140,14 +140,14 @@ namespace LuaDec.Decompile.Expression
                 else
                 {
                     expr.Write(d, output);
-                    output.WriteString(",");
+                    output.Write(",");
                     if (linebreak)
                     {
                         output.WriteLine();
                     }
                     else
                     {
-                        output.WriteString(" ");
+                        output.Write(" ");
                     }
                 }
                 i++;

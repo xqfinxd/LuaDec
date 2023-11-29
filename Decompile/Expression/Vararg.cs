@@ -27,12 +27,12 @@
 
         public override void Write(Decompiler d, Output output)
         {
-            output.WriteString(multiple ? "..." : "(...)");
+            output.Write(multiple ? "..." : "(...)");
         }
 
         public override void WriteMultiple(Decompiler d, Output output)
         {
-            output.WriteString(multiple ? "..." : "(...)");
+            output.Write(multiple ? "..." : "(...)");
         }
     }
 }

@@ -173,15 +173,15 @@ namespace LuaDec.Decompile
             switch (type)
             {
                 case Type.NIL:
-                    output.WriteString("nil");
+                    output.Write("nil");
                     break;
 
                 case Type.BOOL:
-                    output.WriteString(boolValue ? "true" : "false");
+                    output.Write(boolValue ? "true" : "false");
                     break;
 
                 case Type.NUMBER:
-                    output.WriteString(numberValue.ToPrintable());
+                    output.Write(numberValue.ToPrintable());
                     break;
 
                 case Type.STRING:
@@ -221,21 +221,21 @@ namespace LuaDec.Decompile
                             startPipestring = pipestring;
                             pipestring += "]";
                         }
-                        if (braced) output.WriteString("(");
-                        output.WriteString("[");
-                        while (pipe-- > 0) output.WriteString("=");
-                        output.WriteString("[");
+                        if (braced) output.Write("(");
+                        output.Write("[");
+                        while (pipe-- > 0) output.Write("=");
+                        output.Write("[");
                         int indent = output.IndentLevel;
                         output.IndentLevel = 0;
                         output.WriteLine();
-                        output.WriteString(stringValue);
-                        output.WriteString(pipestring);
-                        if (braced) output.WriteString(")");
+                        output.Write(stringValue);
+                        output.Write(pipestring);
+                        if (braced) output.Write(")");
                         output.IndentLevel = indent;
                     }
                     else
                     {
-                        output.WriteString("\"");
+                        output.Write("\"");
                         for (int i = 0; i < stringValue.Length; i++)
                         {
                             char c = stringValue[i];
@@ -243,42 +243,42 @@ namespace LuaDec.Decompile
                             {
                                 if (c == 7)
                                 {
-                                    output.WriteString("\\a");
+                                    output.Write("\\a");
                                 }
                                 else if (c == 8)
                                 {
-                                    output.WriteString("\\b");
+                                    output.Write("\\b");
                                 }
                                 else if (c == 12)
                                 {
-                                    output.WriteString("\\f");
+                                    output.Write("\\f");
                                 }
                                 else if (c == 10)
                                 {
-                                    output.WriteString("\\n");
+                                    output.Write("\\n");
                                 }
                                 else if (c == 13)
                                 {
-                                    output.WriteString("\\r");
+                                    output.Write("\\r");
                                 }
                                 else if (c == 9)
                                 {
-                                    output.WriteString("\\t");
+                                    output.Write("\\t");
                                 }
                                 else if (c == 11)
                                 {
-                                    output.WriteString("\\v");
+                                    output.Write("\\v");
                                 }
                                 else if (!rawstring || c <= 127)
                                 {
                                     string dec = c.ToString();
                                     int len = dec.Length;
-                                    output.WriteString("\\");
+                                    output.Write("\\");
                                     while (len++ < 3)
                                     {
-                                        output.WriteString("0");
+                                        output.Write("0");
                                     }
-                                    output.WriteString(dec);
+                                    output.Write(dec);
                                 }
                                 else
                                 {
@@ -287,18 +287,18 @@ namespace LuaDec.Decompile
                             }
                             else if (c == 34)
                             {
-                                output.WriteString("\\\"");
+                                output.Write("\\\"");
                             }
                             else if (c == 92)
                             {
-                                output.WriteString("\\\\");
+                                output.Write("\\\\");
                             }
                             else
                             {
-                                output.WriteString(c.ToString());
+                                output.Write(c.ToString());
                             }
                         }
-                        output.WriteString("\"");
+                        output.Write("\"");
                     }
                     break;
 

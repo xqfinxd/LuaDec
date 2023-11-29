@@ -83,9 +83,9 @@ namespace LuaDec.Decompile.Block
 
         public override void Write(Decompiler d, Output output)
         {
-            output.WriteString("if ");
+            output.Write("if ");
             condexpr.Write(d, output);
-            output.WriteString(" then");
+            output.Write(" then");
             output.WriteLine();
             output.Indent();
 

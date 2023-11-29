@@ -35,7 +35,7 @@ namespace LuaDec.Decompile.Block
             output.Indent();
             WriteSequence(d, output, statements);
             output.Dedent();
-            output.WriteString("until true");
+            output.Write("until true");
         }
     }
 }

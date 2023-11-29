@@ -45,8 +45,8 @@ namespace LuaDec.Decompile.Target
         public override void WriteMethod(Decompiler d, Output output)
         {
             table.Write(d, output);
-            output.WriteString(":");
-            output.WriteString(index.AsName());
+            output.Write(":");
+            output.Write(index.AsName());
         }
     }
 }

@@ -17,14 +17,14 @@ namespace LuaDec.Decompile.Expression
 
         private void WriteMain(Output output, Decompiler d, bool includeFirst)
         {
-            output.WriteString("(");
+            output.Write("(");
             int start = includeFirst ? 0 : 1;
             if (function.numParams > start)
             {
                 new VariableTarget(d.declarations[start]).Write(d, output, false);
                 for (int i = start + 1; i < function.numParams; i++)
                 {
-                    output.WriteString(", ");
+                    output.Write(", ");
                     new VariableTarget(d.declarations[i]).Write(d, output, false);
                 }
             }
@@ -32,20 +32,20 @@ namespace LuaDec.Decompile.Expression
             {
                 if (function.numParams > start)
                 {
-                    output.WriteString(", ...");
+                    output.Write(", ...");
                 }
                 else
                 {
-                    output.WriteString("...");
+                    output.Write("...");
                 }
             }
-            output.WriteString(")");
+            output.Write(")");
             output.WriteLine();
             output.Indent();
             Decompiler.State result = d.Decompile();
             d.Write(result, output);
             output.Dedent();
-            output.WriteString("end");
+            output.Write("end");
             //output.println(); //This is an extra space for formatting
         }
 
@@ -90,14 +90,14 @@ namespace LuaDec.Decompile.Expression
         public override void Write(Decompiler outer, Output output)
         {
             Decompiler d = new Decompiler(function, outer.declarations, upvalueLine);
-            output.WriteString("function");
+            output.Write("function");
             WriteMain(output, d, true);
         }
 
         public override void WriteClosure(Decompiler outer, Output output, ITarget name)
         {
             Decompiler d = new Decompiler(function, outer.declarations, upvalueLine);
-            output.WriteString("function ");
+            output.Write("function ");
             if (function.numParams >= 1 && d.declarations[0].name == "self" && name is TableTarget)
             {
                 name.WriteMethod(outer, output);
