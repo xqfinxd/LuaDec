@@ -23,7 +23,7 @@ namespace LuaDec.Parser
             LNumberType lint = new LNumberType(s.lNumberSize, true, LNumberType.NumberMode.Number);
             var mark = buffer.BaseStream.Position;
             double floatcheck = lfloat.Parse(buffer, header).GetValue();
-            buffer.BaseStream.Seek(mark - buffer.BaseStream.Position, SeekOrigin.Current);
+            buffer.BaseStream.Position = mark;
             double intcheck = lint.Parse(buffer, header).GetValue();
             if (floatcheck == lfloat.Convert(TEST_NUMBER))
             {

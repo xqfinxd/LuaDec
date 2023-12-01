@@ -6,20 +6,30 @@ namespace Test
 {
     public class TestSuite
     {
-        private static string compiled = "luac.output";
-        private static string decompiled = "LuaDec.output";
-        private static string recompiled = "Test.output";
-        private static string workDir = ".\\working\\";
-        private string ext = ".lua";
         private TestFile[] files;
         private string name;
         private string path;
+        public string Ext => ".lua";
+        public string WorkDir => ".\\working\\";
 
         public TestSuite(string name, string path, TestFile[] files)
         {
             this.name = name;
             this.path = path;
             this.files = files;
+        }
+
+        private string CompiledFile(string file)
+        {
+            return Path.Combine(WorkDir, file + ".compile.bin");
+        }
+        private string DecompiledFile(string file)
+        {
+            return Path.Combine(WorkDir, file + ".decompile.lua");
+        }
+        private string RecompiledFile(string file)
+        {
+            return Path.Combine(WorkDir, file + ".recompile.bin");
         }
 
         private Configuration Configure(TestFile testfile, Configuration config)
@@ -40,9 +50,14 @@ namespace Test
 
         private TestResult Test(LuaSpec spec, LuaDecSpec uspec, string file, Configuration config)
         {
+            var fn = Path.GetFileNameWithoutExtension(file);
+            string compiledFile = CompiledFile(fn);
+            string decompiledFile = DecompiledFile(fn);
+            string recompiledFile = RecompiledFile(fn);
+
             try
             {
-                LuaC.Compile(spec, file, workDir + compiled);
+                LuaC.Compile(spec, file, compiledFile);
             }
             catch (Exception)
             {
@@ -51,14 +66,14 @@ namespace Test
 
             try
             {
-                uspec.Run(workDir + compiled, workDir + decompiled, config);
+                uspec.Run(compiledFile, decompiledFile, config);
                 if (!uspec.disassemble)
                 {
-                    LuaC.Compile(spec, workDir + decompiled, workDir + recompiled);
+                    LuaC.Compile(spec, decompiledFile, recompiledFile);
                 }
                 else
                 {
-                    Program.Assemble(workDir + decompiled, workDir + recompiled);
+                    Program.Assemble(decompiledFile, recompiledFile);
                 }
                 Compare compare;
                 if (!uspec.disassemble)
@@ -69,7 +84,7 @@ namespace Test
                 {
                     compare = new Compare(Compare.Mode.Full);
                 }
-                return compare.ByteCodeEqual(workDir + compiled, workDir + recompiled) ? TestResult.Ok : TestResult.Failed;
+                return compare.ByteCodeEqual(compiledFile, recompiledFile) ? TestResult.Ok : TestResult.Failed;
             }
             catch (Exception e)
             {
@@ -80,12 +95,15 @@ namespace Test
 
         private TestResult TestC(LuaSpec spec, LuaDecSpec uspec, string file, Configuration config)
         {
+            string decompiledFile = DecompiledFile(file);
+            string recompiledFile = RecompiledFile(file);
+
             try
             {
-                uspec.Run(file, workDir + decompiled, config);
-                LuaC.Compile(spec, workDir + decompiled, workDir + recompiled);
+                uspec.Run(file, decompiledFile, config);
+                LuaC.Compile(spec, decompiledFile, recompiledFile);
                 Compare compare = new Compare(Compare.Mode.Normal);
-                return compare.ByteCodeEqual(file, workDir + recompiled) ? TestResult.Ok : TestResult.Failed;
+                return compare.ByteCodeEqual(file, recompiledFile) ? TestResult.Ok : TestResult.Failed;
             }
             catch (Exception e)
             {
@@ -97,9 +115,9 @@ namespace Test
         public bool Run(LuaSpec spec, LuaDecSpec uspec, TestReport report, Configuration basic)
         {
             int failed = 0;
-            if (!Directory.Exists(workDir))
+            if (!Directory.Exists(WorkDir))
             {
-                Directory.CreateDirectory(workDir);
+                Directory.CreateDirectory(WorkDir);
             }
             foreach (TestFile testfile in files)
             {
@@ -107,7 +125,7 @@ namespace Test
                 if (spec.Compatible(name))
                 {
                     Configuration config = Configure(testfile, basic);
-                    TestResult result = Test(spec, uspec, path + name + ext, config);
+                    TestResult result = Test(spec, uspec, path + name + Ext, config);
                     report.Result(TestName(spec, name), result);
                     switch (result)
                     {
@@ -134,9 +152,9 @@ namespace Test
             int passed = 0;
             int skipped = 0;
             int failed = 0;
-            if (!Directory.Exists(workDir))
+            if (!Directory.Exists(WorkDir))
             {
-                Directory.CreateDirectory(workDir);
+                Directory.CreateDirectory(WorkDir);
             }
 
             {
@@ -144,7 +162,7 @@ namespace Test
                 string full;
                 if (!file.Contains("/"))
                 {
-                    full = path + name + ext;
+                    full = path + name + Ext;
                 }
                 else
                 {

@@ -127,15 +127,11 @@ namespace LuaDec.Parser
                 switch (size)
                 {
                     case 4:
-                        byte[] intBytes = new byte[4];
-                        buffer.Read(intBytes, 0, 4);
-                        value = new LIntNumber(BitConverter.ToInt32(intBytes, 0));
+                        value = new LIntNumber(buffer.ReadInt32());
                         break;
 
                     case 8:
-                        byte[] longBytes = new byte[8];
-                        buffer.Read(longBytes, 0, 8);
-                        value = new LLongNumber(BitConverter.ToInt64(longBytes, 0));
+                        value = new LLongNumber(buffer.ReadInt64());
                         break;
                 }
             }
@@ -144,15 +140,11 @@ namespace LuaDec.Parser
                 switch (size)
                 {
                     case 4:
-                        byte[] floatBytes = new byte[4];
-                        buffer.Read(floatBytes, 0, 4);
-                        value = new LFloatNumber(BitConverter.ToSingle(floatBytes, 0), mode);
+                        value = new LFloatNumber(buffer.ReadSingle(), mode);
                         break;
 
                     case 8:
-                        byte[] doubleBytes = new byte[8];
-                        buffer.Read(doubleBytes, 0, 8);
-                        value = new LDoubleNumber(BitConverter.ToDouble(doubleBytes, 0), mode);
+                        value = new LDoubleNumber(buffer.ReadDouble(), mode);
                         break;
                 }
             }
