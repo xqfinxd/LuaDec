@@ -9,6 +9,7 @@ namespace Test
         private TestFile[] files;
         private string name;
         private string path;
+
         public string Ext => ".lua";
         public string WorkDir => ".\\working\\";
 
@@ -48,7 +49,7 @@ namespace Test
             return modified != null ? modified : new Configuration(basic);
         }
 
-        private TestResult Test(LuaSpec spec, LuaDecSpec uspec, string file, Configuration config)
+        private TestResult Test(LuaSpec spec, LuaDecSpec uspec, string file, Configuration config, bool outputTrace)
         {
             var fn = Path.GetFileNameWithoutExtension(file);
             string compiledFile = CompiledFile(fn);
@@ -88,12 +89,15 @@ namespace Test
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.StackTrace);
+                if (outputTrace)
+                {
+                    Console.WriteLine(e.StackTrace);
+                }
                 return TestResult.Failed;
             }
         }
 
-        private TestResult TestC(LuaSpec spec, LuaDecSpec uspec, string file, Configuration config)
+        private TestResult TestC(LuaSpec spec, LuaDecSpec uspec, string file, Configuration config, bool outputTrace)
         {
             string decompiledFile = DecompiledFile(file);
             string recompiledFile = RecompiledFile(file);
@@ -107,7 +111,10 @@ namespace Test
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.StackTrace);
+                if (outputTrace)
+                {
+                    Console.WriteLine(e.StackTrace);
+                }
                 return TestResult.Failed;
             }
         }
@@ -125,7 +132,7 @@ namespace Test
                 if (spec.Compatible(name))
                 {
                     Configuration config = Configure(testfile, basic);
-                    TestResult result = Test(spec, uspec, path + name + Ext, config);
+                    TestResult result = Test(spec, uspec, path + name + Ext, config, false);
                     report.Result(TestName(spec, name), result);
                     switch (result)
                     {
@@ -171,11 +178,11 @@ namespace Test
                 TestResult result;
                 if (!compiled)
                 {
-                    result = Test(spec, uspec, full, config);
+                    result = Test(spec, uspec, full, config, true);
                 }
                 else
                 {
-                    result = TestC(spec, uspec, full, config);
+                    result = TestC(spec, uspec, full, config, true);
                 }
                 switch (result)
                 {

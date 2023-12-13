@@ -35,7 +35,7 @@ namespace Test
                 BHeader header = new BHeader(new BinaryReader(file), new Configuration());
                 return header.main;
             }
-            catch (IOException e)
+            catch (IOException)
             {
                 return null;
             }

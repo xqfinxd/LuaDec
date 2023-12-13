@@ -892,8 +892,6 @@ namespace LuaDec.Decompile
                     )
                     {
                         var hangingList = hanging.ToList();
-                        hangingList.Reverse();
-
                         for (int i = 0; i < hangingList.Count; i++)
                         {
                             Branch hanger = hangingList[i];
@@ -1723,7 +1721,6 @@ namespace LuaDec.Decompile
         private static bool IsHangerResolvable(State state, Declaration[] declList, Branch hanging, Stack<Branch> resolvers)
         {
             var resolversList = resolvers.ToList();
-            resolversList.Reverse();
             foreach (var r in resolversList)
             {
                 if (IsHangerResolvable(state, declList, hanging, r))
@@ -2324,7 +2321,6 @@ namespace LuaDec.Decompile
         private static int StackReach(State state, Stack<Branch> stack)
         {
             var stackList = stack.ToList();
-            stackList.Reverse();
             foreach (var b in stackList)
             {
                 IBlock breakable = EnclosingBreakableBlock(state, b.line);

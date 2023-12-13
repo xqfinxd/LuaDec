@@ -142,8 +142,8 @@ namespace LuaDec.Decompile.Block
                 if (value.IsMultiple()) break;
             }
 
-            this.targets = new ITarget[targets.Count];
-            this.values = new IExpression[values.Count];
+            this.targets = targets.ToArray();
+            this.values = values.ToArray();
         }
 
         public override int ScopeEnd()

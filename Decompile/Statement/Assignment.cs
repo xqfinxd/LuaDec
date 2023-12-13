@@ -39,7 +39,7 @@ namespace LuaDec.Decompile.Statement
             {
                 int index = targets.IndexOf(target);
                 targets.RemoveAt(index);
-                // value = values.RemoveAt(index);
+                value = values[index];
                 values.RemoveAt(index);
                 lines.RemoveAt(index);
             }

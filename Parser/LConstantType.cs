@@ -10,7 +10,7 @@ namespace LuaDec.Parser
             int type = 0xFF & buffer.ReadByte();
             if (header.debug)
             {
-                Console.WriteLine("-- parsing <constant>, type is ");
+                Console.Write("-- parsing <constant>, type is ");
                 switch (type)
                 {
                     case 0:

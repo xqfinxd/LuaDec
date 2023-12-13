@@ -27,15 +27,11 @@ namespace LuaDec.Parser
                     break;
 
                 case 2:
-                    byte[] shortBuffer = new byte[2];
-                    buffer.Read(shortBuffer, 0, 2);
-                    value = new BInteger(BitConverter.ToInt16(shortBuffer, 0));
+                    value = new BInteger(buffer.ReadInt16());
                     break;
 
                 case 4:
-                    byte[] intBuffer = new byte[4];
-                    buffer.Read(intBuffer, 0, 4);
-                    value = new BInteger(BitConverter.ToInt32(intBuffer, 0));
+                    value = new BInteger(buffer.ReadInt32());
                     break;
 
                 default:

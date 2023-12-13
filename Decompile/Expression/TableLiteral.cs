@@ -120,9 +120,25 @@ namespace LuaDec.Decompile.Expression
             return true;
         }
 
+        internal static void InsertionSort<T>(List<T> list) where T : IComparable<T>
+        {
+            int n = list.Count;
+            for (int i = 1; i < n; ++i)
+            {
+                T key = list[i];
+                int j = i - 1;
+                while (j >= 0 && list[j].CompareTo(key) > 0)
+                {
+                    list[j + 1] = list[j];
+                    j = j - 1;
+                }
+                list[j + 1] = key;
+            }
+        }
+
         public override void Walk(Walker w)
         {
-            entries.Sort();
+            InsertionSort(entries);
             w.VisitExpression(this);
             bool lastEntry = false;
             foreach (Entry entry in entries)
