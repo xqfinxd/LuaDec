@@ -853,7 +853,10 @@ namespace LuaDec.Decompile
                         handled = true;
                     }
 
-                    if (!handled && stack.Count != 0 && stack.Peek().targetSecond - 1 == b.line)
+                    if (!handled
+                        && stack.Count != 0
+                        && stack.Peek().targetSecond - 1 == b.line
+                        && enclosing.Contains(b.line, b.targetSecond))
                     {
                         Branch top = stack.Peek();
                         while (top != null && top.targetSecond - 1 == b.line && SplitsDecl(top.line, top.targetFirst, top.targetSecond, declList))

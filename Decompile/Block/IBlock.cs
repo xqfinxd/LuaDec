@@ -77,14 +77,19 @@ namespace LuaDec.Decompile.Block
             }
         }
 
-        public virtual bool Contains(IBlock block)
+        public bool Contains(IBlock block)
         {
-            return begin <= block.begin && end >= block.end;
+            return Contains(block.begin, block.end);
         }
 
-        public virtual bool Contains(int line)
+        public bool Contains(int line)
         {
             return begin <= line && line < end;
+        }
+
+        public bool Contains(int begin, int end)
+        {
+            return this.begin <= begin && this.end >= end;
         }
 
         public virtual int GetCloseLine()
