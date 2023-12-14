@@ -201,11 +201,11 @@ namespace LuaDec.Decompile
 
         public static readonly Op EQ = new Op(OpT.EQ, "eq", OpV.Lua50 | OpV.Lua51 | OpV.Lua52 | OpV.Lua53, OperandFormat.A, OperandFormat.BRK, OperandFormat.CRK);
 
-        public static readonly Op EQ54 = new Op(OpT.EQ54, "eq", OpV.Lua54, OperandFormat.AR, OperandFormat.BR, OperandFormat.k);
+        public static readonly Op EQ54 = new Op(OpT.EQ54, "eq", OpV.Lua54, OperandFormat.AR, OperandFormat.BR, OperandFormat.k, OperandFormat.C);
 
         public static readonly Op EQI = new Op(OpT.EQI, "eqi", OpV.Lua54, OperandFormat.AR, OperandFormat.BsI, OperandFormat.k, OperandFormat.C);
 
-        public static readonly Op EQK = new Op(OpT.EQK, "eqk", OpV.Lua54, OperandFormat.AR, OperandFormat.BK, OperandFormat.k);
+        public static readonly Op EQK = new Op(OpT.EQK, "eqk", OpV.Lua54, OperandFormat.AR, OperandFormat.BK, OperandFormat.k, OperandFormat.C);
 
         public static readonly Op EXTRAARG = new Op(OpT.EXTRAARG, "extraarg", OpV.Lua52 | OpV.Lua53 | OpV.Lua54, OperandFormat.Ax);
 
@@ -256,7 +256,7 @@ namespace LuaDec.Decompile
 
         public static readonly Op LE = new Op(OpT.LE, "le", OpV.Lua50 | OpV.Lua51 | OpV.Lua52 | OpV.Lua53, OperandFormat.A, OperandFormat.BRK, OperandFormat.CRK);
 
-        public static readonly Op LE54 = new Op(OpT.LE54, "le", OpV.Lua54, OperandFormat.AR, OperandFormat.BR, OperandFormat.k);
+        public static readonly Op LE54 = new Op(OpT.LE54, "le", OpV.Lua54, OperandFormat.AR, OperandFormat.BR, OperandFormat.k, OperandFormat.C);
 
         public static readonly Op LEI = new Op(OpT.LEI, "lei", OpV.Lua54, OperandFormat.AR, OperandFormat.BsI, OperandFormat.k, OperandFormat.C);
 
@@ -285,7 +285,7 @@ namespace LuaDec.Decompile
 
         public static readonly Op LT = new Op(OpT.LT, "lt", OpV.Lua50 | OpV.Lua51 | OpV.Lua52 | OpV.Lua53, OperandFormat.A, OperandFormat.BRK, OperandFormat.CRK);
 
-        public static readonly Op LT54 = new Op(OpT.LT54, "lt", OpV.Lua54, OperandFormat.AR, OperandFormat.BR, OperandFormat.k);
+        public static readonly Op LT54 = new Op(OpT.LT54, "lt", OpV.Lua54, OperandFormat.AR, OperandFormat.BR, OperandFormat.k, OperandFormat.C);
 
         public static readonly Op LTI = new Op(OpT.LTI, "lti", OpV.Lua54, OperandFormat.AR, OperandFormat.BsI, OperandFormat.k, OperandFormat.C);
 
