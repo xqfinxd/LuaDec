@@ -161,7 +161,10 @@ namespace LuaDec.Parser
                     throw new System.InvalidOperationException("The main chunk has the wrong number of upvalues: " + main.numUpvalues + " (" + upvalues + " expected)");
                 }
             }
-            if (main.numUpvalues >= 1 && versionNumber >= 0x52 && (main.upvalues[0].name == null || main.upvalues[0].name.Length == 0))
+            if (main.numUpvalues >= 1
+                && versionNumber >= 0x52
+                && (main.upvalues[0].name == null || main.upvalues[0].name.Length == 0)
+                && config.Mode == Configuration.OpMode.Decompile)
             {
                 main.upvalues[0].name = "_ENV";
             }
