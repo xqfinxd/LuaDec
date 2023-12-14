@@ -222,7 +222,7 @@ namespace LuaDec.Parser
             int upvalueNameLength = 0;
             foreach (LUpvalue upvalue in o.upvalues)
             {
-                if (upvalue.bname != null)
+                if (upvalue.bname != null && upvalue.bname != LString.EmptyString)
                 {
                     upvalueNameLength++;
                 }
