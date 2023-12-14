@@ -856,7 +856,8 @@ namespace LuaDec.Decompile
                     if (!handled
                         && stack.Count != 0
                         && stack.Peek().targetSecond - 1 == b.line
-                        && enclosing.Contains(b.line, b.targetSecond))
+                        && enclosing.Contains(b.line, b.targetSecond)
+                        && b.targetSecond > b.line)
                     {
                         Branch top = stack.Peek();
                         while (top != null && top.targetSecond - 1 == b.line && SplitsDecl(top.line, top.targetFirst, top.targetSecond, declList))
@@ -1348,13 +1349,15 @@ namespace LuaDec.Decompile
             }
         }
 
-        private static void FindWhileLoops(State state)
+        private static void FindWhileLoops(State state, Declaration[] declList)
         {
             List<IBlock> blocks = state.blocks;
             Branch j = state.endBranch;
             while (j != null)
             {
-                if (j.type == Branch.Type.Jump && j.targetFirst <= j.line)
+                if (j.type == Branch.Type.Jump
+                    && j.targetFirst <= j.line
+                    && !SplitsDecl(j.targetFirst, j.targetFirst, j.line + 1, declList))
                 {
                     int line = j.targetFirst;
                     int loopback = line;
@@ -1363,7 +1366,11 @@ namespace LuaDec.Decompile
                     int extent = -1;
                     while (b != null)
                     {
-                        if (IsConditional(b) && b.line >= loopback && b.line < j.line && state.resolved[b.targetSecond] == state.resolved[end] && extent <= b.line)
+                        if (IsConditional(b)
+                            && b.line >= loopback
+                            && b.line < j.line
+                            && state.resolved[b.targetSecond] == state.resolved[end]
+                            && extent <= b.line)
                         {
                             break;
                         }
@@ -2416,7 +2423,7 @@ namespace LuaDec.Decompile
             ResolveLines(state);
             InitializeBlocks(state);
             FindFixedBlocks(state);
-            FindWhileLoops(state);
+            FindWhileLoops(state, d.declarations);
             FindRepeatLoops(state);
             FindIfBreak(state, d.declarations);
             FindSetBlocks(state);
