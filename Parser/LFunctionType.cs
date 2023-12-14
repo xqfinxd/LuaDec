@@ -306,10 +306,7 @@ namespace LuaDec.Parser
             s.code = new int[s.length];
             for (int i = 0; i < s.length; i++)
             {
-                byte[] intBytes = new byte[4];
-                buffer.Read(intBytes, 0, 4);
-
-                s.code[i] = BitConverter.ToInt32(intBytes, 0);
+                s.code[i] = buffer.ReadInt32();
                 if (header.debug)
                 {
                     Console.WriteLine("-- parsed codepoint " + s.code[i].ToString("X"));

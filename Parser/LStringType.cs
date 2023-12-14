@@ -59,7 +59,11 @@ namespace LuaDec.Parser
         {
             BInteger sizeT;
             int size = 0xFF & buffer.ReadByte();
-            if (size == 0xFF)
+            if(size == 0)
+            {
+                return LString.EmptyString;
+            }
+            else if (size == 0xFF)
             {
                 sizeT = header.sizeType.Parse(buffer, header);
             }
@@ -113,6 +117,11 @@ namespace LuaDec.Parser
         public override LString Parse(BinaryReader buffer, BHeader header)
         {
             BInteger sizeT = header.sizeType.Parse(buffer, header);
+            if(sizeT.AsInt() == 0)
+            {
+                return LString.EmptyString;
+            }
+
             StringBuilder b = this.b.Value;
             b.Length = 0;
             bool first = true;
@@ -137,10 +146,17 @@ namespace LuaDec.Parser
 
         public override void Write(BinaryWriter output, BHeader header, LString s)
         {
-            header.sizeType.Write(output, header, header.sizeType.Create(s.value.Length + 1));
-            for (int i = 0; i < s.value.Length; i++)
+            if(s == LString.EmptyString)
             {
-                output.Write((byte)s.value[i]);
+                header.sizeType.Write(output, header, header.sizeType.Create(0));
+            }
+            else
+            {
+                header.sizeType.Write(output, header, header.sizeType.Create(s.value.Length + 1));
+                for (int i = 0; i < s.value.Length; i++)
+                {
+                    output.Write((byte)s.value[i]);
+                }
             }
         }
     }
