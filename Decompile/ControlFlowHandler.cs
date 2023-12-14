@@ -2274,11 +2274,25 @@ namespace LuaDec.Decompile
             {
                 Branch top = stack.Pop();
                 int literalEnd = state.code.Target(top.targetFirst - 1);
-                block = new IfThenEndBlock(
-                  state.function, state.r, top.condition, top.targetFirst, top.targetSecond,
-                  GetCloseType(state, top.targetSecond - 1), top.targetSecond - 1,
-                  literalEnd != top.targetSecond
-                );
+                if (state.function.header.version.useIfBreakRewrite.Value
+                    && state.function.header.version.useGoto.Value
+                    && top.targetFirst + 1 == top.targetSecond && IsJmp(state, top.targetFirst))
+                {
+                    // If this were actually an if statement, it would have been rewritten. It hasn't been, so it isn't...
+                    block = new IfThenEndBlock(
+                        state.function, state.r, top.condition.Inverse(), top.targetFirst - 1, top.targetFirst - 1
+                    );
+                    block.AddStatement(new Goto(state.function, top.targetFirst - 1, top.targetSecond));
+                    state.labels[top.targetSecond] = true;
+                }
+                else
+                {
+                    block = new IfThenEndBlock(
+                      state.function, state.r, top.condition, top.targetFirst, top.targetSecond,
+                      GetCloseType(state, top.targetSecond - 1), top.targetSecond - 1,
+                      literalEnd != top.targetSecond
+                    );
+                }
                 state.blocks.Add(block);
                 RemoveBranch(state, top);
             }

@@ -8,10 +8,10 @@ namespace Test
     public class RunTest
     {
         [TestMethod]
-        [DataRow("52_goto05")]
+        [DataRow("52_goto02")]
         public void Test(string file)
         {
-            LuaSpec spec = new LuaSpec(0x53, 6);
+            LuaSpec spec = new LuaSpec(0x54, 6);
             LuaDecSpec uspec = new LuaDecSpec();
             //uspec.disassemble = true;
             Configuration config = new Configuration();
