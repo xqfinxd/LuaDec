@@ -1063,6 +1063,11 @@ namespace LuaDec.Decompile
 
         private static int FindLoadBoolBlock(State state, int target)
         {
+            if (target < 1)
+            {
+                return -1;
+            }
+
             int loadboolblock = -1;
             Op op = state.code.GetOp(target);
             if (op == Op.LOADBOOL)
