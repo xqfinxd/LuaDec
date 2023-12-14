@@ -150,10 +150,10 @@ namespace LuaDec.Parser
         {
             ParseFormat(buffer, header, s);
             ParseTail(buffer, header, s);
-            ParseIntegerSize(buffer, header, s);
+            ParseIntSize(buffer, header, s);
             ParseSizeTSize(buffer, header, s);
             ParseInstructionSize(buffer, header, s);
-            ParseIntSize(buffer, header, s);
+            ParseIntegerSize(buffer, header, s);
             ParseFloatSize(buffer, header, s);
             ParseNumberFormat53(buffer, header, s);
         }

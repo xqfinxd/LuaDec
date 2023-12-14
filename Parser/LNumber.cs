@@ -48,11 +48,12 @@ namespace LuaDec.Parser
 
         public override string ToPrintable()
         {
-            if (mode == LNumberType.NumberMode.Number && number == (double)Math.Round(number))
+            bool isInteger = (number == (double)Math.Round(number));
+            if (mode == LNumberType.NumberMode.Number && isInteger)
             {
                 if (BitConverter.DoubleToInt64Bits(number) == BitConverter.DoubleToInt64Bits(-0.0))
                 {
-                    return "-0";
+                    return "(-0)";
                 }
                 else
                 {
@@ -61,7 +62,14 @@ namespace LuaDec.Parser
             }
             else
             {
-                return number.ToString();
+                if(isInteger)
+                {
+                    return number.ToString("N1");
+                }
+                else
+                {
+                    return number.ToString();
+                }
             }
         }
     }
@@ -116,7 +124,7 @@ namespace LuaDec.Parser
             {
                 if (BitConverter.DoubleToInt64Bits(number) == BitConverter.DoubleToInt64Bits(-0.0f))
                 {
-                    return "-0";
+                    return "(-0)";
                 }
                 else
                 {
