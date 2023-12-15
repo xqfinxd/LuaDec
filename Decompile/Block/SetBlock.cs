@@ -105,6 +105,11 @@ namespace LuaDec.Decompile.Block
             return true;
         }
 
+        public override bool HasHeader()
+        {
+            return true;
+        }
+
         public override bool IsUnprotected()
         {
             return false;

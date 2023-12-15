@@ -33,6 +33,11 @@ namespace LuaDec.Decompile.Block
 
         public abstract void HandleVariableDeclarations(Registers r);
 
+        public override bool HasHeader()
+        {
+            return true;
+        }
+
         public override bool IsUnprotected()
         {
             return false;

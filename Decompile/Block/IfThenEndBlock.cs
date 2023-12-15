@@ -65,6 +65,11 @@ namespace LuaDec.Decompile.Block
             throw new System.InvalidOperationException();
         }
 
+        public override bool HasHeader()
+        {
+            return false;
+        }
+
         public override bool IsUnprotected()
         {
             return false;

@@ -1128,7 +1128,7 @@ namespace LuaDec.Decompile
 
             state.skip = new bool[code.Length + 1];
             bool[] skip = state.skip;
-            bool[] labels_handled = new bool[code.Length + 1];
+            bool[] labelsHandled = new bool[code.Length + 1];
 
             int line = 1;
             while (true)
@@ -1150,12 +1150,6 @@ namespace LuaDec.Decompile
                 }
                 else
                 {
-                    if (!labels_handled[line] && state.labels[line])
-                    {
-                        blockStack.Peek().AddStatement(new Label(line));
-                        labels_handled[line] = true;
-                    }
-
                     List<Declaration> rLocals = r.GetNewLocals(line, blockStack.Peek().closeRegister);
                     while (blockContainerIndex < blockContainers.Count && blockContainers[blockContainerIndex].begin <= line)
                     {
@@ -1175,7 +1169,23 @@ namespace LuaDec.Decompile
                             }
                             blockStack.Peek().AddStatement(declaration);
                         }
+
+                        if (!next.HasHeader())
+                        {
+                            if (!labelsHandled[line] && state.labels[line])
+                            {
+                                blockStack.Peek().AddStatement(new Label(line));
+                                labelsHandled[line] = true;
+                            }
+                        }
+
                         blockStack.Push(next);
+                    }
+
+                    if (!labelsHandled[line] && state.labels[line])
+                    {
+                        blockStack.Peek().AddStatement(new Label(line));
+                        labelsHandled[line] = true;
                     }
                 }
 

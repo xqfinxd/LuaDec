@@ -45,6 +45,11 @@ namespace LuaDec.Decompile.Block
             return false;
         }
 
+        public override bool HasHeader()
+        {
+            return false;
+        }
+
         public override void Walk(Walker w)
         {
             w.VisitStatement(this);

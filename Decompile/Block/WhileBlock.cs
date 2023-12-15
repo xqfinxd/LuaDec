@@ -21,6 +21,11 @@ namespace LuaDec.Decompile.Block
             return true;
         }
 
+        public override bool HasHeader()
+        {
+            return true;
+        }
+
         public override int GetLoopback()
         {
             throw new System.InvalidOperationException();

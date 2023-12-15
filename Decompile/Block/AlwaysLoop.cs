@@ -9,11 +9,13 @@ namespace LuaDec.Decompile.Block
         private readonly bool repeat;
 
         private ConstantExpression condition;
+        private Version.WhileFormat whileFormat;
 
         public AlwaysLoop(LFunction function, int begin, int end, CloseType closeType, int closeLine, bool repeat)
              : base(function, begin, end, closeType, closeLine, 0)
         {
             this.repeat = repeat;
+            this.whileFormat = function.header.version.whileFormat.Value;
             condition = null;
         }
 
@@ -35,6 +37,18 @@ namespace LuaDec.Decompile.Block
         public override int GetUnprotectedTarget()
         {
             return begin;
+        }
+
+        public override bool HasHeader()
+        {
+            if (whileFormat == Version.WhileFormat.BottomCondition)
+            {
+                return !repeat;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public override bool IsUnprotected()

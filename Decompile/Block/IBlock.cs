@@ -97,6 +97,8 @@ namespace LuaDec.Decompile.Block
             throw new System.InvalidOperationException();
         }
 
+        public abstract bool HasHeader();
+
         public abstract int GetLoopback();
 
         public virtual int GetUnprotectedLine()
