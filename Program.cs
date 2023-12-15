@@ -58,7 +58,7 @@ namespace LuaDec
         public static void Assemble(string input, string output)
         {
             BinaryWriter outstream = new BinaryWriter(File.OpenWrite(output));
-            Assembler a = new Assembler(new StreamReader(File.OpenRead(input)), outstream);
+            Assembler a = new Assembler(new Configuration(), new StreamReader(File.OpenRead(input)), outstream);
             a.Assemble();
             outstream.Flush();
             outstream.Close();
@@ -110,6 +110,10 @@ namespace LuaDec
                     if (arg == "--rawstring")
                     {
                         config.RawString = true;
+                    }
+                    else if (arg == "--luajit")
+                    {
+                        config.LuaJit = true;
                     }
                     else if (arg == "--nodebug")
                     {
@@ -211,8 +215,9 @@ namespace LuaDec
                             try
                             {
                                 Assembler a = new Assembler(
+                                    config,
                                     new StreamReader(File.OpenRead(fn)),
-                                  new BinaryWriter(File.OpenWrite(config.Output))
+                                    new BinaryWriter(File.OpenWrite(config.Output))
                                 );
                                 a.Assemble();
                             }

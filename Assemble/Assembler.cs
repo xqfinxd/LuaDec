@@ -224,12 +224,12 @@ namespace LuaDec.Assemble
                 }
                 case DirectiveT.INT_SIZE:
                     int_size = a.GetInteger();
-                    intT = BIntegerType.Create50Type(int_size);
+                    intT = BIntegerType.Create50Type(true, int_size, version.allowNegativeInt.Value);
                     break;
 
                 case DirectiveT.SIZE_T_SIZE:
                     size_t_size = a.GetInteger();
-                    sizeT = BIntegerType.Create50Type(size_t_size);
+                    sizeT = BIntegerType.Create50Type(false, size_t_size, false);
                     break;
 
                 case DirectiveT.INSTRUCTION_SIZE:
@@ -810,12 +810,14 @@ namespace LuaDec.Assemble
             public int x;
         }
 
+        private Configuration config;
         private BinaryWriter output;
         private Tokenizer t;
         private Version version;
 
-        public Assembler(StreamReader input, BinaryWriter output)
+        public Assembler(Configuration config, StreamReader input, BinaryWriter output)
         {
+            this.config = config;
             t = new Tokenizer(input);
             this.output = output;
         }
@@ -849,7 +851,7 @@ namespace LuaDec.Assemble
                 throw new AssemblerException("Unsupported version " + tok);
             }
 
-            version = Version.GetVersion(major, minor);
+            version = Version.GetVersion(config, major, minor);
 
             if (version == null)
             {

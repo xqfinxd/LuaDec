@@ -73,6 +73,13 @@ namespace LuaDec
             Lua54
         }
 
+        public enum ListLengthMode
+        {
+            Strict, // Negative is illegal
+            AllowNegative, // Negative treated as zero
+            Ignore, // List length is already known; only accept 0 or else ignore
+        }
+
         public enum VarArgType
         {
             Arg,
@@ -127,6 +134,11 @@ namespace LuaDec
         public readonly Setting<bool> useUpvalueCountInHeader;
         public readonly Setting<VarArgType> varArgtTpe;
         public readonly Setting<WhileFormat> whileFormat;
+        public readonly Setting<bool> allowNegativeInt;
+        public readonly Setting<ListLengthMode> constantsLengthMode;
+        public readonly Setting<ListLengthMode> functionsLengthMode;
+        public readonly Setting<ListLengthMode> localLengthMode;
+        public readonly Setting<ListLengthMode> upvalueLengthMode;
 
         public Op DefaultOp => defaultOp;
         public LConstantType LConstantType => lconstantType;
@@ -139,7 +151,7 @@ namespace LuaDec
         public int VersionMajor => major;
         public int VersionMinor => minor;
 
-        private Version(int major, int minor)
+        private Version(Configuration config, int major, int minor)
         {
             HeaderType headerType;
             StringType stringType;
@@ -179,8 +191,14 @@ namespace LuaDec
                         useIfBreakRewrite = new Setting<bool>(false);
                         useGoto = new Setting<bool>(false);
                         rkOffset = new Setting<int>(250);
+                        {
+                            allowNegativeInt = new Setting<bool>(false);
+                            constantsLengthMode = new Setting<ListLengthMode>(ListLengthMode.Strict);
+                            functionsLengthMode = new Setting<ListLengthMode>(ListLengthMode.Strict);
+                            localLengthMode = new Setting<ListLengthMode>(ListLengthMode.Strict);
+                            upvalueLengthMode = new Setting<ListLengthMode>(ListLengthMode.Strict);
+                        }
                         break;
-
                     case 1:
                         varArgtTpe = new Setting<VarArgType>(VarArgType.Hybrid);
                         useUpvalueCountInHeader = new Setting<bool>(false);
@@ -206,8 +224,15 @@ namespace LuaDec
                         useIfBreakRewrite = new Setting<bool>(false);
                         useGoto = new Setting<bool>(false);
                         rkOffset = new Setting<int>(256);
+                        {
+                            allowNegativeInt = new Setting<bool>(config.LuaJit);
+                            var mode = config.LuaJit ? ListLengthMode.AllowNegative : ListLengthMode.Strict;
+                            constantsLengthMode = new Setting<ListLengthMode>(mode);
+                            functionsLengthMode = new Setting<ListLengthMode>(mode);
+                            localLengthMode = new Setting<ListLengthMode>(mode);
+                            upvalueLengthMode = new Setting<ListLengthMode>(mode);
+                        }
                         break;
-
                     case 2:
                         varArgtTpe = new Setting<VarArgType>(VarArgType.Ellipsis);
                         useUpvalueCountInHeader = new Setting<bool>(false);
@@ -233,6 +258,14 @@ namespace LuaDec
                         useIfBreakRewrite = new Setting<bool>(true);
                         useGoto = new Setting<bool>(true);
                         rkOffset = new Setting<int>(256);
+                        {
+                            allowNegativeInt = new Setting<bool>(config.LuaJit);
+                            var mode = config.LuaJit ? ListLengthMode.AllowNegative : ListLengthMode.Strict;
+                            constantsLengthMode = new Setting<ListLengthMode>(mode);
+                            functionsLengthMode = new Setting<ListLengthMode>(mode);
+                            localLengthMode = new Setting<ListLengthMode>(mode);
+                            upvalueLengthMode = new Setting<ListLengthMode>(mode);
+                        }
                         break;
 
                     case 3:
@@ -260,8 +293,14 @@ namespace LuaDec
                         useIfBreakRewrite = new Setting<bool>(true);
                         useGoto = new Setting<bool>(true);
                         rkOffset = new Setting<int>(256);
+                        {
+                            allowNegativeInt = new Setting<bool>(true);
+                            constantsLengthMode = new Setting<ListLengthMode>(ListLengthMode.Strict);
+                            functionsLengthMode = new Setting<ListLengthMode>(ListLengthMode.Strict);
+                            localLengthMode = new Setting<ListLengthMode>(ListLengthMode.Strict);
+                            upvalueLengthMode = new Setting<ListLengthMode>(ListLengthMode.Strict);
+                        }
                         break;
-
                     case 4:
                         varArgtTpe = new Setting<VarArgType>(VarArgType.Ellipsis);
                         useUpvalueCountInHeader = new Setting<bool>(true);
@@ -287,8 +326,14 @@ namespace LuaDec
                         useIfBreakRewrite = new Setting<bool>(true);
                         useGoto = new Setting<bool>(true);
                         rkOffset = new Setting<int>(-1);
+                        {
+                            allowNegativeInt = new Setting<bool>(true);
+                            constantsLengthMode = new Setting<ListLengthMode>(ListLengthMode.Strict);
+                            functionsLengthMode = new Setting<ListLengthMode>(ListLengthMode.Strict);
+                            localLengthMode = new Setting<ListLengthMode>(ListLengthMode.Strict);
+                            upvalueLengthMode = new Setting<ListLengthMode>(ListLengthMode.Ignore);
+                        }
                         break;
-
                     default:
                         throw new System.ArgumentException();
                 }
@@ -333,9 +378,9 @@ namespace LuaDec
             lopCodeMap = new OpCodeMap(opcodeMap);
         }
 
-        public static Version GetVersion(int major, int minor)
+        public static Version GetVersion(Configuration config, int major, int minor)
         {
-            return new Version(major, minor);
+            return new Version(config, major, minor);
         }
 
         public bool IsEnvTable(string name)

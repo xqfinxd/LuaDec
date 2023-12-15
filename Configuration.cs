@@ -25,6 +25,7 @@ namespace LuaDec
         private bool rawString;
         private bool strictScope;
         private VariableMode variable;
+        private bool luajit;
 
         public OpMode Mode { get => mode; set => mode = value; }
         public string OpMapFile { get => opMapFile; set => opMapFile = value; }
@@ -32,6 +33,7 @@ namespace LuaDec
         public bool RawString { get => rawString; set => rawString = value; }
         public bool StrictScope { get => strictScope; set => strictScope = value; }
         public VariableMode Variable { get => variable; set => variable = value; }
+        public bool LuaJit { get => luajit; set => luajit = value; }
 
         public Configuration()
         {
@@ -41,6 +43,7 @@ namespace LuaDec
             strictScope = false;
             opMapFile = null;
             output = null;
+            luajit = false;
         }
 
         public Configuration(Configuration other)

@@ -81,6 +81,10 @@ namespace LuaDec.Parser
             if (big == 0)
             {
                 int i = n;
+                if (i < 0)
+                {
+                    throw new System.InvalidOperationException("Illegal negative list length");
+                }
                 while (i-- != 0)
                 {
                     thunk.Invoke();
@@ -89,11 +93,30 @@ namespace LuaDec.Parser
             else
             {
                 BigInteger i = big;
+                if (i.Sign < 0)
+                {
+                    throw new System.InvalidOperationException("Illegal negative list length");
+                }
                 while (i.Sign > 0)
                 {
                     thunk.Invoke();
                     i -= BigInteger.One;
                 }
+            }
+        }
+
+        public int Signum()
+        {
+            if (big == 0)
+            {
+                if (n > 0) return 1;
+                if (n < 0) return -1;
+                if (n == 0) return 0;
+                throw new System.InvalidOperationException();
+            }
+            else
+            {
+                return big.Sign;
             }
         }
 

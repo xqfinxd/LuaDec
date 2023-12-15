@@ -184,15 +184,10 @@ namespace LuaDec.Parser
         protected override void ParseDebug(BinaryReader buffer, BHeader header, LFunctionParseState s)
         {
             // TODO: process line info correctly
-            s.lines = (new BIntegerType50(1)).ParseList(buffer, header);
+            s.lines = (new BIntegerType50(false, 1, false)).ParseList(buffer, header);
             s.abslineinfo = header.absLineInfo.ParseList(buffer, header);
             s.locals = header.localType.ParseList(buffer, header);
-            BList<LString> upvalueNames = header.stringType.ParseList(buffer, header);
-            for (int i = 0; i < upvalueNames.length.AsInt(); i++)
-            {
-                s.upvalues[i].bname = upvalueNames.Get(i);
-                s.upvalues[i].name = s.upvalues[i].bname.Deref();
-            }
+            ParseUpvalueNames(buffer, header, s);
         }
 
         protected override void ParseMain(BinaryReader buffer, BHeader header, LFunctionParseState s)
@@ -339,13 +334,23 @@ namespace LuaDec.Parser
             {
                 Console.WriteLine("-- beginning to parse locals list");
             }
-            s.locals = header.localType.ParseList(buffer, header);
+            s.locals = header.localType.ParseList(buffer, header, header.version.localLengthMode.Value);
+            ParseUpvalueNames(buffer, header, s);
+        }
+        protected void ParseUpvalueNames(BinaryReader buffer, BHeader header, LFunctionParseState s)
+        {
+            
             if (header.debug)
             {
-                Console.WriteLine("-- beginning to parse upvalues list");
+                Console.WriteLine("-- beginning to parse upvalue names list");
             }
-            BList<LString> upvalueNames = header.stringType.ParseList(buffer, header);
-            for (int i = 0; i < upvalueNames.length.AsInt(); i++)
+            BList<LString> upvalueNames = header.stringType.ParseList(
+                buffer,
+                header,
+                header.version.upvalueLengthMode.Value,
+                new BInteger(s.lenUpvalues));
+
+            for (int i = 0; i < Math.Min(s.upvalues.Length, upvalueNames.length.AsInt()); i++)
             {
                 s.upvalues[i].bname = upvalueNames.Get(i);
                 s.upvalues[i].name = s.upvalues[i].bname.Deref();
@@ -465,7 +470,22 @@ namespace LuaDec.Parser
             {
                 abslineinfo = s.abslineinfo.AsArray(new LAbsLineInfo[s.abslineinfo.length.AsInt()]);
             }
-            LFunction lfunc = new LFunction(header, s.name, s.lineBegin, s.lineEnd, s.code, lines, abslineinfo, s.locals.AsArray(new LLocal[s.locals.length.AsInt()]), s.constants.AsArray(new LObject[s.constants.length.AsInt()]), s.upvalues, s.functions.AsArray(new LFunction[s.functions.length.AsInt()]), s.maximumStackSize, s.lenUpvalues, s.lenParameter, s.vararg);
+            LFunction lfunc = new LFunction(
+                header,
+                s.name,
+                s.lineBegin,
+                s.lineEnd,
+                s.code,
+                lines,
+                abslineinfo,
+                s.locals.AsArray(new LLocal[Math.Max(0, s.locals.length.AsInt())]),
+                s.constants.AsArray(new LObject[Math.Max(0, s.constants.length.AsInt())]),
+                s.upvalues,
+                s.functions.AsArray(new LFunction[Math.Max(0, s.functions.length.AsInt())]),
+                s.maximumStackSize,
+                s.lenUpvalues,
+                s.lenParameter,
+                s.vararg);
             foreach (LFunction child in lfunc.functions)
             {
                 child.parent = lfunc;

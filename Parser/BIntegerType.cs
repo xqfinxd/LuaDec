@@ -6,51 +6,66 @@ namespace LuaDec.Parser
 {
     internal class BIntegerType50 : BIntegerType
     {
+        public readonly bool signed;
         public readonly int intSize;
+        public readonly bool allowNegative;
 
-        public BIntegerType50(int intSize)
+        public BIntegerType50(bool signed, int intSize, bool allowNegative)
         {
+            this.signed = signed;
             this.intSize = intSize;
+            this.allowNegative = allowNegative;
         }
 
         protected BInteger RawParse(BinaryReader buffer, BHeader header)
         {
             BInteger value;
-            switch (intSize)
+            if (signed && (intSize == 0 || intSize == 1 || intSize == 2 || intSize == 4))
             {
-                case 0:
-                    value = new BInteger(0);
-                    break;
-
-                case 1:
-                    value = new BInteger(buffer.ReadByte());
-                    break;
-
-                case 2:
-                    value = new BInteger(buffer.ReadInt16());
-                    break;
-
-                case 4:
-                    value = new BInteger(buffer.ReadInt32());
-                    break;
-
-                default:
+                switch (intSize)
                 {
-                    byte[] bytes = new byte[intSize];
-                    int start = 0;
-                    int delta = 1;
-                    if (BitConverter.IsLittleEndian)
-                    {
-                        start = intSize - 1;
-                        delta = -1;
-                    }
-                    for (int i = start; i >= 0 && i < intSize; i += delta)
-                    {
-                        bytes[i] = buffer.ReadByte();
-                    }
-                    value = new BInteger(new BigInteger(bytes));
+                    case 0:
+                        value = new BInteger(0);
+                        break;
+                    case 1:
+                        value = new BInteger(buffer.ReadByte());
+                        break;
+                    case 2:
+                        value = new BInteger(buffer.ReadInt16());
+                        break;
+                    case 4:
+                        value = new BInteger(buffer.ReadInt32());
+                        break;
+                    default:
+                        throw new System.InvalidOperationException();
                 }
-                break;
+            }
+            else
+            {
+                byte[] bytes = new byte[intSize];
+                int start = 0;
+                int delta = 1;
+                if (!BitConverter.IsLittleEndian)
+                {
+                    start = intSize - 1;
+                    delta = -1;
+                }
+                for (int i = start; i >= 0 && i < intSize; i += delta)
+                {
+                    bytes[i] = buffer.ReadByte();
+                }
+
+                var innerVal = new BigInteger(bytes);
+                if (!signed && innerVal.Sign < 0)
+                {
+                    innerVal = -innerVal;
+                }
+                value = new BInteger(innerVal);
+            }
+
+            if (!allowNegative && value.Signum() < 0)
+            {
+                throw new System.InvalidOperationException("Illegal number");
             }
             return value;
         }
@@ -135,9 +150,9 @@ namespace LuaDec.Parser
 
     public class BIntegerType : BObjectType<BInteger>
     {
-        public static BIntegerType Create50Type(int intSize)
+        public static BIntegerType Create50Type(bool signed, int intSize, bool allowNegative)
         {
-            return new BIntegerType50(intSize);
+            return new BIntegerType50(signed, intSize, allowNegative);
         }
 
         public static BIntegerType Create54()

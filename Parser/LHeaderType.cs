@@ -353,7 +353,7 @@ namespace LuaDec.Parser
             {
                 Console.WriteLine("-- int size: " + intSize);
             }
-            s.intT = new BIntegerType50(intSize);
+            s.intT = new BIntegerType50(true, intSize, header.version.allowNegativeInt.Value);
         }
 
         protected abstract void ParseMain(BinaryReader buffer, BHeader header, LHeaderParseState s);
@@ -419,7 +419,7 @@ namespace LuaDec.Parser
             {
                 Console.WriteLine("-- size_t size: " + sizeTSize);
             }
-            s.sizeT = new BIntegerType50(sizeTSize);
+            s.sizeT = new BIntegerType50(false, sizeTSize, false);
         }
 
         protected void ParseTail(BinaryReader buffer, BHeader header, LHeaderParseState s)
