@@ -5,15 +5,21 @@
         public static readonly LString EmptyString = new LString("");
 
         public readonly string value;
+        public readonly char terminator;
         public bool islong;
 
-        public LString(string value, bool islong)
+        public LString(string value, char terminator, bool islong)
         {
             this.value = value;
             this.islong = islong;
+            this.terminator = terminator;
         }
 
-        public LString(string value) : this(value, false)
+        public LString(string value, char terminator) : this(value, terminator, false)
+        {
+        }
+
+        public LString(string value) : this(value, '\0', false)
         {
         }
 

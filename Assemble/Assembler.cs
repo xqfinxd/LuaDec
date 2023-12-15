@@ -153,7 +153,7 @@ namespace LuaDec.Assemble
 
         private LString ConvertLongString(BHeader header, string str)
         {
-            return new LString(str, true);
+            return new LString(str, '\0', true);
         }
 
         private LString ConvertString(BHeader header, string str)
@@ -164,7 +164,7 @@ namespace LuaDec.Assemble
             }
             else
             {
-                return new LString(str);
+                return new LString(str, '\0');
             }
         }
 

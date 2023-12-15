@@ -20,17 +20,13 @@ namespace LuaDec.Parser
             else
             {
                 char last = b[b.Length - 1];
-                if (last != '\0')
-                {
-                    throw new System.InvalidOperationException("string value does not have a null terminator");
-                }
                 b.Remove(b.Length - 1, 1);
                 string s = b.ToString();
                 if (header.debug)
                 {
                     Console.WriteLine("-- parsed <string> \"" + s + "\"");
                 }
-                return new LString(s);
+                return new LString(s, last);
             }
         }
 
