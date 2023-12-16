@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LuaDec.Parser;
+using System;
 using System.Text;
 
 namespace LuaDec.Decompile
@@ -384,33 +385,35 @@ namespace LuaDec.Decompile
             operands = fmts;
         }
 
-        /**
-         * SETLIST sometimes uses an extra byte without tagging it.
-         * This means that the value in the extra byte can be detected as any other opcode unless it is recognized.
-         */
-
-        private static string constantOperand(int field)
+        private static string ConstantOperand(int field)
         {
             return "k" + field;
         }
 
-        private static string fixedOperand(int field)
+        private static string FixedOperand(int field)
         {
             return field.ToString();
         }
 
-        private static string functionOperand(int field)
+        private static string FunctionOperand(int field)
         {
             return "f" + field;
         }
 
-        private static string registerOperand(int field)
+        private static string RegisterOperand(int field)
         {
             return "r" + field;
         }
 
-        private static string tostringHelper(string name, OperandFormat[] operands, int codepoint, CodeExtract ex, string label)
+        private static string ToStringHelper(
+            LFunction function,
+            string name,
+            OperandFormat[] operands,
+            int codepoint,
+            CodeExtract ex,
+            string label)
         {
+            int constant = -1;
             int width = 10;
             StringBuilder b = new StringBuilder();
             b.Append(name);
@@ -440,36 +443,41 @@ namespace LuaDec.Decompile
                 {
                     case OperandFormat.Format.ImmediateUInt:
                     case OperandFormat.Format.ImmediateFloat:
-                    case OperandFormat.Format.Raw: parameters[i] = fixedOperand(x); break;
-                    case OperandFormat.Format.ImmediateSInt: parameters[i] = fixedOperand(x - field.Max() / 2); break;
-                    case OperandFormat.Format.Register: parameters[i] = registerOperand(x); break;
-                    case OperandFormat.Format.Upvalue: parameters[i] = upvalueOperand(x); break;
+                    case OperandFormat.Format.Raw: parameters[i] = FixedOperand(x); break;
+                    case OperandFormat.Format.ImmediateSInt: parameters[i] = FixedOperand(x - field.Max() / 2); break;
+                    case OperandFormat.Format.Register: parameters[i] = RegisterOperand(x); break;
+                    case OperandFormat.Format.Upvalue: parameters[i] = UpvalueOperand(x); break;
                     case OperandFormat.Format.RegisterK:
                         if (ex.IsK(x))
                         {
-                            parameters[i] = constantOperand(ex.GetK(x));
+                            constant = ex.GetK(x);
+                            parameters[i] = ConstantOperand(constant);
                         }
                         else
                         {
-                            parameters[i] = registerOperand(x);
+                            parameters[i] = RegisterOperand(x);
                         }
                         break;
 
                     case OperandFormat.Format.RegisterK54:
                         if (ex.k.Extract(codepoint) != 0)
                         {
-                            parameters[i] = constantOperand(x);
+                            constant = x;
+                            parameters[i] = ConstantOperand(x);
                         }
                         else
                         {
-                            parameters[i] = registerOperand(x);
+                            parameters[i] = RegisterOperand(x);
                         }
                         break;
 
                     case OperandFormat.Format.Constant:
                     case OperandFormat.Format.ConstantNumber:
-                    case OperandFormat.Format.ConstantString: parameters[i] = constantOperand(x); break;
-                    case OperandFormat.Format.Function: parameters[i] = functionOperand(x); break;
+                    case OperandFormat.Format.ConstantString:
+                        constant = x;
+                        parameters[i] = ConstantOperand(x);
+                        break;
+                    case OperandFormat.Format.Function: parameters[i] = FunctionOperand(x); break;
                     case OperandFormat.Format.Jump:
                         if (label != null)
                         {
@@ -477,7 +485,7 @@ namespace LuaDec.Decompile
                         }
                         else
                         {
-                            parameters[i] = fixedOperand(x + operands[i].offset);
+                            parameters[i] = FixedOperand(x + operands[i].offset);
                         }
                         break;
 
@@ -488,7 +496,7 @@ namespace LuaDec.Decompile
                         }
                         else
                         {
-                            parameters[i] = fixedOperand(-x);
+                            parameters[i] = FixedOperand(-x);
                         }
                         break;
 
@@ -505,25 +513,39 @@ namespace LuaDec.Decompile
                 }
                 b.Append(parameter);
             }
+            if (function != null && constant >= 0)
+            {
+                b.Append(" ; ");
+                b.Append(ConstantOperand(constant));
+                if (constant < function.constants.Length)
+                {
+                    b.Append(" = ");
+                    b.Append(function.constants[constant].ToShortString());
+                }
+                else
+                {
+                    b.Append(" out of range");
+                }
+            }
             return b.ToString();
         }
 
-        private static string upvalueOperand(int field)
+        private static string UpvalueOperand(int field)
         {
             return "u" + field;
         }
 
-        public static string defaultTostring(int codepoint, Version version, CodeExtract ex)
+        public static string DefaultToString(LFunction function, int codepoint, Version version, CodeExtract ex)
         {
-            return tostringHelper(String.Format("op{0:D2}", ex.op.Extract(codepoint)), version.DefaultOp.operands, codepoint, ex, null);
+            return ToStringHelper(function, string.Format("op{0:D2}", ex.op.Extract(codepoint)), version.DefaultOp.operands, codepoint, ex, null);
         }
 
-        public string codePointTostring(int codepoint, CodeExtract ex, string label)
+        public string CodePointTostring(LFunction function, int codepoint, CodeExtract ex, string label)
         {
-            return tostringHelper(name, operands, codepoint, ex, label);
+            return ToStringHelper(function, name, operands, codepoint, ex, label);
         }
 
-        public bool hasExtraByte(int codepoint, CodeExtract ex)
+        public bool HasExtraByte(int codepoint, CodeExtract ex)
         {
             if (Type == OpT.SETLIST)
             {
@@ -535,7 +557,7 @@ namespace LuaDec.Decompile
             }
         }
 
-        public bool hasJump()
+        public bool HasJump()
         {
             for (int i = 0; i < Operands.Length; ++i)
             {
@@ -548,7 +570,7 @@ namespace LuaDec.Decompile
             return false;
         }
 
-        public int jumpField(int codepoint, CodeExtract ex)
+        public int JumpField(int codepoint, CodeExtract ex)
         {
             switch (Type)
             {
@@ -576,12 +598,7 @@ namespace LuaDec.Decompile
             }
         }
 
-        /**
-         * Returns the target register of the instruction at the given
-         * line or -1 if the instruction does not have a unique target.
-         */
-
-        public int target(int codepoint, CodeExtract ex)
+        public int Target(int codepoint, CodeExtract ex)
         {
             switch (Type)
             {

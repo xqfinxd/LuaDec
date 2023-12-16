@@ -13,5 +13,10 @@ namespace LuaDec.Parser
         {
             throw new NotImplementedException();
         }
+
+        public virtual string ToShortString()
+        {
+            return ToPrintable();
+        }
     }
 }

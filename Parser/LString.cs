@@ -42,6 +42,21 @@
             return false;
         }
 
+        public override string ToShortString()
+        {
+            if (this == EmptyString)
+            {
+                return "null";
+            }
+            else
+            {
+                int LIMIT = 20;
+                string suffix = "";
+                if (value.Length > LIMIT) suffix = " (truncated)";
+                return Util.StringUtils.ToString(value, LIMIT) + suffix;
+            }
+        }
+
         public override int GetHashCode()
         {
             return base.GetHashCode();

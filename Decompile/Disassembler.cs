@@ -102,7 +102,7 @@ namespace LuaDec.Decompile
             for (int line = 1; line <= function.code.Length; line++)
             {
                 Op op = code.GetOp(line);
-                if (op != null && op.hasJump())
+                if (op != null && op.HasJump())
                 {
                     int target = code.Target(line);
                     if (target >= 1 && target <= label.Length)
@@ -131,7 +131,7 @@ namespace LuaDec.Decompile
                 }
                 Op op = code.GetOp(line);
                 string cpLabel = null;
-                if (op != null && op.hasJump())
+                if (op != null && op.HasJump())
                 {
                     int target = code.Target(line);
                     if (target >= 1 && target <= code.Length)
@@ -141,17 +141,22 @@ namespace LuaDec.Decompile
                 }
                 if (op == null)
                 {
-                    output.WriteLine(Op.defaultTostring(code.CodePoint(line), function.header.version, code.GetExtractor()));
+                    output.WriteLine(Op.DefaultToString(
+                        function,
+                        code.CodePoint(line),
+                        function.header.version,
+                        code.GetExtractor()));
                 }
                 else
                 {
-                    output.WriteLine(op.codePointTostring(code.CodePoint(line), code.GetExtractor(), cpLabel));
+                    output.WriteLine(op.CodePointTostring(function, code.CodePoint(line), code.GetExtractor(), cpLabel));
                 }
-                //output.println("\t" + code.opcode(line) + " " + code.A(line) + " " + code.B(line) + " " + code.C(line) + " " + code.Bx(line) + " " + code.sBx(line) + " " + code.codepoint(line));
             }
             for (int line = function.code.Length + 1; line <= function.lines.Length; line++)
             {
-                if (function.absLineInfo != null && abslineinfoindex < function.absLineInfo.Length && function.absLineInfo[abslineinfoindex].pc == line - 1)
+                if (function.absLineInfo != null
+                    && abslineinfoindex < function.absLineInfo.Length
+                    && function.absLineInfo[abslineinfoindex].pc == line - 1)
                 {
                     LAbsLineInfo info = function.absLineInfo[abslineinfoindex++];
                     output.WriteLine(".abslineinfo\t" + info.pc + "\t" + info.line);

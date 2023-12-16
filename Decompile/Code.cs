@@ -22,7 +22,7 @@ namespace LuaDec.Decompile
             {
                 int line = i + 1;
                 Op op = GetOp(line);
-                extraByte[i] = op != null && op.hasExtraByte(CodePoint(line), extractor);
+                extraByte[i] = op != null && op.HasExtraByte(CodePoint(line), extractor);
             }
             upvalue = new bool[Length];
             if (function.header.version.upvalueDeclarationType.Value == Version.UpvalueDeclarationType.Inline)
@@ -130,12 +130,12 @@ namespace LuaDec.Decompile
 
         public int Target(int line)
         {
-            return line + 1 + GetOp(line).jumpField(CodePoint(line), extractor);
+            return line + 1 + GetOp(line).JumpField(CodePoint(line), extractor);
         }
 
         public string ToString(int line)
         {
-            return GetOp(line).codePointTostring(CodePoint(line), extractor, null);
+            return GetOp(line).CodePointTostring(null, CodePoint(line), extractor, null);
         }
     }
 }

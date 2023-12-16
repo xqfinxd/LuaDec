@@ -11,10 +11,17 @@ namespace LuaDec.Util
 
         public static string ToString(string s)
         {
+            return ToString(s, -1);
+        }
+        public static String ToString(string s, int limit)
+        {
             if (s == null) return "null";
+            if (limit < 0) limit = s.Length;
+            limit = Math.Min(limit, s.Length);
+
             StringBuilder b = new StringBuilder();
             b.Append('"');
-            for (int i = 0; i < s.Length; i++)
+            for (int i = 0; i < limit; i++)
             {
                 char c = s[i];
                 int ci = (int)c;
