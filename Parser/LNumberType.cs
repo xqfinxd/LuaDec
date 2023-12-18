@@ -9,8 +9,8 @@ namespace LuaDec.Parser
         public enum NumberMode
         {
             Number, // Used for Lua 5.0 - 5.2 where numbers can represent ints or floats
-            Float, // Used for floats in Lua 5.3
-            Integer, // Used for ints in Lua 5.3
+            Float, // Used for floats in Lua 5.3+
+            Integer, // Used for ints in Lua 5.3+
         }
 
         public readonly bool integral;
@@ -53,6 +53,40 @@ namespace LuaDec.Parser
                 }
             }
             throw new System.InvalidOperationException("The input chunk has an unsupported Lua number format");
+        }
+
+        public LNumber CreateNaN(long bits)
+        {
+            if (integral)
+            {
+                throw new System.InvalidOperationException();
+            }
+            else
+            {
+                switch (size)
+                {
+                    case 4:
+                    {
+                        uint fbits = 0x7FC00000;
+                        ulong ubits = (ulong)bits;
+                        if (bits < 0)
+                        {
+                            ubits ^= 0x8000000000000000L;
+                            fbits ^= 0x80000000;
+                        }
+                        fbits |= (uint)(ubits >> LFloatNumber.NAN_SHIFT_OFFSET);
+                        float number = BitConverter.ToSingle(BitConverter.GetBytes(fbits), 0);
+                        return new LFloatNumber(number, mode);
+                    }
+                    case 8:
+                    {
+                        double number = BitConverter.ToDouble(BitConverter.GetBytes(0x7FF8000000000000L ^ bits), 0);
+                        return new LDoubleNumber(number, mode);
+                    }
+                    default:
+                        throw new System.InvalidOperationException();
+                }
+            }
         }
 
         public LNumber Create(double x)

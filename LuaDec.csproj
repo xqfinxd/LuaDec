@@ -114,6 +114,7 @@
     <Compile Include="Decompile\Operation\UpvalueSet.cs" />
     <Compile Include="Decompile\Output.cs" />
     <Compile Include="Decompile\IOutputProvider.cs" />
+    <Compile Include="Decompile\PrintFlag.cs" />
     <Compile Include="Decompile\Registers.cs" />
     <Compile Include="Decompile\Statement\Assignment.cs" />
     <Compile Include="Decompile\Statement\Declare.cs" />

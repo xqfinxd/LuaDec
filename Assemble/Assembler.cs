@@ -86,31 +86,34 @@ namespace LuaDec.Assemble
                     case AssemblerConstant.Type.NIL:
                         o = LNil.NIL;
                         break;
-
                     case AssemblerConstant.Type.BOOL:
                         o = constant.boolValue ? LBoolean.LTRUE : LBoolean.LFALSE;
                         break;
-
                     case AssemblerConstant.Type.NUMBER:
                         o = header.numberType.Create(constant.numberValue);
                         break;
-
                     case AssemblerConstant.Type.INT:
                         o = header.longType.Create(constant.intValue);
                         break;
-
                     case AssemblerConstant.Type.FLOAT:
                         o = header.doubleType.Create(constant.numberValue);
                         break;
-
                     case AssemblerConstant.Type.STRING:
                         o = ConvertString(header, constant.stringValue);
                         break;
-
                     case AssemblerConstant.Type.LONGSTRING:
                         o = ConvertLongString(header, constant.stringValue);
                         break;
-
+                    case AssemblerConstant.Type.NAN:
+                        if (header.numberType != null)
+                        {
+                            o = header.numberType.CreateNaN(constant.nanValue);
+                        }
+                        else
+                        {
+                            o = header.longType.CreateNaN(constant.nanValue);
+                        }
+                        break;
                     default:
                         throw new System.InvalidOperationException();
                 }
@@ -358,14 +361,16 @@ namespace LuaDec.Assemble
             FLOAT,
             STRING,
             LONGSTRING,
+            NAN,
         }
 
+        public Type type;
+        public string name;
         public bool boolValue;
         public BigInteger intValue;
-        public string name;
         public double numberValue;
         public string stringValue;
-        public Type type;
+        public long nanValue;
     }
 
     internal class AssemblerFunction
@@ -598,12 +603,31 @@ namespace LuaDec.Assemble
                         constant.type = AssemblerConstant.Type.STRING;
                         constant.stringValue = null;
                     }
+                    else if (value == "NaN")
+                    {
+                        constant.type = AssemblerConstant.Type.NAN;
+                        constant.nanValue = 0;
+                    }
                     else
                     {
                         try
                         {
-                            // TODO: better check
-                            if (chunk.number != null)
+                            if (value.StartsWith("NaN+") || value.StartsWith("NaN-"))
+                            {
+                                ulong bits = ulong.Parse(value.Substring(4), System.Globalization.NumberStyles.HexNumber);
+                                const ulong ulongNaN = 0x7FF8000000000000L;
+                                if (bits < 0 || (bits & ulongNaN) != 0)
+                                {
+                                    throw new AssemblerException("Unrecognized NaN value: " + value);
+                                }
+                                if (value.StartsWith("NaN-"))
+                                {
+                                    bits ^= 0x8000000000000000L;
+                                }
+                                constant.type = AssemblerConstant.Type.NAN;
+                                constant.nanValue = (long)bits;
+                            }
+                            else if (chunk.number != null)
                             {
                                 constant.numberValue = double.Parse(value);
                                 constant.type = AssemblerConstant.Type.NUMBER;
@@ -624,7 +648,7 @@ namespace LuaDec.Assemble
                         }
                         catch (FormatException)
                         {
-                            throw new System.InvalidOperationException("Unrecognized constant value: " + value);
+                            throw new AssemblerException("Unrecognized constant value: " + value);
                         }
                     }
                     constants.Add(constant);

@@ -18,7 +18,7 @@
             return base.GetHashCode();
         }
 
-        public override string ToPrintable()
+        public override string ToPrintable(int flags)
         {
             return "nil";
         }

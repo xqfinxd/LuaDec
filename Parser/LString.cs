@@ -1,4 +1,7 @@
-﻿namespace LuaDec.Parser
+﻿using LuaDec.Decompile;
+using LuaDec.Util;
+
+namespace LuaDec.Parser
 {
     public class LString : LObject
     {
@@ -42,27 +45,12 @@
             return false;
         }
 
-        public override string ToShortString()
-        {
-            if (this == EmptyString)
-            {
-                return "null";
-            }
-            else
-            {
-                int LIMIT = 20;
-                string suffix = "";
-                if (value.Length > LIMIT) suffix = " (truncated)";
-                return Util.StringUtils.ToString(value, LIMIT) + suffix;
-            }
-        }
-
         public override int GetHashCode()
         {
             return base.GetHashCode();
         }
 
-        public override string ToPrintable()
+        public override string ToPrintable(int flags)
         {
             if (this == EmptyString)
             {
@@ -71,8 +59,18 @@
             else
             {
                 string prefix = "";
+                string suffix = "";
                 if (islong) prefix = "L";
-                return prefix;
+                if (PrintFlag.test(flags, PrintFlag.SHORT))
+                {
+                    const int LIMIT = 20;
+                    if (value.Length > LIMIT) suffix = " (truncated)";
+                    return prefix + StringUtils.ToString(value, LIMIT) + suffix;
+                }
+                else
+                {
+                    return prefix + StringUtils.ToString(value);
+                }
             }
         }
     }

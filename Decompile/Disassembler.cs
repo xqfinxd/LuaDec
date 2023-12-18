@@ -25,6 +25,7 @@ namespace LuaDec.Decompile
 
         private void Disassemble(Output output, int level, int index)
         {
+            int printFlags = PrintFlag.DISASSEMBLER;
             if (parent == null)
             {
                 output.WriteLine(".version\t" + function.header.version.Name);
@@ -65,7 +66,7 @@ namespace LuaDec.Decompile
 
             foreach (Directive directive in function.header.functionType.GetDirectives())
             {
-                directive.Disassemble(output, function.header, function);
+                directive.Disassemble(output, function.header, function, printFlags);
             }
             output.WriteLine();
 
@@ -74,7 +75,7 @@ namespace LuaDec.Decompile
                 for (int local = 1; local <= function.locals.Length; local++)
                 {
                     LLocal l = function.locals[local - 1];
-                    output.WriteLine(".local\t" + l.name.ToPrintable() + "\t" + l.start + "\t" + l.end);
+                    output.WriteLine(".local\t" + l.name.ToPrintable(printFlags) + "\t" + l.start + "\t" + l.end);
                 }
                 output.WriteLine();
             }
@@ -93,7 +94,7 @@ namespace LuaDec.Decompile
             {
                 for (int constant = 1; constant <= function.constants.Length; constant++)
                 {
-                    output.WriteLine(".constant\tk" + (constant - 1) + "\t" + function.constants[constant - 1].ToPrintable());
+                    output.WriteLine(".constant\tk" + (constant - 1) + "\t" + function.constants[constant - 1].ToPrintable(printFlags));
                 }
                 output.WriteLine();
             }
@@ -143,6 +144,7 @@ namespace LuaDec.Decompile
                 if (op == null)
                 {
                     output.WriteLine(Op.DefaultToString(
+                        printFlags,
                         function,
                         code.CodePoint(line),
                         function.header.version,
@@ -152,6 +154,7 @@ namespace LuaDec.Decompile
                 else
                 {
                     output.WriteLine(op.CodePointTostring(
+                        printFlags,
                         function,
                         code.CodePoint(line),
                         code.GetExtractor(),

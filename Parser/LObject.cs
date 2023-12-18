@@ -9,14 +9,9 @@ namespace LuaDec.Parser
             throw new NotImplementedException();
         }
 
-        public virtual string ToPrintable()
+        public virtual string ToPrintable(int flags)
         {
             throw new NotImplementedException();
-        }
-
-        public virtual string ToShortString()
-        {
-            return ToPrintable();
         }
     }
 }

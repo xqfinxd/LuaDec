@@ -22,7 +22,7 @@
             return base.GetHashCode();
         }
 
-        public override string ToString()
+        public override string ToPrintable(int flags)
         {
             return value.ToString();
         }

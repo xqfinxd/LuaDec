@@ -13,7 +13,7 @@ namespace LuaDec.Util
         {
             return ToString(s, -1);
         }
-        public static String ToString(string s, int limit)
+        public static string ToString(string s, int limit)
         {
             if (s == null) return "null";
             if (limit < 0) limit = s.Length;

@@ -113,12 +113,12 @@ namespace LuaDec.Assemble
             }
         }
 
-        public void Disassemble(Output output, BHeader chunk, LFunction function)
+        public void Disassemble(Output output, BHeader chunk, LFunction function, int printFlags)
         {
             output.Write(this.Token + "\t");
             switch (value)
             {
-                case DirectiveT.SOURCE: output.WriteLine(function.name.ToPrintable()); break;
+                case DirectiveT.SOURCE: output.WriteLine(function.name.ToPrintable(printFlags)); break;
                 case DirectiveT.LINEDEFINED: output.WriteLine(function.lineDefined.ToString()); break;
                 case DirectiveT.LASTLINEDEFINED: output.WriteLine(function.lastLineDefined.ToString()); break;
                 case DirectiveT.NUMPARAMS: output.WriteLine(function.numParams.ToString()); break;

@@ -135,7 +135,7 @@ namespace LuaDec.Decompile
 
         public string ToString(int line)
         {
-            return GetOp(line).CodePointTostring(null, CodePoint(line), extractor, null, false);
+            return GetOp(line).CodePointTostring(0, null, CodePoint(line), extractor, null, false);
         }
     }
 }

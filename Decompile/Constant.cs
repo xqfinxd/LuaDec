@@ -181,7 +181,7 @@ namespace LuaDec.Decompile
                     break;
 
                 case Type.NUMBER:
-                    output.Write(numberValue.ToPrintable());
+                    output.Write(numberValue.ToPrintable(0));
                     break;
 
                 case Type.STRING:
