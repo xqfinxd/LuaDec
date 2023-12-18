@@ -10,6 +10,8 @@ namespace LuaDec
             Decompile,
             Disassemble,
             Assemble,
+            Help,
+            Version,
         }
 
         public enum VariableMode

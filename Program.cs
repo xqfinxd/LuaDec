@@ -87,14 +87,41 @@ namespace LuaDec
 
         public static void Error(string err, bool usage)
         {
+            WriteLuaDecString(Console.Error);
             Console.Error.WriteLine("unluac v" + Version);
             Console.Error.Write("  error: ");
             Console.Error.WriteLine(err);
             if (usage)
             {
+                WriteUsage(Console.Error);
+                Console.Error.WriteLine("For information about options, use option: --help");
                 Console.Error.WriteLine("  usage: java -jar unluac.jar [options] <file>");
             }
             Environment.Exit(1);
+        }
+
+        public static void Help()
+        {
+            WriteLuaDecString(Console.Out);
+            WriteUsage(Console.Out);
+            Console.WriteLine("Available options are:");
+            Console.WriteLine("  --assemble       assemble given disassembly listing");
+            Console.WriteLine("  --disassemble    disassemble instead of decompile");
+            Console.WriteLine("  --nodebug        ignore debugging information in input file");
+            Console.WriteLine("  --opmap <file>   use opcode mapping specified in <file>");
+            Console.WriteLine("  --output <file>  output to <file> instead of stdout");
+            Console.WriteLine("  --rawstring      copy string bytes directly to output");
+            Console.WriteLine("  --luaj           emulate Luaj's permissive parser");
+        }
+
+        private static void WriteLuaDecString(TextWriter output)
+        {
+            output.WriteLine("unluac v" + Version);
+        }
+
+        private static void WriteUsage(TextWriter output)
+        {
+            output.WriteLine("  usage: java -jar unluac.jar [options] <file>");
         }
 
         public static void Main(string[] args)
@@ -126,6 +153,14 @@ namespace LuaDec
                     else if (arg == "--assemble")
                     {
                         config.Mode = Configuration.OpMode.Assemble;
+                    }
+                    else if (arg == "--help")
+                    {
+                        config.Mode = Configuration.OpMode.Help;
+                    }
+                    else if (arg == "--version")
+                    {
+                        config.Mode = Configuration.OpMode.Version;
                     }
                     else if (arg == "--output" || arg == "-o")
                     {
@@ -165,7 +200,9 @@ namespace LuaDec
                     Error("too many arguments: " + arg, true);
                 }
             }
-            if (fn == null)
+            if (fn == null
+                && config.Mode != Configuration.OpMode.Help
+                && config.Mode != Configuration.OpMode.Version)
             {
                 Error("no input file provided", true);
             }
@@ -173,6 +210,12 @@ namespace LuaDec
             {
                 switch (config.Mode)
                 {
+                    case Configuration.OpMode.Help:
+                        Help();
+                        break;
+                    case Configuration.OpMode.Version:
+                        Console.WriteLine(Version);
+                        break;
                     case Configuration.OpMode.Decompile:
                     {
                         LFunction lmain = null;
