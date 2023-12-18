@@ -91,7 +91,7 @@ namespace LuaDec.Parser
                 }
                 else if (float.IsNaN(number))
                 {
-                    if (PrintFlag.test(flags, PrintFlag.DISASSEMBLER))
+                    if (PrintFlag.Test(flags, PrintFlag.DISASSEMBLER))
                     {
                         uint bits = BitConverter.ToUInt32(BitConverter.GetBytes(number), 0);
                         int canonical = 0x7FC00000;
@@ -197,7 +197,7 @@ namespace LuaDec.Parser
                 }
                 else if (double.IsNaN(number))
                 {
-                    if (PrintFlag.test(flags, PrintFlag.DISASSEMBLER))
+                    if (PrintFlag.Test(flags, PrintFlag.DISASSEMBLER))
                     {
                         ulong bits = BitConverter.ToUInt64(BitConverter.GetBytes(number), 0);
                         ulong canonical = 0x7FF8000000000000L;

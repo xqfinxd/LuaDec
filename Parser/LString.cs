@@ -61,7 +61,7 @@ namespace LuaDec.Parser
                 string prefix = "";
                 string suffix = "";
                 if (islong) prefix = "L";
-                if (PrintFlag.test(flags, PrintFlag.SHORT))
+                if (PrintFlag.Test(flags, PrintFlag.SHORT))
                 {
                     const int LIMIT = 20;
                     if (value.Length > LIMIT) suffix = " (truncated)";
