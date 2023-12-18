@@ -22,11 +22,13 @@ namespace LuaDec.Decompile
             {
                 map[entry.Key] = entry.Value;
             }
+            InitLookup();
             SetupLookup(false);
         }
 
         public OpCodeMap(Version.OpCodeMapType type)
         {
+            InitLookup();
             switch (type)
             {
                 case Version.OpCodeMapType.Lua50:
@@ -66,8 +68,9 @@ namespace LuaDec.Decompile
                     map[32] = Op.SETLISTO;
                     map[33] = Op.CLOSE;
                     map[34] = Op.CLOSURE;
+                    Allow51MathLookup();
+                    Allow53MathLookup();
                     break;
-
                 case Version.OpCodeMapType.Lua51:
                     map = new Op[38];
                     map[0] = Op.MOVE;
@@ -108,8 +111,8 @@ namespace LuaDec.Decompile
                     map[35] = Op.CLOSE;
                     map[36] = Op.CLOSURE;
                     map[37] = Op.VARARG;
+                    Allow53MathLookup();
                     break;
-
                 case Version.OpCodeMapType.Lua52:
                     map = new Op[40];
                     map[0] = Op.MOVE;
@@ -152,8 +155,8 @@ namespace LuaDec.Decompile
                     map[37] = Op.CLOSURE;
                     map[38] = Op.VARARG;
                     map[39] = Op.EXTRAARG;
+                    Allow53MathLookup();
                     break;
-
                 case Version.OpCodeMapType.Lua53:
                     map = new Op[47];
                     map[0] = Op.MOVE;
@@ -204,7 +207,6 @@ namespace LuaDec.Decompile
                     map[45] = Op.VARARG;
                     map[46] = Op.EXTRAARG;
                     break;
-
                 case Version.OpCodeMapType.Lua54:
                     map = new Op[83];
                     map[0] = Op.MOVE;
@@ -291,16 +293,46 @@ namespace LuaDec.Decompile
                     map[81] = Op.VARARGPREP;
                     map[82] = Op.EXTRAARG;
                     break;
-
                 default:
                     throw new System.InvalidOperationException();
             }
             SetupLookup(true);
         }
+        private void InitLookup()
+        {
+            lookup = new Dictionary<string, Op>();
+        }
+
+        private void Allow51MathLookup()
+        {
+            Op[] ops = { Op.MOD, Op.LEN };
+            AllowOpsLookup(ops);
+        }
+
+        private void Allow53MathLookup()
+        {
+            Op[] ops = { Op.IDIV, Op.BAND, Op.BOR, Op.BXOR, Op.SHL, Op.SHR, Op.BNOT };
+            AllowOpsLookup(ops);
+        }
+
+        private void AllowOpsLookup(Op[] ops)
+        {
+            foreach (Op op in ops)
+            {
+                string name = op.Name;
+                if (!lookup.ContainsKey(name))
+                {
+                    lookup.Add(name, op);
+                }
+                else
+                {
+                    throw new System.InvalidOperationException();
+                }
+            }
+        }
 
         private void SetupLookup(bool validate)
         {
-            lookup = new Dictionary<string, Op>();
             for (int i = 0; i < map.Length; i++)
             {
                 if (map[i] != null)

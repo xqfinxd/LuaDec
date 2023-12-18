@@ -113,6 +113,7 @@ namespace LuaDec.Decompile
             }
 
             int abslineinfoindex = 0;
+            int upvalueCount = 0;
 
             for (int line = 1; line <= function.code.Length; line++)
             {
@@ -145,11 +146,38 @@ namespace LuaDec.Decompile
                         function,
                         code.CodePoint(line),
                         function.header.version,
-                        code.GetExtractor()));
+                        code.GetExtractor(),
+                        upvalueCount > 0));
                 }
                 else
                 {
-                    output.WriteLine(op.CodePointTostring(function, code.CodePoint(line), code.GetExtractor(), cpLabel));
+                    output.WriteLine(op.CodePointTostring(
+                        function,
+                        code.CodePoint(line),
+                        code.GetExtractor(),
+                        cpLabel,
+                        upvalueCount > 0));
+                }
+
+                if (upvalueCount > 0)
+                {
+                    upvalueCount--;
+                }
+                else
+                {
+                    if (op == Op.CLOSURE
+                        && function.header.version.upvalueDeclarationType.Value == Version.UpvalueDeclarationType.Inline)
+                    {
+                        int f = code.BxField(line);
+                        if (f >= 0 && f < function.functions.Length)
+                        {
+                            LFunction closed = function.functions[f];
+                            if (closed.numUpvalues > 0)
+                            {
+                                upvalueCount = closed.numUpvalues;
+                            }
+                        }
+                    }
                 }
             }
             for (int line = function.code.Length + 1; line <= function.lines.Length; line++)

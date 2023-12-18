@@ -411,7 +411,8 @@ namespace LuaDec.Decompile
             OperandFormat[] operands,
             int codepoint,
             CodeExtract ex,
-            string label)
+            string label,
+            bool upvalue)
         {
             int constant = -1;
             int width = 10;
@@ -513,7 +514,11 @@ namespace LuaDec.Decompile
                 }
                 b.Append(parameter);
             }
-            if (function != null && constant >= 0)
+            if (upvalue)
+            {
+                b.Append(" ; upvalue declaration");
+            }
+            else if (function != null && constant >= 0)
             {
                 b.Append(" ; ");
                 b.Append(ConstantOperand(constant));
@@ -535,14 +540,22 @@ namespace LuaDec.Decompile
             return "u" + field;
         }
 
-        public static string DefaultToString(LFunction function, int codepoint, Version version, CodeExtract ex)
+        public static string DefaultToString(LFunction function, int codepoint, Version version, CodeExtract ex, bool upvalue)
         {
-            return ToStringHelper(function, string.Format("op{0:D2}", ex.op.Extract(codepoint)), version.DefaultOp.operands, codepoint, ex, null);
+            return ToStringHelper(
+                function,
+                string.Format("op{0:D2}",
+                ex.op.Extract(codepoint)),
+                version.DefaultOp.operands,
+                codepoint,
+                ex,
+                null,
+                upvalue);
         }
 
-        public string CodePointTostring(LFunction function, int codepoint, CodeExtract ex, string label)
+        public string CodePointTostring(LFunction function, int codepoint, CodeExtract ex, string label, bool upvalue)
         {
-            return ToStringHelper(function, name, operands, codepoint, ex, label);
+            return ToStringHelper(function, name, operands, codepoint, ex, label, upvalue);
         }
 
         public bool HasExtraByte(int codepoint, CodeExtract ex)
