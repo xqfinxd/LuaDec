@@ -7,18 +7,19 @@ namespace LuaDec.Decompile.Block
 {
     public abstract class ForBlock : ContainerBlock
     {
-        protected readonly bool forvarClose;
         protected readonly int register;
+        protected readonly bool forvarPreClose;
         protected IExpression start;
         protected IExpression step;
         protected IExpression stop;
         protected ITarget target;
 
-        public ForBlock(LFunction function, int begin, int end, int register, CloseType closeType, int closeLine, bool forvarClose)
+        public ForBlock(LFunction function, int begin, int end,
+            int register, CloseType closeType, int closeLine, bool forvarPreClose)
             : base(function, begin, end, closeType, closeLine, -1)
         {
             this.register = register;
-            this.forvarClose = forvarClose;
+            this.forvarPreClose = forvarPreClose;
         }
 
         public override bool Breakable()
@@ -46,8 +47,8 @@ namespace LuaDec.Decompile.Block
         public override int ScopeEnd()
         {
             int scopeEnd = end - 2;
-            if (forvarClose) scopeEnd--;
-            if (usingClose && (closeType == CloseType.Close || closeType == CloseType.Jmp)) scopeEnd--;
+            if (forvarPreClose) scopeEnd--;
+            if (usingClose && (closeType == CloseType.Close)) scopeEnd--;
             return scopeEnd;
         }
 

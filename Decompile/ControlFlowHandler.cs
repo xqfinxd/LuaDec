@@ -649,12 +649,12 @@ namespace LuaDec.Decompile
                         bool forvarClose = false;
                         bool innerClose = false;
                         int close = target - 1;
-                        if (close >= line + 1 && IsClose(state, close) && code.AField(close) == A + 3)
+                        if (close >= line + 1 && IsClose(state, close) && GetCloseValue(state, close) == A + 3)
                         {
                             forvarClose = true;
                             close--;
                         }
-                        if (close >= line + 1 && IsClose(state, close) && code.AField(close) <= A + 3 + C)
+                        if (close >= line + 1 && IsClose(state, close) && GetCloseValue(state, close) <= A + 3 + C)
                         {
                             innerClose = true;
                         }
@@ -691,18 +691,26 @@ namespace LuaDec.Decompile
                     {
                         int A = code.AField(line);
                         int target = code.Target(line);
+                        int begin = line + 1;
+                        int end = target + 1;
 
-                        bool forvarClose = false;
+                        bool forvarPreClose = false;
+                        bool forvarPostClose = false;
                         int closeLine = target - 1;
-                        if (closeLine >= line + 1 && IsClose(state, closeLine) && code.AField(closeLine) == A + 3)
+                        if (closeLine >= line + 1 && IsClose(state, closeLine) && GetCloseValue(state, closeLine) == A + 3)
                         {
-                            forvarClose = true;
+                            forvarPreClose = true;
                             closeLine--;
+                        }
+                        else if (end <= code.Length && IsClose(state, end) && GetCloseValue(state, end) == A + 3)
+                        {
+                            forvarPostClose = true;
                         }
 
                         ForBlock block = new ForBlock51(
-                          state.function, line + 1, target + 1, A,
-                          GetCloseType(state, closeLine), closeLine, forvarClose
+                          state.function, begin, end, A,
+                          GetCloseType(state, closeLine), closeLine,
+                          forvarPreClose, forvarPostClose
                         );
 
                         block.HandleVariableDeclarations(r);
@@ -717,7 +725,7 @@ namespace LuaDec.Decompile
 
                         bool innerClose = false;
                         int close = target - 1;
-                        if (close >= line + 1 && IsClose(state, close) && code.AField(close) == A + 3 + C)
+                        if (close >= line + 1 && IsClose(state, close) && GetCloseValue(state, close) == A + 3 + C)
                         {
                             innerClose = true;
                         }
@@ -736,7 +744,7 @@ namespace LuaDec.Decompile
 
                         bool forvarClose = false;
                         int close = target - 1;
-                        if (close >= line + 1 && IsClose(state, close) && code.AField(close) == A + 4)
+                        if (close >= line + 1 && IsClose(state, close) && GetCloseValue(state, close) == A + 4)
                         {
                             forvarClose = true;
                             close--;

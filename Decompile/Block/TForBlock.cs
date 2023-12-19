@@ -60,14 +60,24 @@ namespace LuaDec.Decompile.Block
         {
             int explicitScopeEnd = end - 3;
             int innerScopeEnd = end - 3;
-            if (forvarClose)
+            if (function.header.version.closeSemantics.Value == Version.CloseSemantics.Jump)
             {
-                explicitScopeEnd--;
-                innerScopeEnd--;
+                if (forvarClose)
+                {
+                    innerScopeEnd--;
+                }
             }
-            if (innerClose)
+            else
             {
-                innerScopeEnd--;
+                if (forvarClose)
+                {
+                    explicitScopeEnd--;
+                    innerScopeEnd--;
+                }
+                if (innerClose)
+                {
+                    innerScopeEnd--;
+                }
             }
             return new TForBlock(
               function, begin, end,
