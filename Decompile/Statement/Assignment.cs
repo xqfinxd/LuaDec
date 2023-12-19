@@ -238,11 +238,6 @@ namespace LuaDec.Decompile.Statement
         {
             if (targets.Count > 0)
             {
-                if (declare)
-                {
-                    output.Write("local ");
-                }
-
                 bool functionSugar = false;
                 if (targets.Count == 1 && values.Count == 1 && values[0].IsClosure() && targets[0].IsFunctionName())
                 {
@@ -256,6 +251,14 @@ namespace LuaDec.Decompile.Statement
                     {
                         functionSugar = true;
                     }
+                }
+                if (functionSugar)
+                {
+                    output.SetParagraph();
+                }
+                if (declare)
+                {
+                    output.Write("local ");
                 }
                 if (!functionSugar)
                 {
@@ -310,6 +313,7 @@ namespace LuaDec.Decompile.Statement
                 else
                 {
                     values[0].WriteClosure(d, output, targets[0]);
+                    output.SetParagraph();
                 }
                 if (Comment != null)
                 {

@@ -25,6 +25,8 @@ namespace LuaDec.Decompile
         private int indentLevel = 0;
         private IOutputProvider output;
         private int position = 0;
+        private bool start = true;
+        private bool paragraph = false;
 
         public int IndentLevel { get => indentLevel; set => indentLevel = value; }
 
@@ -50,17 +52,32 @@ namespace LuaDec.Decompile
                     output.WriteString(" ");
                     position++;
                 }
+                if (paragraph && !start)
+                {
+                    paragraph = false;
+                    output.WriteLine();
+                    position = 0;
+                    Start();
+                }
             }
+            start = false;
         }
 
         public void Dedent()
         {
+            paragraph = false;
             indentLevel -= IndentWidth;
         }
 
         public void Indent()
         {
+            start = true;
             indentLevel += IndentWidth;
+        }
+
+        public void SetParagraph()
+        {
+            paragraph = true;
         }
 
         public void WriteByte(byte b)
