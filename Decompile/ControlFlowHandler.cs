@@ -2339,7 +2339,7 @@ namespace LuaDec.Decompile
         {
             foreach (Declaration decl in declList)
             {
-                if (decl.isSplitBy(line, begin, end))
+                if (decl.IsSplitBy(line, begin, end))
                 {
                     return true;
                 }
