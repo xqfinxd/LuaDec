@@ -79,10 +79,20 @@ namespace LuaDec.Decompile
 
         public class State
         {
-            public bool[] labels;
-            public IBlock outer;
             public Registers r;
-            public bool[] skip;
+            public byte[] flags;
+            public IBlock outer;
+        }
+
+        public enum Flag
+        {
+            SKIP,
+            LABELS,
+        }
+
+        public byte GetFlagBit(Flag flag)
+        {
+            return (byte)(1 << (int)flag);
         }
 
         private readonly Function f;
@@ -465,7 +475,7 @@ namespace LuaDec.Decompile
         private List<IOperation> ProcessLine(State state, int line)
         {
             Registers r = state.r;
-            bool[] skip = state.skip;
+            byte[] flags = state.flags;
             List<IOperation> operations = new List<IOperation>();
             int A = code.AField(line);
             int B = code.BField(line);
@@ -938,7 +948,7 @@ namespace LuaDec.Decompile
                     }
                     FunctionCall value = new FunctionCall(function, arguments, true);
                     operations.Add(new ReturnOperation(line, value));
-                    skip[line + 1] = true;
+                    flags[line + 1] |= GetFlagBit(Flag.SKIP);
                     break;
                 }
                 case Op.OpT.RETURN:
@@ -990,7 +1000,7 @@ namespace LuaDec.Decompile
                     if (C == 0)
                     {
                         C = code.CodePoint(line + 1);
-                        skip[line + 1] = true;
+                        flags[line + 1] |= GetFlagBit(Flag.SKIP);
                     }
                     if (B == 0)
                     {
@@ -1005,7 +1015,7 @@ namespace LuaDec.Decompile
                     {
                         if (line + 1 > code.Length || code.GetOp(line + 1) != Op.EXTRAARG) throw new System.InvalidOperationException();
                         C = code.AxField(line + 1);
-                        skip[line + 1] = true;
+                        flags[line + 1] |= GetFlagBit(Flag.SKIP);
                     }
                     if (B == 0)
                     {
@@ -1020,7 +1030,7 @@ namespace LuaDec.Decompile
                     {
                         if (line + 1 > code.Length || code.GetOp(line + 1) != Op.EXTRAARG) throw new System.InvalidOperationException();
                         C += code.AxField(line + 1) * (code.GetExtractor().C.Max() + 1);
-                        skip[line + 1] = true;
+                        flags[line + 1] |= GetFlagBit(Flag.SKIP);
                     }
                     if (B == 0)
                     {
@@ -1060,7 +1070,7 @@ namespace LuaDec.Decompile
                                     throw new System.InvalidOperationException();
                             }
                             upvalue.idx = code.BField(line + 1 + i);
-                            skip[line + 1 + i] = true;
+                            flags[line + 1 + i] |= GetFlagBit(Flag.SKIP);
                         }
                     }
                     break;
@@ -1107,7 +1117,7 @@ namespace LuaDec.Decompile
         private Assignment ProcessOperation(State state, IOperation operation, int line, int nextLine, IBlock block)
         {
             Registers r = state.r;
-            bool[] skip = state.skip;
+            byte[] flags = state.flags;
             Assignment assign = null;
             List<IStatement> stmts = operation.Process(r, block);
             if (stmts.Count == 1)
@@ -1139,7 +1149,7 @@ namespace LuaDec.Decompile
                             ITarget target = GetMoveIntoTargetTarget(r, nextLine, line + 1);
                             IExpression value = GetMoveIntoTargetValue(r, nextLine, line + 1); //updated?
                             assign.AddFirst(target, value, nextLine);
-                            skip[nextLine] = true;
+                            flags[nextLine] |= GetFlagBit(Flag.SKIP);
                             nextLine++;
                         }
                         else if (op == Op.MMBIN || op == Op.MMBINI || op == Op.MMBINK || code.IsUpvalueDeclaration(nextLine))
@@ -1196,8 +1206,7 @@ namespace LuaDec.Decompile
             Stack<IBlock> blockStack = new Stack<IBlock>();
             blockStack.Push(blockContainers[blockContainerIndex++]);
 
-            state.skip = new bool[code.Length + 1];
-            bool[] skip = state.skip;
+            byte[] flags = state.flags;
             bool[] labelsHandled = new bool[code.Length + 1];
 
             int line = 1;
@@ -1242,7 +1251,7 @@ namespace LuaDec.Decompile
 
                         if (!next.HasHeader())
                         {
-                            if (!labelsHandled[line] && state.labels[line])
+                            if (!labelsHandled[line] && ((flags[line] & GetFlagBit(Flag.LABELS)) != 0))
                             {
                                 blockStack.Peek().AddStatement(new Label(line));
                                 labelsHandled[line] = true;
@@ -1252,7 +1261,7 @@ namespace LuaDec.Decompile
                         blockStack.Push(next);
                     }
 
-                    if (!labelsHandled[line] && state.labels[line])
+                    if (!labelsHandled[line] && ((flags[line] & GetFlagBit(Flag.LABELS)) != 0))
                     {
                         blockStack.Peek().AddStatement(new Label(line));
                         labelsHandled[line] = true;
@@ -1276,7 +1285,7 @@ namespace LuaDec.Decompile
                     {
                         // After all blocks are handled for a line, we will reach here
                         nextline = line + 1;
-                        if (!skip[line] && line >= begin && line <= end)
+                        if (!((flags[line] & GetFlagBit(Flag.SKIP)) != 0) && line >= begin && line <= end)
                         {
                             operations = ProcessLine(state, line);
                         }
@@ -1369,7 +1378,14 @@ namespace LuaDec.Decompile
             ControlFlowHandler.Result result = ControlFlowHandler.Process(this, state.r);
             List<IBlock> blocks = result.blocks;
             state.outer = blocks[0];
-            state.labels = result.labels;
+            state.flags = new byte[code.Length + 1];
+            for (int i = 1; i <= code.Length; i++)
+            {
+                if (result.labels[i])
+                {
+                    state.flags[i] |= GetFlagBit(Flag.LABELS);
+                }
+            }
             ProcessSequence(state, blocks, 1, code.Length);
             foreach (IBlock block in blocks)
             {
@@ -1403,7 +1419,7 @@ namespace LuaDec.Decompile
                 state.r = new Registers(registers, length, declarations, f, GetNoDebug());
                 state.outer = new OuterBlock(function, code.Length);
                 IBlock scoped = new DoEndBlock(function, begin, end + 1);
-                state.labels = new bool[code.Length + 1];
+                state.flags = new byte[code.Length + 1];
                 List<IBlock> blocks = new List<IBlock> { state.outer, scoped };
                 ProcessSequence(state, blocks, 1, code.Length);
                 return !scoped.IsEmpty();
