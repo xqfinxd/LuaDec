@@ -275,6 +275,57 @@ namespace LuaDec.Decompile
             }
         }
 
+        private int GetMoveIntoTargetValueRegister(Registers r, int line, int previous)
+        {
+            int A = code.AField(line);
+            int B = code.BField(line);
+            int C = code.CField(line);
+            switch (code.GetOp(line).Type)
+            {
+                case Op.OpT.MOVE:
+                    return B;
+                case Op.OpT.SETUPVALUE:
+                case Op.OpT.SETGLOBAL:
+                    return A;
+                case Op.OpT.SETTABLE:
+                case Op.OpT.SETTABUP:
+                    if (f.IsConstant(C))
+                    {
+                        throw new System.InvalidOperationException();
+                    }
+                    else
+                    {
+                        return C;
+                    }
+                case Op.OpT.SETTABLE54:
+                case Op.OpT.SETI:
+                case Op.OpT.SETFIELD:
+                case Op.OpT.SETTABUP54:
+                    if (code.kField(line))
+                    {
+                        throw new System.InvalidOperationException();
+                    }
+                    else
+                    {
+                        return C;
+                    }
+                default:
+                    throw new System.InvalidOperationException();
+            }
+        }
+
+        public int GetRegister(int line)
+        {
+            while (code.IsUpvalueDeclaration(line)
+                || code.GetOp(line).Type == Op.OpT.EXTRAARG
+                || code.GetOp(line).Type == Op.OpT.EXTRABYTE)
+            {
+                if (line == 1) return -1;
+                line--;
+            }
+            return code.Register(line);
+        }
+
         private void Handle50BinOp(List<IOperation> operations, State state, int line, IExpression.BinaryOperation op)
         {
             operations.Add(new RegisterSet(line, code.AField(line), IExpression.Make(op, state.r.GetKExpression(code.BField(line), line), state.r.GetKExpression(code.CField(line), line))));
@@ -1021,7 +1072,12 @@ namespace LuaDec.Decompile
                 case Op.OpT.VARARG:
                 {
                     bool multiple = (B != 2);
-                    if (B == 1) throw new System.InvalidOperationException();
+                    // B == 1 means no registers are set; this should only happen when the VARARG
+                    // appears on the right-hand side of an assignment without enough targets.
+                    // Should be multiple (as not adjusted "(...)"), and we need to pretend it's
+                    // an actual operation so we can capture it...
+                    // (luac allocates stack space even though it doesn't technically use it)
+                    if (B == 1) B = 2;
                     if (B == 0) B = registers - A + 1;
                     IExpression value = new VarArg(B - 1, multiple);
                     operations.Add(new MultipleRegisterSet(line, A, A + B - 2, value));
@@ -1030,7 +1086,7 @@ namespace LuaDec.Decompile
                 case Op.OpT.VARARG54:
                 {
                     bool multiple = (C != 2);
-                    if (C == 1) throw new System.InvalidOperationException();
+                    if (C == 1) C = 2;
                     if (C == 0) C = registers - A + 1;
                     IExpression value = new VarArg(C - 1, multiple);
                     operations.Add(new MultipleRegisterSet(line, A, A + C - 2, value));
@@ -1094,6 +1150,20 @@ namespace LuaDec.Decompile
                         else
                         {
                             break;
+                        }
+                    }
+
+                    if (line >= 2 && IsMoveIntoTarget(r, line))
+                    {
+                        int lastUsed = GetMoveIntoTargetValueRegister(r, line, line);
+                        int lastLoaded = GetRegister(line - 1);
+                        if (!r.IsLocal(lastLoaded, line - 1))
+                        {
+                            while (lastUsed < lastLoaded)
+                            {
+                                lastUsed++;
+                                assign.AddExcessValue(r.GetValue(lastUsed, line), r.GetUpdated(lastUsed, line), lastUsed);
+                            }
                         }
                     }
                 }
@@ -1261,12 +1331,29 @@ namespace LuaDec.Decompile
                         }
                     }
 
+                    bool firstProcess = !assignment.GetDeclaration();
                     assignment.SetDeclare(locals[0].begin);
+                    int lastAssigned = locals[0].register;
                     foreach (Declaration decl in locals)
                     {
                         if ((scopeEnd == -1 || decl.end == scopeEnd) && decl.register >= block.closeRegister)
                         {
-                            assignment.AddLast(new VariableTarget(decl), r.GetValue(decl.register, line + 1), r.GetUpdated(decl.register, line - 1));
+                            assignment.AddLast(
+                                new VariableTarget(decl),
+                                r.GetValue(decl.register, line + 1),
+                                r.GetUpdated(decl.register, line - 1));
+                            lastAssigned = decl.register;
+                        }
+                    }
+
+                    if (firstProcess)
+                    {
+                        // only populate once (excess detection can fail on later lines)
+                        int lastLoaded = GetRegister(line);
+                        while (lastAssigned < lastLoaded)
+                        {
+                            lastAssigned++;
+                            assignment.AddExcessValue(r.GetValue(lastAssigned, line + 1), r.GetUpdated(lastAssigned, line), lastAssigned);
                         }
                     }
                 }

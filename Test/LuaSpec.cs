@@ -95,6 +95,18 @@ namespace Test
             }
         }
 
+        public bool Compatible(TestFile testfile)
+        {
+            if (testfile.version == TestFile.DEFAULT_VERSION)
+            {
+                return Compatible(testfile.name);
+            }
+            else
+            {
+                return this.version >= testfile.version;
+            }
+        }
+
         public bool Compatible(string filename)
         {
             int version = 0;

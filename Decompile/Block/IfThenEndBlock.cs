@@ -99,7 +99,23 @@ namespace LuaDec.Decompile.Block
                         }
                     }
                 }
-                if (assign != null && (cond.IsRegisterTest() || cond.IsOrCondition() || assign.GetDeclaration()) && assign.GetLastTarget().IsLocal() && assign.GetLastTarget().GetIndex() == test || statements.Count == 0)
+
+                bool assignMatches = false;
+                if (assign != null)
+                {
+                    if (assign.HasExcess())
+                    {
+                        assignMatches = assign.GetLastRegister() == test;
+                    }
+                    else
+                    {
+                        assignMatches = assign.GetLastTarget().IsLocal() && assign.GetLastTarget().GetIndex() == test;
+                    }
+                }
+                if (assign != null
+                    && (cond.IsRegisterTest() || cond.IsOrCondition() || assign.GetDeclaration())
+                    && assignMatches
+                    || statements.Count == 0)
                 {
                     FinalSetCondition readonlyset = new FinalSetCondition(end - 1, test);
                     readonlyset.type = FinalSetCondition.Type.VALUE;

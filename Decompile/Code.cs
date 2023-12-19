@@ -133,6 +133,11 @@ namespace LuaDec.Decompile
             return line + 1 + GetOp(line).JumpField(CodePoint(line), extractor);
         }
 
+        public int Register(int line)
+        {
+            return GetOp(line).Target(CodePoint(line), extractor);
+        }
+
         public string ToString(int line)
         {
             return GetOp(line).CodePointTostring(0, null, CodePoint(line), extractor, null, false);

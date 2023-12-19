@@ -128,9 +128,9 @@ namespace Test
             }
             foreach (TestFile testfile in files)
             {
-                string name = testfile.name;
-                if (spec.Compatible(name))
+                if (spec.Compatible(testfile))
                 {
+                    string name = testfile.name;
                     Configuration config = Configure(testfile, basic);
                     TestResult result = Test(spec, uspec, path + name + Ext, config, false);
                     report.Result(TestName(spec, name), result);

@@ -8,7 +8,7 @@ namespace Test
     public class RunTest
     {
         [TestMethod]
-        [DataRow("number04")]
+        [DataRow("assign")]
         public void Test(string file)
         {
             LuaSpec spec = new LuaSpec(0x50, 3);

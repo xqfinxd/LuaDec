@@ -12,6 +12,7 @@ namespace LuaDec.Decompile.Statement
         private bool allnil = true;
         private bool declare = false;
         private int declareStart = 0;
+        private int register = -1;
 
         public Assignment()
         {
@@ -37,16 +38,49 @@ namespace LuaDec.Decompile.Statement
         {
             if (targets.Contains(target))
             {
-                int index = targets.IndexOf(target);
-                targets.RemoveAt(index);
-                value = values[index];
-                values.RemoveAt(index);
-                lines.RemoveAt(index);
+                int indexf = targets.IndexOf(target);
+                targets.RemoveAt(indexf);
+                value = values[indexf];
+                values.RemoveAt(indexf);
+                lines.RemoveAt(indexf);
             }
+            var idx = targets.Count;
             targets.Add(target);
+            values.Insert(idx, value);
+            lines.Insert(idx, line);
+            allnil = allnil && value.IsNil();
+        }
+        public bool HasExcess()
+        {
+            return values.Count > targets.Count;
+        }
+
+        public void AddExcessValue(IExpression value, int line, int register)
+        {
             values.Add(value);
             lines.Add(line);
-            allnil = allnil && value.IsNil();
+            allnil = false; // Excess can't be implicit
+            int firstRegister = register - (values.Count - 1);
+            if (this.register != -1 && this.register != firstRegister)
+            {
+                throw new System.InvalidOperationException();
+            }
+            this.register = firstRegister;
+        }
+
+        public int GetRegister(int index)
+        {
+            if (index < 0 || index >= values.Count)
+            {
+                throw new System.IndexOutOfRangeException();
+            }
+            if (register == -1) throw new System.InvalidOperationException();
+            return register + index;
+        }
+
+        public int GetLastRegister()
+        {
+            return GetRegister(values.Count - 1);
         }
 
         public bool AssignListEquals(List<Declaration> decls)

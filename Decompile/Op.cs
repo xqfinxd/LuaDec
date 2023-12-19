@@ -780,7 +780,7 @@ namespace LuaDec.Decompile
                 {
                     int a = ex.A.Extract(codepoint);
                     int b = ex.B.Extract(codepoint);
-                    if (b == 2)
+                    if (b == 1 || b == 2)
                     {
                         return a;
                     }
@@ -793,7 +793,7 @@ namespace LuaDec.Decompile
                 {
                     int a = ex.A.Extract(codepoint);
                     int c = ex.C.Extract(codepoint);
-                    if (c == 2)
+                    if (c == 1 || c == 2)
                     {
                         return a;
                     }
