@@ -1,4 +1,5 @@
 ﻿using LuaDec.Assemble;
+using LuaDec.Decompile;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -304,6 +305,18 @@ namespace LuaDec.Parser
                 s.code[i] = buffer.ReadInt32();
                 if (header.debug)
                 {
+                    int codepoint = s.code[i];
+                    CodeExtract ex = header.extractor;
+                    Op op = header.opmap.GetOp(ex.op.Extract(codepoint));
+                    Console.WriteLine("-- parsed codepoint " + codepoint.ToString("X"));
+                    if (op != null)
+                    {
+                        Console.WriteLine("-- " + op.CodePointToString(0, null, codepoint, ex, null, false));
+                    }
+                    else
+                    {
+                        Console.WriteLine("-- " + Op.DefaultToString(0, null, codepoint, header.version, ex, false));
+                    }
                     Console.WriteLine("-- parsed codepoint " + s.code[i].ToString("X"));
                 }
             }

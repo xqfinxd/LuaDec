@@ -153,7 +153,7 @@ namespace LuaDec.Decompile
                 }
                 else
                 {
-                    output.WriteLine(op.CodePointTostring(
+                    output.WriteLine(op.CodePointToString(
                         printFlags,
                         function,
                         code.CodePoint(line),

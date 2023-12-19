@@ -555,7 +555,7 @@ namespace LuaDec.Decompile
                 upvalue);
         }
 
-        public string CodePointTostring(int flags, LFunction function, int codepoint, CodeExtract ex, string label, bool upvalue)
+        public string CodePointToString(int flags, LFunction function, int codepoint, CodeExtract ex, string label, bool upvalue)
         {
             return ToStringHelper(flags, function, name, operands, codepoint, ex, label, upvalue);
         }
