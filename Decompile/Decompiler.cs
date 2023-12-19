@@ -919,12 +919,14 @@ namespace LuaDec.Decompile
                         arguments[register - A - 1] = r.GetExpression(register, line);
                     }
                     FunctionCall value = new FunctionCall(function, arguments, multiple);
-                    if (C == 1)
+                    if (C == 1 && !(A > 0 && (!r.IsLocal(A - 1, line) || r.IsNewLocal(A - 1, line))))
                     {
                         operations.Add(new CallOperation(line, value));
                     }
                     else
                     {
+                        if (C == 1) C = 2;
+
                         if (C == 2 && !multiple)
                         {
                             operations.Add(new RegisterSet(line, A, value));
