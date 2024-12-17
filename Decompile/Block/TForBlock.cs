@@ -98,7 +98,7 @@ namespace LuaDec.Decompile.Block
             return new TForBlock(
               function, begin, end,
               register, register + 3, register + 4, register + 3 + length,
-              begin - 2, end,
+              begin - 2, end - 1,
               begin - 1, end - 3,
               innerScopeEnd
             );

@@ -244,7 +244,7 @@ namespace LuaDec.Parser
         }
 
         private static readonly byte[] luacTail = {
-            0x19, (byte) 0x93, 0x0D, 0x0A, 0x1A, 0x0A,
+            0x19, 0x93, 0x0D, 0x0A, 0x1A, 0x0A,
         };
 
         protected static readonly double TEST_FLOAT = 370.5;

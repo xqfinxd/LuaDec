@@ -1478,7 +1478,7 @@ namespace LuaDec.Decompile
             else
             {
                 Op op = state.code.GetOp(line);
-                if (op == Op.CLOSE)
+                if (op.Type == Op.OpT.CLOSE)
                 {
                     return state.function.header.version.closeSemantics.Value == Version.CloseSemantics.Lua54 ? CloseType.Close54 : CloseType.Close;
                 }

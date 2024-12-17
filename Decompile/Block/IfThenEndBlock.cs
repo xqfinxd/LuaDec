@@ -9,13 +9,13 @@ namespace LuaDec.Decompile.Block
 {
     public class IfThenEndBlock : ContainerBlock
     {
-        private class IfThenEndBlockOperation_ : IOperation
+        private class IfThenEndBlockOperation : IOperation
         {
             private Assignment fassign;
             private ICondition fcombined;
             private int test;
 
-            public IfThenEndBlockOperation_(Assignment fassign, ICondition fcombined, int test, int line)
+            public IfThenEndBlockOperation(Assignment fassign, ICondition fcombined, int test, int line)
                 : base(line)
             {
                 this.fassign = fassign;
@@ -140,7 +140,7 @@ namespace LuaDec.Decompile.Block
                         fassign = null;
                     }
                     ICondition fcombined = combined;
-                    return new IfThenEndBlockOperation_(fassign, fcombined, test, end - 1);
+                    return new IfThenEndBlockOperation(fassign, fcombined, test, end - 1);
                 }
             }
             return base.Process(d);
@@ -153,7 +153,9 @@ namespace LuaDec.Decompile.Block
 
         public override int ScopeEnd()
         {
-            return usingClose && closeType == CloseType.Close ? closeLine - 1 : base.ScopeEnd();
+            return usingClose && (closeType == CloseType.Close || closeType == CloseType.Close54)
+                ? closeLine - 1
+                : base.ScopeEnd();
         }
 
         public override void Walk(Walker w)
