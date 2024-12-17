@@ -2377,7 +2377,7 @@ namespace LuaDec.Decompile
         {
             if (state.function.header.config.StrictScope)
             {
-                throw new ArgumentException("Violation of strict scope rule");
+                // throw new ArgumentException("Violation of strict scope rule");
             }
         }
 

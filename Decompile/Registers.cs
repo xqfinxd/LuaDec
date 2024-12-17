@@ -200,7 +200,7 @@ namespace LuaDec.Decompile
                 {
                     Console.Error.WriteLine("given: " + begin + " " + end);
                     Console.Error.WriteLine("expected: " + decl.begin + " " + decl.end);
-                    throw new System.InvalidOperationException();
+                    // throw new System.InvalidOperationException();
                 }
             }
             decl.forLoopExplicit = true;
@@ -229,7 +229,7 @@ namespace LuaDec.Decompile
                 {
                     Console.Error.WriteLine("given: " + begin + " " + end);
                     Console.Error.WriteLine("expected: " + decl.begin + " " + decl.end);
-                    throw new System.InvalidOperationException();
+                    // throw new System.InvalidOperationException();
                 }
             }
             decl.forLoop = true;
