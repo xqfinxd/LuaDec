@@ -42,7 +42,7 @@ namespace LuaDec.Parser
             }
             else if (big.CompareTo(MAX_INT) > 0 || big.CompareTo(MIN_INT) < 0)
             {
-                throw new System.InvalidOperationException("The size of an int is outside the range that unluac can handle.");
+                throw new System.InvalidOperationException("The size of an int is outside the range that LuaDec can handle.");
             }
             else
             {

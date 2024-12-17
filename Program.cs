@@ -88,14 +88,14 @@ namespace LuaDec
         public static void Error(string err, bool usage)
         {
             WriteLuaDecString(Console.Error);
-            Console.Error.WriteLine("unluac v" + Version);
+            Console.Error.WriteLine("LuaDec v" + Version);
             Console.Error.Write("  error: ");
             Console.Error.WriteLine(err);
             if (usage)
             {
                 WriteUsage(Console.Error);
                 Console.Error.WriteLine("For information about options, use option: --help");
-                Console.Error.WriteLine("  usage: java -jar unluac.jar [options] <file>");
+                Console.Error.WriteLine("  usage: LuaDec [options] <file>");
             }
             Environment.Exit(1);
         }
@@ -116,12 +116,12 @@ namespace LuaDec
 
         private static void WriteLuaDecString(TextWriter output)
         {
-            output.WriteLine("unluac v" + Version);
+            output.WriteLine("LuaDec v" + Version);
         }
 
         private static void WriteUsage(TextWriter output)
         {
-            output.WriteLine("  usage: java -jar unluac.jar [options] <file>");
+            output.WriteLine("  usage: LuaDec [options] <file>");
         }
 
         public static void Main(string[] args)

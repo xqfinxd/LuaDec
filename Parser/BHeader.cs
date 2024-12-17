@@ -79,7 +79,7 @@ namespace LuaDec.Parser
             version = Version.GetVersion(config, major, minor);
             if (version == null)
             {
-                throw new System.InvalidOperationException("The input chunk's Lua version is " + major + "." + minor + "; unluac can only handle Lua 5.0 - Lua 5.4.");
+                throw new System.InvalidOperationException("The input chunk's Lua version is " + major + "." + minor + "; LuaDec can only handle Lua 5.0 - Lua 5.4.");
             }
 
             headerType = version.LHeaderType;
